@@ -1,5 +1,11 @@
 # Bundled Pine Script documentation
 
-This tree is copied from [TradersPost/pinescript-agents](https://github.com/TradersPost/pinescript-agents) (MIT License) so Cursor skills in `.cursor/skills/pine-*` can reference offline docs under `docs/`.
+This tree is copied from [TradersPost/pinescript-agents](https://github.com/TradersPost/pinescript-agents) (MIT License) so Pine skills (`.cursor/skills/` and `.claude/skills/`) can reference offline docs under `docs/`.
 
-To refresh from upstream, re-clone or copy the `docs/` folder from the latest `main` branch of that repository.
+To refresh from upstream `main` and mirror Cursor skills into `.claude/skills/`:
+
+```bash
+npm run sync:pinescript-agents
+```
+
+Requires `git` on your PATH.

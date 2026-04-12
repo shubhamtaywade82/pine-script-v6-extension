@@ -51,6 +51,8 @@ Use `study_filter` parameter to target a specific indicator by name substring (e
 7. `pine_new` → create blank indicator/strategy/library
 8. `pine_open` → load a saved script by name
 
+**TradersPost Pine agents (bundled):** specialized skills live in `.claude/skills/` and `.cursor/skills/`; offline reference docs are under `vendor/pinescript-agents/docs/` (from [TradersPost/pinescript-agents](https://github.com/TradersPost/pinescript-agents)). Refresh vendored docs and mirror skills with `npm run sync:pinescript-agents`.
+
 ### "Practice trading with replay"
 1. `replay_start` with `date: "2025-03-01"` → enter replay mode
 2. `replay_step` → advance one bar

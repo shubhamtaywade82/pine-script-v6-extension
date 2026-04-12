@@ -68,6 +68,23 @@ Gives your AI assistant eyes and hands on your own chart:
 - **CLI access** — every MCP tool is also a `tv` CLI command, pipe-friendly with JSON output
 - **Launch TradingView** — auto-detect and launch with debug mode from any platform
 
+## TradersPost Pine agents (integrated)
+
+This repo embeds the **[TradersPost/pinescript-agents](https://github.com/TradersPost/pinescript-agents)** skill set (MIT) alongside the MCP bridge:
+
+| Location | Purpose |
+|----------|---------|
+| `.cursor/skills/` | Cursor Agent skills (Pine orchestration, developer, debugger, … + `tradingview-mcp-pine`) |
+| `.claude/skills/` | Same skill files for **Claude Code** discovery |
+| `.claude/hooks/` | Optional Claude Code hooks (lock/unlock, Pine validation hints); use Git Bash on Windows |
+| `vendor/pinescript-agents/docs/` | Offline Pine v6 + workflow docs the skills reference |
+
+Pull the latest upstream documentation and re-mirror skills into `.claude/skills/`:
+
+```bash
+npm run sync:pinescript-agents
+```
+
 ## Install with Claude Code
 
 Paste this into Claude Code and it will handle the rest:
