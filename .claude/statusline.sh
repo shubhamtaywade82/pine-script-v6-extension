@@ -26,7 +26,7 @@ fi
 
 PROJECT_PINES=0
 if [ -d "$PROJECT_DIR/projects" ]; then
-  PROJECT_PINES=$(ls -1 "$PROJECT_DIR/projects/"*.pine 2>/dev/null | grep -cv blank.pine || true)
+  PROJECT_PINES=$(ls -1 "$PROJECT_DIR/projects/"*.pine 2>/dev/null | grep -v blank.pine | wc -l | tr -d " ")
 fi
 
 PINECOUNT=$((ROOT_PINES + PROJECT_PINES))
