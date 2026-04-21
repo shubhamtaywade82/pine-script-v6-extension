@@ -30,12 +30,6 @@
     "ollama",
     "AI"
   ],
-  "activationEvents": [
-    "onLanguage:pinescript",
-    "onCommand:pineForge.ollama.explainSelection",
-    "onCommand:pineForge.ollama.setApiKey",
-    "onCommand:pineForge.ollama.clearApiKey"
-  ],
   "main": "./dist/extension.js",
   "contributes": {
     "languages": [
