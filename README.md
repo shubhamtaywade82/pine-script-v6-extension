@@ -17,7 +17,7 @@
 | Rename | `prepareRename` + workspace edit for **non-built-in** names; same-file, best-effort |
 | Format document | Trim trailing whitespace, tabs → spaces, newline at EOF — **not** a full Pine pretty-printer |
 | Code actions | Insert/set `//@version=6`; starter removal for deprecated `transp` |
-| Ollama (optional) | Explain selection via [`ollama`](https://github.com/ollama/ollama-js); extension-host only, not the LSP server |
+| Ollama (optional) | Explain / suggest fix / refactor / cursor ask; **inline ghost text**; optional **completion list** + **refactor** code action — all via [`ollama`](https://github.com/ollama/ollama-js) in the **extension host only** (never the LSP server) |
 
 **Limits (honest)**
 
@@ -48,19 +48,36 @@ Open this folder in VS Code, then **Run → Start Debugging** (F5) with **Run Pi
 ### Command palette
 
 - **Pine Script: Open v6 Reference Manual** — opens the TradingView v6 reference in the browser.
-- **PineForge: Explain selection with Ollama** — sends the current selection to your Ollama host; output appears in **View → Output → PineForge AI** (also in the editor context menu for `.pine` files).
+- **PineForge: Explain selection with Ollama** — sends the current selection to your Ollama host; replies go to **View → Output → PineForge AI** (also in the editor context menu for Pine files).
+- **PineForge: Suggest fix with Ollama (selection or line)** — uses the selection if non-empty, otherwise the **current line**; includes **diagnostic messages** that overlap that range when available.
+- **PineForge: Refactor selection with Ollama** — prompts for a short instruction, then sends the selection plus that instruction to the model (output channel).
+- **PineForge: Ask Ollama at cursor (output channel)** — same **prefix/suffix window** around the cursor as inline AI (see `pineForge.ollama.inlineContextLines`); useful when inline completions are off or you want a full reply in the channel.
+- **PineForge: Suggest fix for range (Ollama)** — intended for the **lightbulb** code action; if you run it from the palette with no arguments, it behaves like **Suggest fix** on the active selection or line.
 - **PineForge: Set / Clear Ollama API key** — stores a **Bearer** token in VS Code **Secret Storage** (for `https://ollama.com` or any host that requires auth). Keys are never written to `settings.json`.
 
 ### Ollama (optional AI)
 
+**Master switch:** `pineForge.ollama.enabled` must be `true`, and **`pineForge.ollama.model`** set, before any AI feature talks to your host.
+
 | Setting | Default | Purpose |
 |---------|---------|---------|
-| `pineForge.ollama.enabled` | `false` | Turn AI commands on. |
+| `pineForge.ollama.enabled` | `false` | Turn on Ollama-backed features (commands, optional inline/list/lightbulb). |
 | `pineForge.ollama.host` | `http://127.0.0.1:11434` | Local Ollama, or `https://ollama.com` for cloud. |
 | `pineForge.ollama.model` | _(empty)_ | Model id (e.g. `llama3.1` locally, or a cloud model name). |
-| `pineForge.ollama.stream` | `true` | Stream tokens into the output channel. |
+| `pineForge.ollama.stream` | `true` | Stream tokens into the **PineForge AI** output channel for **command**-driven chats (inline completions always use a single non-streaming request). |
+| `pineForge.ollama.inlineCompletions` | `false` | **Ghost-text** suggestions at the cursor (separate from LSP symbol completions). |
+| `pineForge.ollama.inlineDebounceMs` | `400` | Wait after typing before requesting inline AI (`0` = no debounce). |
+| `pineForge.ollama.inlineContextLines` | `40` | Lines of document **before** / **after** the cursor included in inline and “Ask at cursor” prompts. |
+| `pineForge.ollama.inlineMaxPromptChars` | `12000` | Cap on combined prefix+suffix size for inline requests. |
+| `pineForge.ollama.inlineTimeoutMs` | `12000` | Hard timeout (ms) per inline completion request. |
+| `pineForge.ollama.codeActionsInLightbulb` | `false` | Adds a **Refactor** code action that runs **suggest fix** for the current range (still **no network** until you pick it). |
+| `pineForge.ollama.completionAskAiItem` | `false` | Adds an **“Ask PineForge AI (cursor context)”** entry to the completion list; accepting it runs the same flow as **Ask Ollama at cursor**. |
 
-**Privacy:** when you run Explain selection, the **selected source code** is sent to the configured host (local or cloud). Use **Clear Ollama API key** to revoke cloud access on this machine.
+**Editor integration (when enabled above):** with **`inlineCompletions`** you get VS Code **inline suggestions** alongside normal IntelliSense. With **`completionAskAiItem`**, the extra completion item appears with the rest of the list. With **`codeActionsInLightbulb`**, open the lightbulb / refactor menu on a range to see **PineForge AI: Suggest fix for range (Ollama)**.
+
+**Privacy:** any command or inline request sends **the relevant source snippet** (and for suggest-fix, overlapping **diagnostic text**) to the configured host. Nothing is sent until you trigger a command, accept an inline suggestion, pick a code action, or choose the “Ask AI” completion item. Use **Clear Ollama API key** to revoke stored cloud tokens on this machine.
+
+**Authority:** LSP diagnostics, completions, and quick fixes remain **deterministic**; the model can be wrong — treat AI output as advisory and keep validating on TradingView.
 
 ### Settings (`pineForge.*`)
 

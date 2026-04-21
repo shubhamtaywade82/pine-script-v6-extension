@@ -53,6 +53,7 @@ This document specifies how to build **PineForge**—a VS Code–compatible **al
 | Code actions / quick fixes | Rich set | **Partial** (version + starter `transp` fix) |
 | Signature help | Arity-aware | **Partial** (summary + link; not full arg list) |
 | Semantic tokens | Optional | **Not yet** |
+| Optional Ollama (explain, fix, refactor, inline, list item, refactor code action) | Opt-in, host-only | **Shipped** (extension host; [`ollama`](https://github.com/ollama/ollama-js); not part of LSP analysis) |
 
 Ship order follows [Implementation phases](#implementation-phases); expand the parser and symbol table before promising formatter parity or risky autofixes.
 
@@ -83,6 +84,7 @@ Language server (core)
 - Register the Pine language (`.pine`, `.pinescript`), grammar, and `language-configuration.json`.
 - Start the language server (`vscode-languageclient`) and subscribe to lifecycle.
 - Optional: commands such as “Open Pine reference” that open URLs from the reference index.
+- **Optional Ollama (AI):** all LLM traffic stays in the **extension host** — `src/ollama/*`, registered from `src/extension.ts` via `registerPineOllamaUi`. The language server **never** imports `ollama` or calls the network for AI; LSP completions, diagnostics, and quick fixes stay deterministic. See [README.md](README.md) for settings and commands.
 
 ### Language server
 
@@ -563,7 +565,7 @@ This architecture is a **foundation**, not a full Pine compiler. Expect gaps unt
 ### Future features (high value)
 
 - Static analysis: repaint scoring, indicator/strategy misuse, invalid `security()` combinations  
-- Optional AI assist: explain diagnostic, suggest fix (keep deterministic rules authoritative)  
+- **AI (shipped baseline, still expandable):** today the extension offers explain, suggest-fix (with diagnostic text when available), refactor-with-instruction, cursor-context ask, optional **inline completions**, an optional **completion-list** entry, and an optional **refactor** code action — all opt-in and **extension-host** only; future work could add one-click apply / diff preview, tighter prompt grounding from AST spans, or explicit “explain this diagnostic” without manual range selection. **Deterministic rules and TradingView remain authoritative.**  
 - Doc pipeline: scrape/cache TradingView docs with **v6 version lock**  
 - Backtest-aware hints (domain-specific, optional)
 
@@ -585,6 +587,9 @@ No Cursor-specific fork: install the VSIX or marketplace extension in Cursor lik
 - [ ] Load a v5-leaning script under v6 rules; **migration** or version warnings appear where intended.  
 - [ ] `F5` Extension Development Host: extension activates without errors.  
 - [ ] Format Document: stable output, no spurious churn on double-format (when formatter exists).  
+- [ ] **Ollama (optional):** with `pineForge.ollama.enabled` + model + host, run **Explain selection**; output appears in **PineForge AI**.  
+- [ ] With **`pineForge.ollama.inlineCompletions`**, confirm ghost-text suggestions appear (and that turning it off removes them without affecting LSP completions).  
+- [ ] With **`pineForge.ollama.codeActionsInLightbulb`**, confirm a **PineForge AI** refactor action appears and only hits the network after you choose it.  
 
 ---
 

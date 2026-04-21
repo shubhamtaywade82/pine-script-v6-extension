@@ -3,7 +3,10 @@
 ## 0.2.3
 
 - **Ollama (optional):** `ollama` npm client in the **extension host** only — settings `pineForge.ollama.enabled`, `host`, `model`, `stream`; API key via **Secret Storage** (`PineForge: Set/Clear Ollama API key` commands), not `settings.json`.
-- **Commands:** `PineForge: Explain selection with Ollama` streams (or prints) the model reply to the **PineForge AI** output channel; editor context menu on Pine files.
+- **Commands (output channel unless noted):** Explain selection; **Suggest fix** (selection or current line, includes overlapping diagnostics); **Refactor selection** (prompted instruction); **Ask Ollama at cursor**; **Suggest fix for range** (palette or code action). Editor context menu entries for Pine files where applicable.
+- **Inline completions:** `pineForge.ollama.inlineCompletions` plus debounce, context lines, prompt size cap, and per-request timeout — **non-streaming**, separate from LSP symbol completion.
+- **Editor hooks:** optional **Refactor** lightbulb entry (`pineForge.ollama.codeActionsInLightbulb`, no network until chosen); optional completion-list item **Ask PineForge AI** (`pineForge.ollama.completionAskAiItem`).
+- **Docs:** [README.md](README.md) and [pinescript-extension.md](pinescript-extension.md) updated for the full Ollama surface and privacy notes.
 
 ## 0.2.2
 
