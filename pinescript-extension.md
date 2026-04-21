@@ -70,8 +70,9 @@ Language server (core)
   ├── Lexer / parser → AST
   ├── Symbol table / scope
   ├── Rule engine (lint + semantics)
+  ├── Formatter (AST → TextEdit[])
   ├── Reference index (docs + signatures)
-  └── LSP handlers (diagnostics, hover, completion, definition, …)
+  └── LSP handlers (diagnostics, hover, completion, definition, formatting, codeAction, …)
 ```
 
 ### Extension client (host)
@@ -83,7 +84,7 @@ Language server (core)
 ### Language server
 
 - Parse source to an AST; run lint rules; publish **diagnostics**.
-- Implement **hover**, **completion**, **definition** / **references** (and later **rename**, **code actions**) from the AST + symbol table + reference index.
+- Implement **hover**, **completion**, **definition**, **references**, **rename**, **document symbols**, **signature help**, **formatting**, and **code actions** from the AST + symbol table + reference index (roll out in phases; see [Current maturity](#current-maturity-in-this-repo-rolling)).
 
 ### Reference index
 
@@ -95,7 +96,7 @@ Local JSON (or generated DB) mapping built-ins, keywords, functions, types, v6 n
 
 | Decision | Rationale |
 |----------|-----------|
-| **LSP-backed** | Diagnostics, completion, hover, and go-to-definition are first-class in the LSP model and map cleanly from a single analysis pipeline. |
+| **LSP-backed** | Diagnostics, completion, hover, definition, references, rename, formatting, and code actions are first-class in the LSP model and map cleanly from a single analysis pipeline (shipped incrementally). |
 | **No regex-as-linter** | Pine needs identifiers, arity, scopes, and version gates; text rules alone produce false positives/negatives. |
 | **v6-aware rules** | v5 scripts may require migration; gate rules on `//@version=` and v6 docs. |
 | **Thin client** | Keeps analysis testable in Node without the VS Code UI; server can be reused by other LSP clients later. |
@@ -166,7 +167,7 @@ Single path from “file opens with color” to “shippable tool.” Merge earl
 | **9 — Semantic tokens** (optional) | Richer highlighting | After grammar + symbols stabilize |
 | **10 — Tests + packaging** | CI confidence; VSIX | Parser/rule unit tests; extension host integration tests; `vsce` package |
 
-**Suggested first vertical slice**: Phase 0 → 1 → 2 → minimal 3 → 4 (few high-value rules) → 5 (small index), then expand parser and rules.
+**Suggested first vertical slice**: Phase 0 → 1 → 2 → minimal 3 → 4 (few high-value rules) → 5 (small index), then **6 (symbols + go-to-definition)** so navigation exists before **7 (formatter)** and **8 (code actions)**—formatting and autofix need stable ranges and usually benefit from a scope table.
 
 **Execution map (concise)**
 

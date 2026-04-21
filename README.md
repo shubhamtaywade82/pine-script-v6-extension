@@ -1,8 +1,10 @@
 # PineForge (`pine-forge`)
 
-LSP-backed VS Code / Cursor extension for **Pine Script v6**: diagnostics, hover docs, completions, and links into TradingView’s [language reference](https://www.tradingview.com/pine-script-reference/v6/).
+**Vision:** An **all-in-one** Pine Script **v6** development tool for VS Code and Cursor — **LSP** (diagnostics, hover, completions, signature help, go-to-definition, find references, rename, document symbols), **linting** (syntax, scopes, types, v6 migration and domain rules), **formatting**, and **corrections** (code actions / quick fixes), all backed by a real parse and symbol model where possible.
 
-This is an **early MVP** — not a full Pine compiler. TradingView remains the authority for compile errors. See [pinescript-extension.md](pinescript-extension.md) for architecture and roadmap.
+**Reality today (0.1.x):** A **preview** on that path — not yet a full replacement for TradingView’s compiler or editor. TradingView remains the authority for final compile errors until grammar and semantics are aligned. What already works: language registration and **syntax highlighting**, LSP boot with **incremental sync**, **diagnostics** (version checks, a few v6 migration rules, unknown calls vs a curated [`src/references/pine.json`](src/references/pine.json)), **hover** and a **global completion list** for indexed symbols, plus a growing **lexer + tree parser** for richer call extraction when parsing succeeds.
+
+See **[pinescript-extension.md](pinescript-extension.md)** for architecture, phased roadmap (formatter → code actions → symbols, etc.), and links to official Pine v6 docs.
 
 ## Develop
 
@@ -34,12 +36,14 @@ npm run package
 
 Uses `publisher` from `package.json` (`shubhamtaywade82`). Adjust `repository.url` if the GitHub remote differs.
 
-## Current behavior
+## Roadmap (high level)
 
-- Lexer-based scan for `//@version=` and `identifier(` calls (including dotted names like `ta.sma`).
-- Full structural **AST type definitions** live in [`src/ast.ts`](src/ast.ts) for future parser work.
-- Warns on unknown calls vs [`src/references/pine.json`](src/references/pine.json); hover/completion for indexed symbols.
+| Next milestones | Notes |
+|-----------------|--------|
+| Symbols + go-to-definition / references | Scope table, declarations vs `pine.json` |
+| Smarter completions | Context, arity hints from reference |
+| Formatter | AST printer → `TextEdit[]`; separate from lint rules |
+| Code actions | Quick fixes mapped from diagnostics |
+| Broader grammar + types | Fewer false positives; v6-aware semantics |
 
-## Roadmap
-
-Scopes, types, arity, migration rules, formatter — see [pinescript-extension.md](pinescript-extension.md).
+Details: [pinescript-extension.md](pinescript-extension.md) § Implementation phases.

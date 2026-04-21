@@ -1,8 +1,9 @@
 {
   "name": "pine-forge",
   "displayName": "PineForge — Pine Script v6 Language Server, Linter & Formatter",
-  "description": "PineForge: LSP-backed VS Code extension for Pine Script v6 — diagnostics, hover docs, autocomplete, and go-to-definition",
+  "description": "All-in-one Pine Script v6 tooling (preview): LSP diagnostics, hovers, completions; roadmap includes formatting, code actions, go-to-definition, and richer linting. TradingView remains the compile authority until parity.",
   "version": "0.1.0",
+  "preview": true,
   "publisher": "shubhamtaywade82",
   "license": "MIT",
   "repository": {
@@ -22,7 +23,10 @@
     "tradingview",
     "linter",
     "language server",
-    "pine v6"
+    "pine v6",
+    "formatter",
+    "code actions",
+    "LSP"
   ],
   "activationEvents": [
     "onLanguage:pinescript"
