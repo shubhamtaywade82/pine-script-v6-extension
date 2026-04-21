@@ -4,8 +4,16 @@ import type { Expression, Program, Statement } from '../ast';
 import { tokenize, TokenType, type Token } from '../lexer';
 import { parseProgram } from './treeParser';
 
+/** Named-argument snapshot for migration rules (token path has no args). */
+export interface ParsedCallArg {
+  name: string | null;
+  /** Best-effort text for literals/identifiers; empty for complex expressions. */
+  value: string;
+  range: Range;
+}
+
 export type AstNode =
-  | { kind: 'call'; name: string; range: Range }
+  | { kind: 'call'; name: string; range: Range; args: ParsedCallArg[] }
   | { kind: 'version'; major: number; range: Range };
 
 export interface ParsedDocument {
@@ -53,12 +61,36 @@ function formatCallee(expr: Expression): string | null {
   return null;
 }
 
+function expressionSnapshotText(expr: Expression): string {
+  switch (expr.type) {
+    case 'Identifier':
+      return expr.name;
+    case 'BoolLiteral':
+      return expr.value ? 'true' : 'false';
+    case 'NumberLiteral':
+      return expr.raw;
+    case 'StringLiteral':
+      return expr.value;
+    case 'NALiteral':
+      return 'na';
+    case 'ColorLiteral':
+      return expr.value;
+    default:
+      return '';
+  }
+}
+
 function walkExpression(expr: Expression, nodes: AstNode[]): void {
   switch (expr.type) {
     case 'CallExpr': {
       const name = formatCallee(expr.callee);
       if (name && !NOT_CALLS.has(name)) {
-        nodes.push({ kind: 'call', name, range: toLspRange(expr.range) });
+        const args: ParsedCallArg[] = expr.args.map((a) => ({
+          name: a.name,
+          value: expressionSnapshotText(a.value),
+          range: toLspRange(a.range),
+        }));
+        nodes.push({ kind: 'call', name, range: toLspRange(expr.range), args });
       }
       for (const arg of expr.args) {
         walkExpression(arg.value, nodes);
@@ -211,6 +243,7 @@ function parseDocumentFromTokens(source: string): ParsedDocument {
         kind: 'call',
         name,
         range: toLspRange(tokens[i].range),
+        args: [],
       });
     }
   }
