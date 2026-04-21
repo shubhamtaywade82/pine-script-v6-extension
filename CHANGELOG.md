@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.5
+
+- **Default Ollama model:** `pineForge.ollama.model` defaults to **`qwen3.5:4b`** (aligned with `readOllamaExtensionConfig` fallback).
+
+## 0.2.4
+
+- **Defaults:** `pineForge.strictImplicitBoolIf`, `pineForge.ollama.enabled`, `pineForge.ollama.inlineCompletions`, `pineForge.ollama.codeActionsInLightbulb`, and `pineForge.ollama.completionAskAiItem` now default to **`true`**.
+
 ## 0.2.3
 
 - **Ollama (optional):** `ollama` npm client in the **extension host** only — settings `pineForge.ollama.enabled`, `host`, `model`, `stream`; API key via **Secret Storage** (`PineForge: Set/Clear Ollama API key` commands), not `settings.json`.

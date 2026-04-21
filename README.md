@@ -45,6 +45,27 @@ npm test
 
 Open this folder in VS Code, then **Run → Start Debugging** (F5) with **Run PineForge Extension** (task: `npm: compile`). In the Extension Development Host, open a `.pine` file (e.g. `examples/demo.pine`).
 
+If you see **`Starting inspector on … failed: address already in use`**, an old Node inspector is still bound (often from a prior F5). The dev server uses **`--inspect=127.0.0.1:0`** so each run picks a **free** port; reload the window or stop other debug sessions. To free a stuck port manually: `ss -ltnp | grep 6009` (or `lsof -i :6009`) then stop that process.
+
+**Language server lifecycle:** PineForge uses **`vscode-languageclient`** with **IPC** — each extension host starts **one** child process (`dist/server.js`) for that window. The client does not probe the machine for “an existing PineForge server” to attach to; that would mean a **socket-based** server you start yourself and optional `TransportKind.socket`, which is a different deployment model. On `deactivate`, the client is stopped and the module clears its reference so a later activation can construct a fresh client.
+
+### `.pine` files and language mode
+
+With **PineForge installed** (or loaded via F5), VS Code maps **`*.pine`** and **`*.pinescript`** to the **`pinescript`** language id via `contributes.languages` in `package.json`. That applies grammar, `language-configuration.json`, and activates the extension for those files (VS Code derives activation from the language contribution).
+
+The extension also contributes **`configurationDefaults`** so **`files.associations`** pins `*.pine` / `*.pinescript` → **`pinescript`** when you have not set your own association (helps when the status bar showed **Plain Text** or another extension claimed the extension).
+
+**Manual override:** status bar language mode → **Configure File Association for `'.pine'`…** → choose **Pine Script**, or in `settings.json`:
+
+```json
+"files.associations": {
+  "*.pine": "pinescript",
+  "*.pinescript": "pinescript"
+}
+```
+
+This repo includes [`.vscode/settings.json`](.vscode/settings.json) with the same mapping for local development.
+
 ### Command palette
 
 - **Pine Script: Open v6 Reference Manual** — opens the TradingView v6 reference in the browser.
@@ -57,25 +78,25 @@ Open this folder in VS Code, then **Run → Start Debugging** (F5) with **Run Pi
 
 ### Ollama (optional AI)
 
-**Master switch:** `pineForge.ollama.enabled` must be `true`, and **`pineForge.ollama.model`** set, before any AI feature talks to your host.
+**Master switch:** `pineForge.ollama.enabled` defaults to **`true`**. **`pineForge.ollama.model`** defaults to **`qwen3.5:4b`** (override if you use another local or cloud model).
 
 | Setting | Default | Purpose |
 |---------|---------|---------|
-| `pineForge.ollama.enabled` | `false` | Turn on Ollama-backed features (commands, optional inline/list/lightbulb). |
+| `pineForge.ollama.enabled` | `true` | Turn on Ollama-backed features (commands, optional inline/list/lightbulb). |
 | `pineForge.ollama.host` | `http://127.0.0.1:11434` | Local Ollama, or `https://ollama.com` for cloud. |
-| `pineForge.ollama.model` | _(empty)_ | Model id (e.g. `llama3.1` locally, or a cloud model name). |
+| `pineForge.ollama.model` | `qwen3.5:4b` | Model id for local Ollama or a cloud model name (`ollama.com`). |
 | `pineForge.ollama.stream` | `true` | Stream tokens into the **PineForge AI** output channel for **command**-driven chats (inline completions always use a single non-streaming request). |
-| `pineForge.ollama.inlineCompletions` | `false` | **Ghost-text** suggestions at the cursor (separate from LSP symbol completions). |
+| `pineForge.ollama.inlineCompletions` | `true` | **Ghost-text** suggestions at the cursor (separate from LSP symbol completions). |
 | `pineForge.ollama.inlineDebounceMs` | `400` | Wait after typing before requesting inline AI (`0` = no debounce). |
 | `pineForge.ollama.inlineContextLines` | `40` | Lines of document **before** / **after** the cursor included in inline and “Ask at cursor” prompts. |
 | `pineForge.ollama.inlineMaxPromptChars` | `12000` | Cap on combined prefix+suffix size for inline requests. |
 | `pineForge.ollama.inlineTimeoutMs` | `12000` | Hard timeout (ms) per inline completion request. |
-| `pineForge.ollama.codeActionsInLightbulb` | `false` | Adds a **Refactor** code action that runs **suggest fix** for the current range (still **no network** until you pick it). |
-| `pineForge.ollama.completionAskAiItem` | `false` | Adds an **“Ask PineForge AI (cursor context)”** entry to the completion list; accepting it runs the same flow as **Ask Ollama at cursor**. |
+| `pineForge.ollama.codeActionsInLightbulb` | `true` | Adds a **Refactor** code action that runs **suggest fix** for the current range (still **no network** until you pick it). |
+| `pineForge.ollama.completionAskAiItem` | `true` | Adds an **“Ask PineForge AI (cursor context)”** entry to the completion list; accepting it runs the same flow as **Ask Ollama at cursor**. |
 
 **Editor integration (when enabled above):** with **`inlineCompletions`** you get VS Code **inline suggestions** alongside normal IntelliSense. With **`completionAskAiItem`**, the extra completion item appears with the rest of the list. With **`codeActionsInLightbulb`**, open the lightbulb / refactor menu on a range to see **PineForge AI: Suggest fix for range (Ollama)**.
 
-**Privacy:** any command or inline request sends **the relevant source snippet** (and for suggest-fix, overlapping **diagnostic text**) to the configured host. Nothing is sent until you trigger a command, accept an inline suggestion, pick a code action, or choose the “Ask AI” completion item. Use **Clear Ollama API key** to revoke stored cloud tokens on this machine.
+**Privacy:** any Ollama call sends **the relevant source snippet** (and for suggest-fix, overlapping **diagnostic text**) to the configured host. **Commands** and the **Ask AI** completion item run only when you choose them; **code actions** hit the network only after you pick one. **Inline completions** can request the model **while you type** (after debounce) when enabled — turn off `pineForge.ollama.inlineCompletions` or `pineForge.ollama.enabled` to avoid that. Use **Clear Ollama API key** to revoke stored cloud tokens on this machine.
 
 **Authority:** LSP diagnostics, completions, and quick fixes remain **deterministic**; the model can be wrong — treat AI output as advisory and keep validating on TradingView.
 
@@ -88,7 +109,7 @@ Open this folder in VS Code, then **Run → Start Debugging** (F5) with **Run Pi
 | `pineForge.enable` | `true` | Turn diagnostics on/off. |
 | `pineForge.maxNumberOfProblems` | `100` | Cap diagnostics per file. |
 | `pineForge.strictVersionCheck` | `true` | When enabled, warn if `//@version=` is missing; hints for versions other than 6. |
-| `pineForge.strictImplicitBoolIf` | `false` | When `true`, warns on **bare** `if close`-style series-as-bool (same line only; skips comments, comparisons, and `[` tails). Off by default to limit false positives. |
+| `pineForge.strictImplicitBoolIf` | `true` | When `true`, warns on **bare** `if close`-style series-as-bool (same line only; skips comments, comparisons, and `[` tails). Set to `false` if you prefer fewer warnings on legacy scripts. |
 
 ## Package
 

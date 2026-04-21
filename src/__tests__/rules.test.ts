@@ -8,19 +8,19 @@ const builtins = builtinNames();
 describe('implicit bool if rule', () => {
   const base = { ...defaultPineForgeSettings, strictVersionCheck: false };
 
-  it('is off by default (no diagnostics for bare if close)', () => {
+  it('when strictImplicitBoolIf is off, does not flag bare if close', () => {
+    const src = `//@version=6
+if close
+    na`;
+    const issues = runRules(parseDocument(src), builtins, { ...base, strictImplicitBoolIf: false });
+    expect(issues.some((i) => i.code === 'pine-forge/implicit-bool-cast')).toBe(false);
+  });
+
+  it('flags bare same-line condition when strictImplicitBoolIf is enabled', () => {
     const src = `//@version=6
 if close
     na`;
     const issues = runRules(parseDocument(src), builtins, base);
-    expect(issues.some((i) => i.code === 'pine-forge/implicit-bool-cast')).toBe(false);
-  });
-
-  it('when strictImplicitBoolIf is on, flags bare same-line condition', () => {
-    const src = `//@version=6
-if close
-    na`;
-    const issues = runRules(parseDocument(src), builtins, { ...base, strictImplicitBoolIf: true });
     expect(issues.some((i) => i.code === 'pine-forge/implicit-bool-cast')).toBe(true);
   });
 
@@ -28,7 +28,7 @@ if close
     const src = `//@version=6
 if close == 0
     na`;
-    const issues = runRules(parseDocument(src), builtins, { ...base, strictImplicitBoolIf: true });
+    const issues = runRules(parseDocument(src), builtins, base);
     expect(issues.some((i) => i.code === 'pine-forge/implicit-bool-cast')).toBe(false);
   });
 
@@ -36,7 +36,7 @@ if close == 0
     const src = `//@version=6
 // if close
 plot(close)`;
-    const issues = runRules(parseDocument(src), builtins, { ...base, strictImplicitBoolIf: true });
+    const issues = runRules(parseDocument(src), builtins, base);
     expect(issues.some((i) => i.code === 'pine-forge/implicit-bool-cast')).toBe(false);
   });
 
@@ -44,7 +44,7 @@ plot(close)`;
     const src = `//@version=6
 if close[1]
     na`;
-    const issues = runRules(parseDocument(src), builtins, { ...base, strictImplicitBoolIf: true });
+    const issues = runRules(parseDocument(src), builtins, base);
     expect(issues.some((i) => i.code === 'pine-forge/implicit-bool-cast')).toBe(false);
   });
 });

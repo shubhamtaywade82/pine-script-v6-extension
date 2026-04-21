@@ -52,7 +52,8 @@ export function activate(context: vscode.ExtensionContext): void {
     debug: {
       module: serverModule,
       transport: TransportKind.ipc,
-      options: { execArgv: ['--nolazy', '--inspect=6009'] },
+      // Port 0 = free port (avoids EADDRINUSE when 6009 is still held by a previous debug session).
+      options: { execArgv: ['--nolazy', '--inspect=127.0.0.1:0'] },
     },
   };
 
@@ -64,12 +65,18 @@ export function activate(context: vscode.ExtensionContext): void {
     initializationOptions: readPineForgeSettings(),
   };
 
-  client = new LanguageClient(
-    'pineForge',
-    'PineForge',
-    serverOptions,
-    clientOptions,
-  );
+  // One LanguageClient per extension host. Do not construct a second client if `activate` runs
+  // again before `deactivate` cleared `client` (rare, but avoids two LSP child processes).
+  // `client.start()` is safe to call repeatedly: concurrent starts share the same promise.
+  if (!client) {
+    client = new LanguageClient(
+      'pineForge',
+      'PineForge',
+      serverOptions,
+      clientOptions,
+    );
+    context.subscriptions.push(client);
+  }
 
   const aiOutput = vscode.window.createOutputChannel('PineForge AI');
 
@@ -114,10 +121,11 @@ export function activate(context: vscode.ExtensionContext): void {
     }),
   );
 
-  context.subscriptions.push(client);
   void client.start().then(() => pushSettingsToServer());
 }
 
 export function deactivate(): Thenable<void> | undefined {
-  return client?.stop();
+  const c = client;
+  client = undefined;
+  return c?.stop();
 }

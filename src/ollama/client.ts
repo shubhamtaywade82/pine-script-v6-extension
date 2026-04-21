@@ -1,7 +1,7 @@
 import { Ollama } from 'ollama';
 import type { ExtensionContext, WorkspaceConfiguration } from 'vscode';
 import { authHeadersFromApiKey } from './authHeaders';
-import { OLLAMA_API_SECRET_KEY } from './constants';
+import { DEFAULT_OLLAMA_MODEL, OLLAMA_API_SECRET_KEY } from './constants';
 
 export interface OllamaExtensionConfig {
   enabled: boolean;
@@ -20,17 +20,17 @@ export interface OllamaExtensionConfig {
 export function readOllamaExtensionConfig(getConfiguration: () => WorkspaceConfiguration): OllamaExtensionConfig {
   const c = getConfiguration();
   return {
-    enabled: c.get<boolean>('ollama.enabled', false),
+    enabled: c.get<boolean>('ollama.enabled', true),
     host: c.get<string>('ollama.host', 'http://127.0.0.1:11434') || 'http://127.0.0.1:11434',
-    model: (c.get<string>('ollama.model', '') ?? '').trim(),
+    model: (c.get<string>('ollama.model', DEFAULT_OLLAMA_MODEL) ?? '').trim(),
     stream: c.get<boolean>('ollama.stream', true),
-    inlineCompletions: c.get<boolean>('ollama.inlineCompletions', false),
+    inlineCompletions: c.get<boolean>('ollama.inlineCompletions', true),
     inlineDebounceMs: Math.max(0, c.get<number>('ollama.inlineDebounceMs', 400)),
     inlineContextLines: Math.max(1, c.get<number>('ollama.inlineContextLines', 40)),
     inlineMaxPromptChars: Math.max(2000, c.get<number>('ollama.inlineMaxPromptChars', 12000)),
     inlineTimeoutMs: Math.max(1000, c.get<number>('ollama.inlineTimeoutMs', 12000)),
-    codeActionsInLightbulb: c.get<boolean>('ollama.codeActionsInLightbulb', false),
-    completionAskAiItem: c.get<boolean>('ollama.completionAskAiItem', false),
+    codeActionsInLightbulb: c.get<boolean>('ollama.codeActionsInLightbulb', true),
+    completionAskAiItem: c.get<boolean>('ollama.completionAskAiItem', true),
   };
 }
 

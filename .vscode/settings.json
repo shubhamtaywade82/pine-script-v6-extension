@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "*.pine": "pinescript",
+    "*.pinescript": "pinescript"
+  }
+}

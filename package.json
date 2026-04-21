@@ -2,7 +2,7 @@
   "name": "pine-forge",
   "displayName": "PineForge — Pine Script v6 Language Server, Linter & Formatter",
   "description": "PineForge: Pine Script v6 language support — LSP diagnostics, hovers, filtered completions, go-to-reference (TradingView docs), find references, outline, workspace symbols, signature help, rename (user symbols), format document, and quick fixes. TradingView remains authoritative for full compiler parity.",
-  "version": "0.2.3",
+  "version": "0.2.5",
   "publisher": "shubhamtaywade82",
   "license": "MIT",
   "repository": {
@@ -54,6 +54,16 @@
         "path": "./syntaxes/pine.tmLanguage.json"
       }
     ],
+    "configurationDefaults": {
+      "files.associations": {
+        "*.pine": "pinescript",
+        "*.pinescript": "pinescript"
+      },
+      "[pinescript]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 4
+      }
+    },
     "commands": [
       {
         "command": "pineForge.openReference",
@@ -132,12 +142,12 @@
         },
         "pineForge.strictImplicitBoolIf": {
           "type": "boolean",
-          "default": false,
+          "default": true,
           "description": "When enabled, report bare `if close`-style series-as-bool on the same line only (conservative); skips strings/comments, comparisons, and indexing tails."
         },
         "pineForge.ollama.enabled": {
           "type": "boolean",
-          "default": false,
+          "default": true,
           "description": "Enable PineForge Ollama features (commands and optional inline/list integrations). Sends selected or contextual source to your configured host when you run them."
         },
         "pineForge.ollama.host": {
@@ -147,8 +157,8 @@
         },
         "pineForge.ollama.model": {
           "type": "string",
-          "default": "",
-          "description": "Model name for chat (e.g. llama3.1, or a cloud model id when using ollama.com)."
+          "default": "qwen3.5:4b",
+          "description": "Model name for chat (default qwen3.5:4b for local Ollama; override or use a cloud model id with ollama.com)."
         },
         "pineForge.ollama.stream": {
           "type": "boolean",
@@ -157,7 +167,7 @@
         },
         "pineForge.ollama.inlineCompletions": {
           "type": "boolean",
-          "default": false,
+          "default": true,
           "description": "Ghost-text inline completions from Ollama (non-streaming, separate from LSP symbol completions)."
         },
         "pineForge.ollama.inlineDebounceMs": {
@@ -186,12 +196,12 @@
         },
         "pineForge.ollama.codeActionsInLightbulb": {
           "type": "boolean",
-          "default": false,
+          "default": true,
           "description": "Show a Refactor ▸ PineForge AI code action that runs \"suggest fix\" for the current range (no network until you choose it)."
         },
         "pineForge.ollama.completionAskAiItem": {
           "type": "boolean",
-          "default": false,
+          "default": true,
           "description": "Add an \"Ask PineForge AI\" entry to the completion list (runs the same cursor-context prompt as the command)."
         }
       }

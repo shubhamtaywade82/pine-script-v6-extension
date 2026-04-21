@@ -43,7 +43,7 @@ This document specifies how to build **PineForge**—a VS Code–compatible **al
 |------|--------|------------|
 | Language id, grammar, `language-configuration.json` | Yes | Shipped |
 | LSP process, incremental sync | Yes | Shipped |
-| Diagnostics (version + migration + unknown-call vs index) | Full rule set | **Partial** (rules grow over time; bare `if series` check is **opt-in** via `pineForge.strictImplicitBoolIf`) |
+| Diagnostics (version + migration + unknown-call vs index) | Full rule set | **Partial** (rules grow over time; bare `if series` check is **on by default**; disable with `pineForge.strictImplicitBoolIf`: false) |
 | Hover + completion | Context-aware, indexed | **Partial** (prefix filter + `pine.json`; not full type context) |
 | Parser / AST | Full grammar + recovery | **Partial** (lexer + tree parser) |
 | Go-to-definition | Project + libs | **Partial** (indexed symbols → official v6 doc URL) |
@@ -160,7 +160,7 @@ Single path from “file opens with color” to “shippable tool.” Merge earl
 
 | Phase | Outcome | Key work |
 |-------|---------|----------|
-| **0 — Declarative language** | `.pine` files recognized; comments/brackets/autoclose feel native | `package.json` `contributes.languages` / `grammars`, `language-configuration.json`, activation `onLanguage:pinescript` |
+| **0 — Declarative language** | `.pine` / `.pinescript` → `pinescript` language id; comments/brackets/autoclose feel native | `package.json` `contributes.languages` / `grammars`, optional `configurationDefaults` (`files.associations` + `[pinescript]` editor defaults), `language-configuration.json`; VS Code derives activation from language contributions (no redundant `activationEvents`) |
 | **1 — Grammar** | Readable syntax highlighting | TextMate grammar (`syntaxes/pine.tmLanguage.json`); keywords, strings, numbers, comments, `//@version=6` |
 | **2 — LSP boot** | Server runs; documents sync | `vscode-languageclient` + `vscode-languageserver`; incremental sync; stub `validate` returning no diagnostics |
 | **3 — Parser + AST MVP** | Parse errors and simple tree with **ranges** | Lexer, AST nodes, recovery; **not** full Pine grammar on day one |
@@ -206,7 +206,6 @@ Single path from “file opens with color” to “shippable tool.” Merge earl
     "vscode": "^1.85.0"
   },
   "categories": ["Programming Languages"],
-  "activationEvents": ["onLanguage:pinescript"],
   "main": "./dist/extension.js",
   "contributes": {
     "languages": [
@@ -223,7 +222,14 @@ Single path from “file opens with color” to “shippable tool.” Merge earl
         "scopeName": "source.pinescript",
         "path": "./syntaxes/pine.tmLanguage.json"
       }
-    ]
+    ],
+    "configurationDefaults": {
+      "files.associations": {
+        "*.pine": "pinescript",
+        "*.pinescript": "pinescript"
+      },
+      "[pinescript]": { "editor.insertSpaces": true, "editor.tabSize": 4 }
+    }
   },
   "scripts": {
     "build": "tsc -p .",
@@ -231,6 +237,8 @@ Single path from “file opens with color” to “shippable tool.” Merge earl
   }
 }
 ```
+
+**Shipped note:** registering `extensions: [".pine", …]` is usually enough for VS Code to set `editorLangId` to `pinescript` and activate the extension. **`configurationDefaults.files.associations`** (as in the real `package.json`) reinforces that mapping when another tool left the file as **Plain Text** or a conflicting association.
 
 **`language-configuration.json`**
 
@@ -293,7 +301,7 @@ export function activate(context: vscode.ExtensionContext) {
     debug: {
       module: serverModule,
       transport: TransportKind.ipc,
-      options: { execArgv: ['--nolazy', '--inspect=6009'] },
+      options: { execArgv: ['--nolazy', '--inspect=127.0.0.1:0'] },
     },
   };
 
