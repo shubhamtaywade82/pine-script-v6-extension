@@ -6,6 +6,8 @@ import {
   ServerOptions,
   TransportKind,
 } from 'vscode-languageclient/node';
+import { OLLAMA_API_SECRET_KEY } from './ollama/constants';
+import { runExplainSelection } from './ollama/runExplainSelection';
 import {
   defaultPineForgeSettings,
   PINE_FORGE_SETTINGS_NOTIFICATION,
@@ -14,8 +16,12 @@ import {
 
 let client: LanguageClient | undefined;
 
+function pineForgeConfiguration(): vscode.WorkspaceConfiguration {
+  return vscode.workspace.getConfiguration('pineForge');
+}
+
 function readPineForgeSettings(): PineForgeSettings {
-  const c = vscode.workspace.getConfiguration('pineForge');
+  const c = pineForgeConfiguration();
   return {
     enable: c.get<boolean>('enable', defaultPineForgeSettings.enable),
     maxNumberOfProblems: c.get<number>(
@@ -65,6 +71,8 @@ export function activate(context: vscode.ExtensionContext): void {
     clientOptions,
   );
 
+  const aiOutput = vscode.window.createOutputChannel('PineForge AI');
+
   context.subscriptions.push(
     vscode.commands.registerCommand('pineForge.openReference', () => {
       void vscode.env.openExternal(
@@ -72,6 +80,35 @@ export function activate(context: vscode.ExtensionContext): void {
       );
     }),
   );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('pineForge.ollama.explainSelection', () =>
+      runExplainSelection(context, aiOutput, pineForgeConfiguration),
+    ),
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('pineForge.ollama.setApiKey', async () => {
+      const key = await vscode.window.showInputBox({
+        title: 'PineForge — Ollama API key',
+        prompt: 'Paste your API key (stored in VS Code Secret Storage, not settings.json).',
+        password: true,
+        ignoreFocusOut: true,
+      });
+      if (key === undefined) return;
+      await context.secrets.store(OLLAMA_API_SECRET_KEY, key);
+      void vscode.window.showInformationMessage('PineForge: Ollama API key saved.');
+    }),
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('pineForge.ollama.clearApiKey', async () => {
+      await context.secrets.delete(OLLAMA_API_SECRET_KEY);
+      void vscode.window.showInformationMessage('PineForge: Ollama API key removed.');
+    }),
+  );
+
+  context.subscriptions.push(aiOutput);
 
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((e) => {

@@ -17,6 +17,7 @@
 | Rename | `prepareRename` + workspace edit for **non-built-in** names; same-file, best-effort |
 | Format document | Trim trailing whitespace, tabs → spaces, newline at EOF — **not** a full Pine pretty-printer |
 | Code actions | Insert/set `//@version=6`; starter removal for deprecated `transp` |
+| Ollama (optional) | Explain selection via [`ollama`](https://github.com/ollama/ollama-js); extension-host only, not the LSP server |
 
 **Limits (honest)**
 
@@ -47,6 +48,19 @@ Open this folder in VS Code, then **Run → Start Debugging** (F5) with **Run Pi
 ### Command palette
 
 - **Pine Script: Open v6 Reference Manual** — opens the TradingView v6 reference in the browser.
+- **PineForge: Explain selection with Ollama** — sends the current selection to your Ollama host; output appears in **View → Output → PineForge AI** (also in the editor context menu for `.pine` files).
+- **PineForge: Set / Clear Ollama API key** — stores a **Bearer** token in VS Code **Secret Storage** (for `https://ollama.com` or any host that requires auth). Keys are never written to `settings.json`.
+
+### Ollama (optional AI)
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| `pineForge.ollama.enabled` | `false` | Turn AI commands on. |
+| `pineForge.ollama.host` | `http://127.0.0.1:11434` | Local Ollama, or `https://ollama.com` for cloud. |
+| `pineForge.ollama.model` | _(empty)_ | Model id (e.g. `llama3.1` locally, or a cloud model name). |
+| `pineForge.ollama.stream` | `true` | Stream tokens into the output channel. |
+
+**Privacy:** when you run Explain selection, the **selected source code** is sent to the configured host (local or cloud). Use **Clear Ollama API key** to revoke cloud access on this machine.
 
 ### Settings (`pineForge.*`)
 

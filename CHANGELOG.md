@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.3
+
+- **Ollama (optional):** `ollama` npm client in the **extension host** only — settings `pineForge.ollama.enabled`, `host`, `model`, `stream`; API key via **Secret Storage** (`PineForge: Set/Clear Ollama API key` commands), not `settings.json`.
+- **Commands:** `PineForge: Explain selection with Ollama` streams (or prints) the model reply to the **PineForge AI** output channel; editor context menu on Pine files.
+
 ## 0.2.2
 
 - **Reference data:** `signatureOverlay.json` merged in `references/index.ts` — curated **signatures** for common APIs; **signature help** and **completion detail** use them when present (expand the overlay over time).

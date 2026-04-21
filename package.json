@@ -2,7 +2,7 @@
   "name": "pine-forge",
   "displayName": "PineForge — Pine Script v6 Language Server, Linter & Formatter",
   "description": "PineForge: Pine Script v6 language support — LSP diagnostics, hovers, filtered completions, go-to-reference (TradingView docs), find references, outline, workspace symbols, signature help, rename (user symbols), format document, and quick fixes. TradingView remains authoritative for full compiler parity.",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "publisher": "shubhamtaywade82",
   "license": "MIT",
   "repository": {
@@ -26,10 +26,15 @@
     "pine v6",
     "formatter",
     "code actions",
-    "LSP"
+    "LSP",
+    "ollama",
+    "AI"
   ],
   "activationEvents": [
-    "onLanguage:pinescript"
+    "onLanguage:pinescript",
+    "onCommand:pineForge.ollama.explainSelection",
+    "onCommand:pineForge.ollama.setApiKey",
+    "onCommand:pineForge.ollama.clearApiKey"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -59,8 +64,29 @@
       {
         "command": "pineForge.openReference",
         "title": "Pine Script: Open v6 Reference Manual"
+      },
+      {
+        "command": "pineForge.ollama.explainSelection",
+        "title": "PineForge: Explain selection with Ollama"
+      },
+      {
+        "command": "pineForge.ollama.setApiKey",
+        "title": "PineForge: Set Ollama API key (Secret Storage)"
+      },
+      {
+        "command": "pineForge.ollama.clearApiKey",
+        "title": "PineForge: Clear Ollama API key"
       }
     ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "pineForge.ollama.explainSelection",
+          "when": "editorLangId == pinescript",
+          "group": "pineForge@99"
+        }
+      ]
+    },
     "configuration": {
       "title": "PineForge",
       "properties": {
@@ -83,6 +109,26 @@
           "type": "boolean",
           "default": false,
           "description": "When enabled, report bare `if close`-style series-as-bool on the same line only (conservative); skips strings/comments, comparisons, and indexing tails."
+        },
+        "pineForge.ollama.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable PineForge Ollama commands (sends editor selection to your configured Ollama host)."
+        },
+        "pineForge.ollama.host": {
+          "type": "string",
+          "default": "http://127.0.0.1:11434",
+          "description": "Ollama API base URL. Use https://ollama.com for Ollama Cloud (set API key via command)."
+        },
+        "pineForge.ollama.model": {
+          "type": "string",
+          "default": "",
+          "description": "Model name for chat (e.g. llama3.1, or a cloud model id when using ollama.com)."
+        },
+        "pineForge.ollama.stream": {
+          "type": "boolean",
+          "default": true,
+          "description": "Stream chat tokens to the PineForge AI output channel."
         }
       }
     }
@@ -96,6 +142,7 @@
     "package": "vsce package"
   },
   "dependencies": {
+    "ollama": "^0.5.18",
     "vscode-languageclient": "^9.0.1",
     "vscode-languageserver": "^9.0.1",
     "vscode-languageserver-textdocument": "^1.0.11"
