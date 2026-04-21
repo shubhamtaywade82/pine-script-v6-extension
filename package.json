@@ -1,0 +1,46 @@
+{
+  "name": "pineforge",
+  "displayName": "PineForge — Pine Script v6",
+  "description": "Language support for Pine Script v6: diagnostics, hovers, completions, and doc links (TradingView reference).",
+  "version": "0.1.0",
+  "publisher": "local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Programming Languages", "Linters"],
+  "activationEvents": ["onLanguage:pinescript"],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "pinescript",
+        "aliases": ["Pine Script", "PineScript"],
+        "extensions": [".pine", ".pinescript"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "pinescript",
+        "scopeName": "source.pinescript",
+        "path": "./syntaxes/pine.tmLanguage.json"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "watch": "tsc -w",
+    "vscode:prepublish": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.5.0"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1",
+    "vscode-languageserver": "^9.0.1",
+    "vscode-languageserver-textdocument": "^1.0.11"
+  }
+}

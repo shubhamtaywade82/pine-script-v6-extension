@@ -1,0 +1,292 @@
+{
+  "indicator": {
+    "kind": "function",
+    "summary": "Declares an indicator script and its display properties.",
+    "path": "#fun_indicator"
+  },
+  "strategy": {
+    "kind": "function",
+    "summary": "Declares a strategy script for backtesting and orders.",
+    "path": "#fun_strategy"
+  },
+  "library": {
+    "kind": "function",
+    "summary": "Declares a reusable Pine library.",
+    "path": "#fun_library"
+  },
+  "plot": {
+    "kind": "function",
+    "summary": "Plots a series on the chart.",
+    "path": "#fun_plot"
+  },
+  "plotshape": {
+    "kind": "function",
+    "summary": "Plots visual shapes on bars.",
+    "path": "#fun_plotshape"
+  },
+  "plotchar": {
+    "kind": "function",
+    "summary": "Plots characters on bars.",
+    "path": "#fun_plotchar"
+  },
+  "plotcandle": {
+    "kind": "function",
+    "summary": "Plots synthetic candles.",
+    "path": "#fun_plotcandle"
+  },
+  "plotbar": {
+    "kind": "function",
+    "summary": "Plots OHLC bars.",
+    "path": "#fun_plotbar"
+  },
+  "hline": {
+    "kind": "function",
+    "summary": "Horizontal line at a price level.",
+    "path": "#fun_hline"
+  },
+  "fill": {
+    "kind": "function",
+    "summary": "Fills space between two plots or hlines.",
+    "path": "#fun_fill"
+  },
+  "bgcolor": {
+    "kind": "function",
+    "summary": "Colors chart background.",
+    "path": "#fun_bgcolor"
+  },
+  "alert": {
+    "kind": "function",
+    "summary": "Triggers an alert event.",
+    "path": "#fun_alert"
+  },
+  "alertcondition": {
+    "kind": "function",
+    "summary": "Defines a single alert condition.",
+    "path": "#fun_alertcondition"
+  },
+  "log.info": {
+    "kind": "function",
+    "summary": "Writes an info message to Pine Logs.",
+    "path": "#fun_log.info"
+  },
+  "log.warning": {
+    "kind": "function",
+    "summary": "Writes a warning to Pine Logs.",
+    "path": "#fun_log.warning"
+  },
+  "log.error": {
+    "kind": "function",
+    "summary": "Writes an error to Pine Logs.",
+    "path": "#fun_log.error"
+  },
+  "na": {
+    "kind": "function",
+    "summary": "Tests for na or returns na typed value.",
+    "path": "#fun_na"
+  },
+  "color.new": {
+    "kind": "function",
+    "summary": "Creates a color with transparency.",
+    "path": "#fun_color.new"
+  },
+  "color.rgb": {
+    "kind": "function",
+    "summary": "Builds a color from RGB components.",
+    "path": "#fun_color.rgb"
+  },
+  "request.security": {
+    "kind": "function",
+    "summary": "Requests series data from another symbol or timeframe.",
+    "path": "#fun_request.security"
+  },
+  "input.int": {
+    "kind": "function",
+    "summary": "Integer script input.",
+    "path": "#fun_input.int"
+  },
+  "input.float": {
+    "kind": "function",
+    "summary": "Float script input.",
+    "path": "#fun_input.float"
+  },
+  "input.bool": {
+    "kind": "function",
+    "summary": "Boolean script input.",
+    "path": "#fun_input.bool"
+  },
+  "input.string": {
+    "kind": "function",
+    "summary": "String script input.",
+    "path": "#fun_input.string"
+  },
+  "input.symbol": {
+    "kind": "function",
+    "summary": "Symbol picker input.",
+    "path": "#fun_input.symbol"
+  },
+  "input.color": {
+    "kind": "function",
+    "summary": "Color picker input.",
+    "path": "#fun_input.color"
+  },
+  "input.source": {
+    "kind": "function",
+    "summary": "Source series input.",
+    "path": "#fun_input.source"
+  },
+  "input.timeframe": {
+    "kind": "function",
+    "summary": "Timeframe input.",
+    "path": "#fun_input.timeframe"
+  },
+  "ta.sma": {
+    "kind": "function",
+    "summary": "Simple moving average.",
+    "path": "#fun_ta.sma"
+  },
+  "ta.ema": {
+    "kind": "function",
+    "summary": "Exponential moving average.",
+    "path": "#fun_ta.ema"
+  },
+  "ta.rsi": {
+    "kind": "function",
+    "summary": "Relative strength index.",
+    "path": "#fun_ta.rsi"
+  },
+  "ta.crossover": {
+    "kind": "function",
+    "summary": "True when series a crosses over series b.",
+    "path": "#fun_ta.crossover"
+  },
+  "ta.crossunder": {
+    "kind": "function",
+    "summary": "True when series a crosses under series b.",
+    "path": "#fun_ta.crossunder"
+  },
+  "ta.highest": {
+    "kind": "function",
+    "summary": "Highest value over length bars.",
+    "path": "#fun_ta.highest"
+  },
+  "ta.lowest": {
+    "kind": "function",
+    "summary": "Lowest value over length bars.",
+    "path": "#fun_ta.lowest"
+  },
+  "ta.change": {
+    "kind": "function",
+    "summary": "Difference between value now and n bars ago.",
+    "path": "#fun_ta.change"
+  },
+  "ta.barssince": {
+    "kind": "function",
+    "summary": "Bars since condition was true.",
+    "path": "#fun_ta.barssince"
+  },
+  "math.max": {
+    "kind": "function",
+    "summary": "Maximum of values.",
+    "path": "#fun_math.max"
+  },
+  "math.min": {
+    "kind": "function",
+    "summary": "Minimum of values.",
+    "path": "#fun_math.min"
+  },
+  "math.abs": {
+    "kind": "function",
+    "summary": "Absolute value.",
+    "path": "#fun_math.abs"
+  },
+  "str.tostring": {
+    "kind": "function",
+    "summary": "Converts a value to string.",
+    "path": "#fun_str.tostring"
+  },
+  "str.format": {
+    "kind": "function",
+    "summary": "Formats a string with placeholders.",
+    "path": "#fun_str.format"
+  },
+  "label.new": {
+    "kind": "function",
+    "summary": "Creates a label drawing.",
+    "path": "#fun_label.new"
+  },
+  "line.new": {
+    "kind": "function",
+    "summary": "Creates a line drawing.",
+    "path": "#fun_line.new"
+  },
+  "box.new": {
+    "kind": "function",
+    "summary": "Creates a box drawing.",
+    "path": "#fun_box.new"
+  },
+  "strategy.entry": {
+    "kind": "function",
+    "summary": "Opens a strategy position.",
+    "path": "#fun_strategy.entry"
+  },
+  "strategy.close": {
+    "kind": "function",
+    "summary": "Closes a position or side.",
+    "path": "#fun_strategy.close"
+  },
+  "strategy.exit": {
+    "kind": "function",
+    "summary": "Exits with profit/stop rules.",
+    "path": "#fun_strategy.exit"
+  },
+  "close": {
+    "kind": "variable",
+    "summary": "Close price of the current bar.",
+    "path": "#var_close"
+  },
+  "open": {
+    "kind": "variable",
+    "summary": "Open price of the current bar.",
+    "path": "#var_open"
+  },
+  "high": {
+    "kind": "variable",
+    "summary": "High price of the current bar.",
+    "path": "#var_high"
+  },
+  "low": {
+    "kind": "variable",
+    "summary": "Low price of the current bar.",
+    "path": "#var_low"
+  },
+  "volume": {
+    "kind": "variable",
+    "summary": "Volume of the current bar.",
+    "path": "#var_volume"
+  },
+  "bar_index": {
+    "kind": "variable",
+    "summary": "Index of the current bar.",
+    "path": "#var_bar_index"
+  },
+  "time": {
+    "kind": "variable",
+    "summary": "Unix time (open) of the current bar.",
+    "path": "#var_time"
+  },
+  "barstate.islast": {
+    "kind": "variable",
+    "summary": "True on the last bar of the dataset.",
+    "path": "#var_barstate.islast"
+  },
+  "barstate.isrealtime": {
+    "kind": "variable",
+    "summary": "True when the script is executing on a realtime bar.",
+    "path": "#var_barstate.isrealtime"
+  },
+  "chart.fg_color": {
+    "kind": "variable",
+    "summary": "Foreground color for the chart theme.",
+    "path": "#var_chart.fg_color"
+  }
+}

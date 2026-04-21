@@ -2,6 +2,8 @@
 
 This document specifies how to build **PineForge**—a VS Code–compatible extension that provides Pine Script **v6** diagnostics, hovers, completions, go-to-definition, and (later) formatting. The design is **Language Server Protocol (LSP)**–first: a thin editor client and a language server that owns parsing, symbols, rules, and LSP handlers. Cursor installs the same extension format as VS Code.
 
+**Implementation in this repo:** an MVP extension lives at the repository root (`package.json`, `src/extension.ts`, `src/server.ts`, …). See [README.md](README.md) to run and package it.
+
 ## Table of contents
 
 1. [Purpose and scope](#purpose-and-scope)
