@@ -1,14 +1,28 @@
 {
-  "name": "pineforge",
-  "displayName": "PineForge — Pine Script v6 Language Server, Linter & Formatter",
-  "description": "Comprehensive Pine Script v6 support for VS Code and Cursor.",
+  "name": "pine-v6-linter",
+  "displayName": "Pine Script v6 Linter",
+  "description": "LSP-backed VS Code extension for Pine Script v6 — diagnostics, hover docs, autocomplete, and go-to-definition",
   "version": "0.1.0",
-  "publisher": "pineforge",
+  "publisher": "shubhamtaywade82",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shubhamtaywade82/pine-v6-linter"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
-    "Programming Languages"
+    "Programming Languages",
+    "Linters"
+  ],
+  "keywords": [
+    "pine script",
+    "pinescript",
+    "tradingview",
+    "linter",
+    "language server",
+    "pine v6"
   ],
   "activationEvents": [
     "onLanguage:pinescript"
@@ -19,10 +33,13 @@
       {
         "id": "pinescript",
         "aliases": [
-          "Pine Script", "PineScript"
+          "Pine Script",
+          "Pine Script v6",
+          "PineScript"
         ],
         "extensions": [
-          ".pine", ".pinescript"
+          ".pine",
+          ".pinescript"
         ],
         "configuration": "./language-configuration.json"
       }
@@ -33,33 +50,55 @@
         "scopeName": "source.pinescript",
         "path": "./syntaxes/pine.tmLanguage.json"
       }
-    ]
+    ],
+    "commands": [
+      {
+        "command": "pineV6.openReference",
+        "title": "Pine Script: Open v6 Reference Manual"
+      }
+    ],
+    "configuration": {
+      "title": "Pine Script v6 Linter",
+      "properties": {
+        "pineV6.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable Pine Script v6 linting"
+        },
+        "pineV6.maxNumberOfProblems": {
+          "type": "number",
+          "default": 100,
+          "description": "Maximum number of problems reported per file"
+        },
+        "pineV6.strictVersionCheck": {
+          "type": "boolean",
+          "default": true,
+          "description": "Require //@version=6 annotation"
+        }
+      }
+    }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
     "compile": "tsc -p .",
+    "scrape": "node dist/scraper/index.js",
     "watch": "tsc -w -p .",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
     "test": "jest",
-    "scrape": "node dist/scraper/index.js"
-  },
-  "devDependencies": {
-    "@types/jest": "^29.5.11",
-    "@types/node": "^18.19.4",
-    "@types/vscode": "^1.85.0",
-    "@typescript-eslint/eslint-plugin": "^6.14.0",
-    "@typescript-eslint/parser": "^6.14.0",
-    "eslint": "^8.56.0",
-    "jest": "^29.7.0",
-    "ts-jest": "^29.1.1",
-    "typescript": "^5.3.3",
-    "@vscode/vsce": "^2.19.0",
-    "puppeteer": "^21.6.1"
+    "vscode:prepublish": "npm run compile",
+    "package": "vsce package"
   },
   "dependencies": {
     "vscode-languageclient": "^9.0.1",
     "vscode-languageserver": "^9.0.1",
     "vscode-languageserver-textdocument": "^1.0.11"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^2.22.0",
+    "jest": "^29.7.0",
+    "puppeteer": "^24.42.0",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.3.3"
   }
 }

@@ -2,7 +2,7 @@
 
 This document specifies how to build **PineForge**—a VS Code–compatible extension that provides Pine Script **v6** diagnostics, hovers, completions, go-to-definition, and (later) formatting. The design is **Language Server Protocol (LSP)**–first: a thin editor client and a language server that owns parsing, symbols, rules, and LSP handlers. Cursor installs the same extension format as VS Code.
 
-**Implementation in this repo:** an MVP extension lives at the repository root (`package.json`, `src/extension.ts`, `src/server.ts`, …). See [README.md](README.md) to run and package it.
+**Implementation in this repo:** the VS Code extension **`pine-v6-linter`** lives at the repository root (`package.json`, `src/extension.ts`, `src/server.ts`, lexer, rules, …). See [README.md](README.md) to run, test, and package it.
 
 ## Table of contents
 
@@ -97,6 +97,7 @@ Local JSON (or generated DB) mapping built-ins, keywords, functions, types, v6 n
 | **Language id** | `pinescript` | Used in `contributes.languages` and `documentSelector`. |
 | **`LanguageClient` id / name** | e.g. `pineforge` / `PineForge` | Stable string for logging and client identity. |
 | **Diagnostic `source`** | `pineforge` | Consistent across rules for filterable diagnostics. |
+| **This repo’s manifest** | `pine-v6-linter` | [`package.json`](package.json): `LanguageClient` id `pineV6`, diagnostic `source` `pine-v6-linter`, settings `pineV6.*`. |
 
 ---
 

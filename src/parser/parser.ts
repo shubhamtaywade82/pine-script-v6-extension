@@ -2,8 +2,14 @@ import type { Range } from 'vscode-languageserver-types';
 import { offsetToPosition } from '../position';
 
 export type AstNode =
-  | { kind: 'call'; name: string; range: Range }
+  | { kind: 'call'; name: string; range: Range; args: CallArgument[] }
   | { kind: 'version'; major: number; range: Range };
+
+export interface CallArgument {
+  name: string | null; // null for positional args
+  value: string;
+  range: Range;
+}
 
 export interface ParsedDocument {
   nodes: AstNode[];
@@ -37,6 +43,7 @@ export function parseDocument(source: string): ParsedDocument {
   const nodes: AstNode[] = [];
   let versionDirective: number | null = null;
 
+  // Version directive detection
   const versionRe = /\/\/@version\s*=\s*(\d+)/g;
   let vm: RegExpExecArray | null;
   while ((vm = versionRe.exec(source)) !== null) {
@@ -59,17 +66,31 @@ export function parseDocument(source: string): ParsedDocument {
 
   let i = 0;
   const n = source.length;
+
+  function skipWhitespace() {
+    while (i < n) {
+      const ch = source[i];
+      if (/\s/.test(ch)) {
+        i++;
+      } else if (ch === '/' && source[i + 1] === '/') {
+        i += 2;
+        while (i < n && source[i] !== '\n') i++;
+      } else if (ch === '/' && source[i + 1] === '*') {
+        i += 2;
+        while (i < n - 1 && !(source[i] === '*' && source[i + 1] === '/')) i++;
+        i = Math.min(i + 2, n);
+      } else {
+        break;
+      }
+    }
+  }
+
   while (i < n) {
     const ch = source[i];
-    if (ch === '/' && source[i + 1] === '/') {
-      i += 2;
-      while (i < n && source[i] !== '\n') i++;
-      continue;
-    }
-    if (ch === '/' && source[i + 1] === '*') {
-      i += 2;
-      while (i < n - 1 && !(source[i] === '*' && source[i + 1] === '/')) i++;
-      i = Math.min(i + 2, n);
+
+    // Skip comments and strings to avoid false positives
+    if (ch === '/' && (source[i + 1] === '/' || source[i + 1] === '*')) {
+      skipWhitespace();
       continue;
     }
     if (ch === '"' || ch === "'") {
@@ -88,24 +109,88 @@ export function parseDocument(source: string): ParsedDocument {
       }
       continue;
     }
+
     if (/[a-zA-Z_]/.test(ch)) {
       const start = i;
       i++;
       while (i < n && /[\w.]/.test(source[i])) i++;
       const name = source.slice(start, i);
-      let j = i;
-      while (j < n && /\s/.test(source[j])) j++;
-      if (j < n && source[j] === '(' && !NOT_CALLS.has(name)) {
+      
+      const savedI = i;
+      skipWhitespace();
+      
+      if (i < n && source[i] === '(' && !NOT_CALLS.has(name)) {
+        const callStart = start;
+        const callNameEnd = savedI;
+        i++; // skip '('
+        
+        const args: CallArgument[] = [];
+        while (i < n && source[i] !== ')') {
+          skipWhitespace();
+          if (i >= n || source[i] === ')') break;
+          
+          const argStart = i;
+          let argName: string | null = null;
+          
+          // Check for named argument e.g. color=color.red
+          const nameMatch = source.slice(i).match(/^([a-zA-Z_]\w*)\s*=/);
+          if (nameMatch) {
+            argName = nameMatch[1];
+            i += nameMatch[0].length;
+            skipWhitespace();
+          }
+          
+          // Parse value (simplified: until next comma or closing paren, handling nested parens)
+          const valueStart = i;
+          let depth = 0;
+          while (i < n) {
+            const c = source[i];
+            if (c === '(' || c === '[' || c === '{') depth++;
+            else if (c === ')' || c === ']' || c === '}') {
+              if (depth === 0) break;
+              depth--;
+            } else if (c === ',' && depth === 0) {
+              break;
+            } else if (c === '"' || c === "'") {
+              const q = c;
+              i++;
+              while (i < n && source[i] !== q) {
+                if (source[i] === '\\') i++;
+                i++;
+              }
+            }
+            i++;
+          }
+          const value = source.slice(valueStart, i).trim();
+          args.push({
+            name: argName,
+            value,
+            range: {
+              start: offsetToPosition(source, argStart),
+              end: offsetToPosition(source, i),
+            },
+          });
+          
+          skipWhitespace();
+          if (source[i] === ',') {
+            i++;
+          }
+        }
+        if (source[i] === ')') i++;
+        
         nodes.push({
           kind: 'call',
           name,
           range: {
-            start: offsetToPosition(source, start),
-            end: offsetToPosition(source, i),
+            start: offsetToPosition(source, callStart),
+            end: offsetToPosition(source, callNameEnd),
           },
+          args,
         });
+      } else {
+        // Not a call, backtrack to after name
+        i = savedI;
       }
-      i = j;
       continue;
     }
     i++;

@@ -1,32 +1,45 @@
-# PineForge
+# Pine Script v6 Linter (`pine-v6-linter`)
 
-VS Code / Cursor extension for **Pine Script v6**: syntax highlighting, language server (diagnostics, hover, completions), and links into TradingView’s [language reference](https://www.tradingview.com/pine-script-reference/v6/).
+LSP-backed VS Code / Cursor extension for **Pine Script v6**: diagnostics, hover docs, completions, and links into TradingView’s [language reference](https://www.tradingview.com/pine-script-reference/v6/).
 
-This is an **early MVP**. It does not implement a full Pine compiler; TradingView remains the authority for compile errors. See [pinescript-extension.md](pinescript-extension.md) for architecture and roadmap.
+This is an **early MVP** — not a full Pine compiler. TradingView remains the authority for compile errors. See [pinescript-extension.md](pinescript-extension.md) for architecture and roadmap.
 
 ## Develop
 
 ```bash
 npm install
-npm run build
+npm run compile
+npm test
 ```
 
-Open this folder in VS Code, then **Run → Start Debugging** (or F5) with **Run PineForge Extension**. In the Extension Development Host, open a `.pine` file (see `examples/demo.pine`).
+Open this folder in VS Code, then **Run → Start Debugging** (F5) with **Run PineForge Extension** (task: `npm: compile`). In the Extension Development Host, open a `.pine` file (e.g. `examples/demo.pine`).
+
+### Command palette
+
+- **Pine Script: Open v6 Reference Manual** — opens the TradingView v6 reference in the browser.
+
+### Settings (`pineV6.*`)
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| `pineV6.enable` | `true` | Turn diagnostics on/off. |
+| `pineV6.maxNumberOfProblems` | `100` | Cap diagnostics per file. |
+| `pineV6.strictVersionCheck` | `true` | When enabled, warn if `//@version=` is missing; hints for versions other than 6. |
 
 ## Package
 
-Change `"publisher"` in `package.json` to your Marketplace id, then:
-
 ```bash
-npx @vscode/vsce package
+npm run package
 ```
+
+Uses `publisher` from `package.json` (`shubhamtaywade82`). Adjust `repository.url` if the GitHub remote differs.
 
 ## Current behavior
 
-- Warns if `//@version=` is missing; informational hint if version &lt; 6.
-- Warns on `identifier(` calls not present in the bundled `src/references/pine.json` index (expand the JSON for fewer false positives).
-- Hover / completion for symbols listed in `pine.json`, with TradingView reference URLs.
+- Lexer-based scan for `//@version=` and `identifier(` calls (including dotted names like `ta.sma`).
+- Full structural **AST type definitions** live in [`src/ast.ts`](src/ast.ts) for future parser work.
+- Warns on unknown calls vs [`src/references/pine.json`](src/references/pine.json); hover/completion for indexed symbols.
 
-## Roadmap (short)
+## Roadmap
 
-Parser and rules: scopes, types, arity, migration rules, formatter, tests — see [pinescript-extension.md](pinescript-extension.md) implementation phases.
+Scopes, types, arity, migration rules, formatter — see [pinescript-extension.md](pinescript-extension.md).

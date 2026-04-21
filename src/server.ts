@@ -14,12 +14,24 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import { parseDocument } from './parser/parser';
 import { runRules } from './rules/engine';
 import { builtinNames, completionLabels, pineReferences, refUrl } from './references/index';
+import {
+  defaultPineV6Settings,
+  PINE_V6_SETTINGS_NOTIFICATION,
+  type PineV6Settings,
+} from './settings';
+
 const connection = createConnection(ProposedFeatures.all);
 const documents = new TextDocuments(TextDocument);
 
 const builtins = builtinNames();
 
-connection.onInitialize((_params: InitializeParams) => {
+let serverSettings: PineV6Settings = { ...defaultPineV6Settings };
+
+connection.onInitialize((params: InitializeParams) => {
+  const init = params.initializationOptions as Partial<PineV6Settings> | undefined;
+  if (init) {
+    serverSettings = { ...serverSettings, ...init };
+  }
   return {
     capabilities: {
       textDocumentSync: TextDocumentSyncKind.Incremental,
@@ -30,6 +42,13 @@ connection.onInitialize((_params: InitializeParams) => {
       },
     },
   };
+});
+
+connection.onNotification(PINE_V6_SETTINGS_NOTIFICATION, (partial: Partial<PineV6Settings>) => {
+  serverSettings = { ...serverSettings, ...partial };
+  for (const doc of documents.all()) {
+    validateDocument(doc);
+  }
 });
 
 function wordAt(text: string, offset: number): { word: string; start: number; end: number } | null {
@@ -47,14 +66,19 @@ function wordAt(text: string, offset: number): { word: string; start: number; en
 }
 
 function validateDocument(doc: TextDocument): void {
+  if (!serverSettings.enable) {
+    connection.sendDiagnostics({ uri: doc.uri, diagnostics: [] });
+    return;
+  }
+
   const text = doc.getText();
   const parsed = parseDocument(text);
-  const issues = runRules(parsed, builtins);
+  const issues = runRules(parsed, builtins, serverSettings);
   const diagnostics: Diagnostic[] = issues.map((issue) => ({
     range: issue.range,
     message: issue.message,
     severity: issue.severity,
-    source: 'pineforge',
+    source: 'pine-v6-linter',
     code: issue.code,
   }));
   connection.sendDiagnostics({ uri: doc.uri, diagnostics });
