@@ -64,6 +64,22 @@
         "title": "PineForge: Explain selection with Ollama"
       },
       {
+        "command": "pineForge.ollama.suggestFixSelection",
+        "title": "PineForge: Suggest fix with Ollama (selection or line)"
+      },
+      {
+        "command": "pineForge.ollama.refactorSelection",
+        "title": "PineForge: Refactor selection with Ollama"
+      },
+      {
+        "command": "pineForge.ollama.completeAtCursor",
+        "title": "PineForge: Ask Ollama at cursor (output channel)"
+      },
+      {
+        "command": "pineForge.ollama.fixRange",
+        "title": "PineForge: Suggest fix for range (Ollama)"
+      },
+      {
         "command": "pineForge.ollama.setApiKey",
         "title": "PineForge: Set Ollama API key (Secret Storage)"
       },
@@ -78,6 +94,21 @@
           "command": "pineForge.ollama.explainSelection",
           "when": "editorLangId == pinescript",
           "group": "pineForge@99"
+        },
+        {
+          "command": "pineForge.ollama.suggestFixSelection",
+          "when": "editorLangId == pinescript",
+          "group": "pineForge@100"
+        },
+        {
+          "command": "pineForge.ollama.refactorSelection",
+          "when": "editorLangId == pinescript",
+          "group": "pineForge@101"
+        },
+        {
+          "command": "pineForge.ollama.completeAtCursor",
+          "when": "editorLangId == pinescript",
+          "group": "pineForge@102"
         }
       ]
     },
@@ -107,7 +138,7 @@
         "pineForge.ollama.enabled": {
           "type": "boolean",
           "default": false,
-          "description": "Enable PineForge Ollama commands (sends editor selection to your configured Ollama host)."
+          "description": "Enable PineForge Ollama features (commands and optional inline/list integrations). Sends selected or contextual source to your configured host when you run them."
         },
         "pineForge.ollama.host": {
           "type": "string",
@@ -123,6 +154,45 @@
           "type": "boolean",
           "default": true,
           "description": "Stream chat tokens to the PineForge AI output channel."
+        },
+        "pineForge.ollama.inlineCompletions": {
+          "type": "boolean",
+          "default": false,
+          "description": "Ghost-text inline completions from Ollama (non-streaming, separate from LSP symbol completions)."
+        },
+        "pineForge.ollama.inlineDebounceMs": {
+          "type": "number",
+          "default": 400,
+          "minimum": 0,
+          "description": "Delay after typing before requesting inline AI (reduces request spam)."
+        },
+        "pineForge.ollama.inlineContextLines": {
+          "type": "number",
+          "default": 40,
+          "minimum": 1,
+          "description": "Lines before / after the cursor included in the inline and \"Ask AI\" completion prompts."
+        },
+        "pineForge.ollama.inlineMaxPromptChars": {
+          "type": "number",
+          "default": 12000,
+          "minimum": 2000,
+          "description": "Upper bound on combined prefix+suffix characters sent for inline AI."
+        },
+        "pineForge.ollama.inlineTimeoutMs": {
+          "type": "number",
+          "default": 12000,
+          "minimum": 1000,
+          "description": "Hard timeout for each inline completion request."
+        },
+        "pineForge.ollama.codeActionsInLightbulb": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show a Refactor ▸ PineForge AI code action that runs \"suggest fix\" for the current range (no network until you choose it)."
+        },
+        "pineForge.ollama.completionAskAiItem": {
+          "type": "boolean",
+          "default": false,
+          "description": "Add an \"Ask PineForge AI\" entry to the completion list (runs the same cursor-context prompt as the command)."
         }
       }
     }

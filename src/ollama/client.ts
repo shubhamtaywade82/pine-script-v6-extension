@@ -8,6 +8,13 @@ export interface OllamaExtensionConfig {
   host: string;
   model: string;
   stream: boolean;
+  inlineCompletions: boolean;
+  inlineDebounceMs: number;
+  inlineContextLines: number;
+  inlineMaxPromptChars: number;
+  inlineTimeoutMs: number;
+  codeActionsInLightbulb: boolean;
+  completionAskAiItem: boolean;
 }
 
 export function readOllamaExtensionConfig(getConfiguration: () => WorkspaceConfiguration): OllamaExtensionConfig {
@@ -17,6 +24,13 @@ export function readOllamaExtensionConfig(getConfiguration: () => WorkspaceConfi
     host: c.get<string>('ollama.host', 'http://127.0.0.1:11434') || 'http://127.0.0.1:11434',
     model: (c.get<string>('ollama.model', '') ?? '').trim(),
     stream: c.get<boolean>('ollama.stream', true),
+    inlineCompletions: c.get<boolean>('ollama.inlineCompletions', false),
+    inlineDebounceMs: Math.max(0, c.get<number>('ollama.inlineDebounceMs', 400)),
+    inlineContextLines: Math.max(1, c.get<number>('ollama.inlineContextLines', 40)),
+    inlineMaxPromptChars: Math.max(2000, c.get<number>('ollama.inlineMaxPromptChars', 12000)),
+    inlineTimeoutMs: Math.max(1000, c.get<number>('ollama.inlineTimeoutMs', 12000)),
+    codeActionsInLightbulb: c.get<boolean>('ollama.codeActionsInLightbulb', false),
+    completionAskAiItem: c.get<boolean>('ollama.completionAskAiItem', false),
   };
 }
 

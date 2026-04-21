@@ -7,7 +7,7 @@ import {
   TransportKind,
 } from 'vscode-languageclient/node';
 import { OLLAMA_API_SECRET_KEY } from './ollama/constants';
-import { runExplainSelection } from './ollama/runExplainSelection';
+import { registerPineOllamaUi } from './ollama/registerPineOllamaUi';
 import {
   defaultPineForgeSettings,
   PINE_FORGE_SETTINGS_NOTIFICATION,
@@ -81,11 +81,7 @@ export function activate(context: vscode.ExtensionContext): void {
     }),
   );
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('pineForge.ollama.explainSelection', () =>
-      runExplainSelection(context, aiOutput, pineForgeConfiguration),
-    ),
-  );
+  registerPineOllamaUi(context, aiOutput, pineForgeConfiguration);
 
   context.subscriptions.push(
     vscode.commands.registerCommand('pineForge.ollama.setApiKey', async () => {
