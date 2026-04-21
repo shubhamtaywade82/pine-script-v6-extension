@@ -1,0 +1,624 @@
+# PineForge: Pine Script v6 language tooling for VS Code and Cursor
+
+This document specifies how to build **PineForge**—a VS Code–compatible extension that provides Pine Script **v6** diagnostics, hovers, completions, go-to-definition, and (later) formatting. The design is **Language Server Protocol (LSP)**–first: a thin editor client and a language server that owns parsing, symbols, rules, and LSP handlers. Cursor installs the same extension format as VS Code.
+
+## Table of contents
+
+1. [Purpose and scope](#purpose-and-scope)
+2. [Architecture](#architecture)
+3. [Design decisions](#design-decisions)
+4. [Identifiers (package vs brand)](#identifiers-package-vs-brand)
+5. [Repository layout](#repository-layout)
+6. [Implementation phases](#implementation-phases)
+7. [Declarative language contributions](#declarative-language-contributions)
+8. [Language client and server (canonical samples)](#language-client-and-server-canonical-samples)
+9. [Parser and AST](#parser-and-ast)
+10. [Rule engine](#rule-engine)
+11. [Reference index and LSP features](#reference-index-and-lsp-features)
+12. [Syntax highlighting](#syntax-highlighting)
+13. [Formatter (separate subsystem)](#formatter-separate-subsystem)
+14. [Testing and packaging](#testing-and-packaging)
+15. [Production hardening, risks, and non-goals](#production-hardening-risks-and-non-goals)
+16. [Verification checklist](#verification-checklist)
+17. [Learning sequence and official docs](#learning-sequence-and-official-docs)
+18. [Appendix A: Naming and branding alternatives](#appendix-a-naming-and-branding-alternatives)
+19. [Appendix B: Tooling stack](#appendix-b-tooling-stack)
+
+---
+
+## Purpose and scope
+
+- **Goal**: TradingView Pine **v6** support with real diagnostics, doc-linked hovers, completion, navigation—not a regex-only highlighter.
+- **Sources of truth**: Pine v6 **reference** and **migration** materials from TradingView (verify current URLs when implementing).
+- **Compatibility**: Ship a standard VS Code extension; **Cursor** consumes it without custom integration.
+
+---
+
+## Architecture
+
+```text
+VS Code / Cursor (editor)
+        │
+        ▼
+Extension host (thin client)
+  • language id, grammar, language-configuration.json
+  • spawns server, forwards LSP
+        │
+        ▼
+Language server (core)
+  ├── Lexer / parser → AST
+  ├── Symbol table / scope
+  ├── Rule engine (lint + semantics)
+  ├── Reference index (docs + signatures)
+  └── LSP handlers (diagnostics, hover, completion, definition, …)
+```
+
+### Extension client (host)
+
+- Register the Pine language (`.pine`, `.pinescript`), grammar, and `language-configuration.json`.
+- Start the language server (`vscode-languageclient`) and subscribe to lifecycle.
+- Optional: commands such as “Open Pine reference” that open URLs from the reference index.
+
+### Language server
+
+- Parse source to an AST; run lint rules; publish **diagnostics**.
+- Implement **hover**, **completion**, **definition** / **references** (and later **rename**, **code actions**) from the AST + symbol table + reference index.
+
+### Reference index
+
+Local JSON (or generated DB) mapping built-ins, keywords, functions, types, v6 notes, and migration hints to summaries and **official doc URLs** for hovers and completions.
+
+---
+
+## Design decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| **LSP-backed** | Diagnostics, completion, hover, and go-to-definition are first-class in the LSP model and map cleanly from a single analysis pipeline. |
+| **No regex-as-linter** | Pine needs identifiers, arity, scopes, and version gates; text rules alone produce false positives/negatives. |
+| **v6-aware rules** | v5 scripts may require migration; gate rules on `//@version=` and v6 docs. |
+| **Thin client** | Keeps analysis testable in Node without the VS Code UI; server can be reused by other LSP clients later. |
+| **Formatter separate** | Formatting is a printer over the AST (or a formatting IR); do not mix it with lint rule logic. Use `DocumentFormattingEditProvider` / range formatting, or LSP `textDocument/formatting`—pick one approach and stay consistent. |
+
+---
+
+## Identifiers (package vs brand)
+
+| Concept | Recommended value | Notes |
+|---------|-------------------|--------|
+| **Product / brand** | PineForge | Marketplace listing and user-facing name. |
+| **npm `name`** | `pineforge` or `@your-publisher/pineforge` | Lowercase; must match publisher rules for Marketplace. |
+| **`displayName`** | `PineForge — Pine Script v6 Language Server, Linter & Formatter` | Shorter variants are fine if constrained by UI. |
+| **`publisher`** | Your Marketplace publisher id | Required for packaging. |
+| **Language id** | `pinescript` | Used in `contributes.languages` and `documentSelector`. |
+| **`LanguageClient` id / name** | e.g. `pineforge` / `PineForge` | Stable string for logging and client identity. |
+| **Diagnostic `source`** | `pineforge` | Consistent across rules for filterable diagnostics. |
+
+---
+
+## Repository layout
+
+```text
+pineforge/                    # or your repo root name
+  package.json
+  language-configuration.json
+  syntaxes/
+    pine.tmLanguage.json
+  src/
+    extension.ts              # activate: start language client
+    server.ts                 # LSP entry
+    parser/
+      lexer.ts
+      parser.ts
+      ast.ts                  # as the model grows
+    rules/
+      engine.ts
+      rules/*.ts
+    references/
+      pine.json               # or generated from docs
+  docs/
+    pine-symbols.json         # optional: larger generated index
+  test/
+    ...
+```
+
+You may split `client.ts` from `extension.ts` if activation grows; one file is enough at first.
+
+---
+
+## Implementation phases
+
+Single path from “file opens with color” to “shippable tool.” Merge early milestones with later hardening.
+
+| Phase | Outcome | Key work |
+|-------|---------|----------|
+| **0 — Declarative language** | `.pine` files recognized; comments/brackets/autoclose feel native | `package.json` `contributes.languages` / `grammars`, `language-configuration.json`, activation `onLanguage:pinescript` |
+| **1 — Grammar** | Readable syntax highlighting | TextMate grammar (`syntaxes/pine.tmLanguage.json`); keywords, strings, numbers, comments, `//@version=6` |
+| **2 — LSP boot** | Server runs; documents sync | `vscode-languageclient` + `vscode-languageserver`; incremental sync; stub `validate` returning no diagnostics |
+| **3 — Parser + AST MVP** | Parse errors and simple tree with **ranges** | Lexer, AST nodes, recovery; **not** full Pine grammar on day one |
+| **4 — Rule engine + diagnostics** | Squiggles in editor | `LintRule` modules; unknown calls, basic version checks; wire `sendDiagnostics` |
+| **5 — Reference index** | Hovers and completions with doc links | JSON index; `onHover`, `onCompletion`; optional code action “Open docs” |
+| **6 — Symbols** | Go-to-definition / references (where feasible) | Scope table, declarations, built-in table |
+| **7 — Formatter** | Format Document / Selection stable | AST → printer → **text edits**; deterministic indentation/spacing first |
+| **8 — Code actions** | Quick fixes from rules | Map diagnostics to edits where safe |
+| **9 — Semantic tokens** (optional) | Richer highlighting | After grammar + symbols stabilize |
+| **10 — Tests + packaging** | CI confidence; VSIX | Parser/rule unit tests; extension host integration tests; `vsce` package |
+
+**Suggested first vertical slice**: Phase 0 → 1 → 2 → minimal 3 → 4 (few high-value rules) → 5 (small index), then expand parser and rules.
+
+**Execution map (concise)**
+
+| Stage | Outcome |
+|-------|---------|
+| Declarative language | Basic editor behavior |
+| Grammar | Highlighting |
+| LSP | Intelligence plumbing |
+| Parser + AST | Reliable analysis |
+| Linter | Errors and warnings |
+| Formatter | Stable code style |
+| Code actions | One-click fixes |
+| Tests | Controlled regressions |
+| Packaging | Installable release |
+
+**Mental model**: Extension = **integration**; language server = **intelligence**; parser/AST = **correctness**; formatter = **deterministic printing**; linter = **rules over AST + symbols**.
+
+---
+
+## Declarative language contributions
+
+**`package.json`** (illustrative—adjust `publisher`, `name`, and scripts to match your build):
+
+```json
+{
+  "name": "pineforge",
+  "displayName": "PineForge — Pine Script v6 Language Server, Linter & Formatter",
+  "version": "0.1.0",
+  "publisher": "your-publisher",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Programming Languages"],
+  "activationEvents": ["onLanguage:pinescript"],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "pinescript",
+        "aliases": ["Pine Script", "PineScript"],
+        "extensions": [".pine", ".pinescript"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "pinescript",
+        "scopeName": "source.pinescript",
+        "path": "./syntaxes/pine.tmLanguage.json"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "watch": "tsc -w"
+  }
+}
+```
+
+**`language-configuration.json`**
+
+```json
+{
+  "comments": {
+    "lineComment": "//",
+    "blockComment": ["/*", "*/"]
+  },
+  "brackets": [["{", "}"], ["(", ")"], ["[", "]"]],
+  "autoClosingPairs": [
+    { "open": "\"", "close": "\"" },
+    { "open": "(", "close": ")" },
+    { "open": "{", "close": "}" },
+    { "open": "[", "close": "]" }
+  ],
+  "surroundingPairs": [
+    { "open": "\"", "close": "\"" },
+    { "open": "(", "close": ")" },
+    { "open": "{", "close": "}" },
+    { "open": "[", "close": "]" }
+  ]
+}
+```
+
+Add **indentation** and **folding** rules when you define Pine’s block structure precisely in the parser.
+
+---
+
+## Language client and server (canonical samples)
+
+**Bootstrap** (from repo root):
+
+```bash
+npm init -y
+npm install --save-dev typescript @types/node vscode
+npm install vscode-languageclient vscode-languageserver vscode-languageserver-textdocument
+npx tsc --init
+```
+
+**`src/extension.ts`** — start client, optional file watcher, clean shutdown:
+
+```typescript
+import * as path from 'path';
+import * as vscode from 'vscode';
+import {
+  LanguageClient,
+  LanguageClientOptions,
+  ServerOptions,
+  TransportKind,
+} from 'vscode-languageclient/node';
+
+let client: LanguageClient;
+
+export function activate(context: vscode.ExtensionContext) {
+  const serverModule = context.asAbsolutePath(path.join('dist', 'server.js'));
+
+  const serverOptions: ServerOptions = {
+    run: { module: serverModule, transport: TransportKind.ipc },
+    debug: {
+      module: serverModule,
+      transport: TransportKind.ipc,
+      options: { execArgv: ['--nolazy', '--inspect=6009'] },
+    },
+  };
+
+  const clientOptions: LanguageClientOptions = {
+    documentSelector: [{ scheme: 'file', language: 'pinescript' }],
+    synchronize: {
+      fileEvents: vscode.workspace.createFileSystemWatcher('**/*.{pine,pinescript}'),
+    },
+  };
+
+  client = new LanguageClient('pineforge', 'PineForge', serverOptions, clientOptions);
+  context.subscriptions.push(client.start());
+}
+
+export function deactivate(): Thenable<void> | undefined {
+  return client?.stop();
+}
+```
+
+**`src/server.ts`** — minimal validate pipeline (replace stub `parse` / `runRules` with real implementations):
+
+```typescript
+import {
+  createConnection,
+  TextDocuments,
+  Diagnostic,
+  DiagnosticSeverity,
+  InitializeParams,
+  TextDocumentSyncKind,
+} from 'vscode-languageserver/node';
+import { TextDocument } from 'vscode-languageserver-textdocument';
+import { parse } from './parser/parser';
+import { runRules } from './rules/engine';
+
+const connection = createConnection();
+const documents = new TextDocuments(TextDocument);
+
+connection.onInitialize((_params: InitializeParams) => {
+  return {
+    capabilities: {
+      textDocumentSync: TextDocumentSyncKind.Incremental,
+      hoverProvider: true,
+      completionProvider: { resolveProvider: true },
+    },
+  };
+});
+
+documents.onDidChangeContent((change) => {
+  void validate(change.document);
+});
+
+async function validate(doc: TextDocument) {
+  const text = doc.getText();
+  const ast = parse(text);
+  const issues = runRules(ast, text);
+
+  const diagnostics: Diagnostic[] = issues.map((issue) => ({
+    severity: DiagnosticSeverity.Error,
+    range: issue.range,
+    message: issue.message,
+    source: 'pineforge',
+  }));
+
+  connection.sendDiagnostics({ uri: doc.uri, diagnostics });
+}
+
+documents.listen(connection);
+connection.listen();
+```
+
+Register **hover** and **completion** in the same server module once the reference index exists (see next section).
+
+---
+
+## Parser and AST
+
+**Do not** treat regex as the parser. Prefer one of:
+
+- Hand-written **recursive descent**
+- **PEG** grammar
+- **tree-sitter** grammar
+- Token stream + **Pratt** parser for expressions
+
+**Minimum viable AST** (early linter value):
+
+- Declarations, function calls, assignments, conditionals, series expressions
+- Version directive `//@version=6` (or detected version for rule gating)
+
+**Enables**: unknown identifiers, arity mismatches, invalid assignment targets, version mismatches, deprecated constructs, misplaced declarations.
+
+**Parser deliverable**: every node carries **source ranges** for diagnostics; support partial **recovery** after errors.
+
+---
+
+## Rule engine
+
+```typescript
+export interface LintRule {
+  id: string;
+  check(ast: PineAst, source: string, ctx: RuleContext): Diagnostic[];
+}
+```
+
+**Rule groups**
+
+| Group | Purpose |
+|-------|---------|
+| Syntax | Malformed expressions, delimiters, blocks |
+| Semantic | Unknown identifiers, argument shape/count, invalid types |
+| Pine v6 | Version-specific syntax and behavior (gated on declared version) |
+| Style | Naming, line length, readability |
+| Safety | Repaint risk, ambiguous lookahead, unstable references |
+
+**Linter build order** (signal-to-noise):
+
+1. Syntax errors (tokens, delimiters, blocks)
+2. Unresolved identifiers
+3. Signature mismatches
+4. Version errors (features vs declared version)
+5. Style warnings
+6. Domain-specific (repaint, lookahead, unsafe patterns)
+
+---
+
+## Reference index and LSP features
+
+**Example `src/references/pine.json`**
+
+```json
+{
+  "indicator": {
+    "summary": "Declares an indicator script",
+    "url": "https://www.tradingview.com/pine-script-reference/v6/#fun_indicator"
+  },
+  "strategy": {
+    "summary": "Declares a strategy",
+    "url": "https://www.tradingview.com/pine-script-reference/v6/#fun_strategy"
+  }
+}
+```
+
+Verify anchors and paths against current TradingView documentation.
+
+**Per-symbol behavior**
+
+- Hover markdown with summary + link
+- Completion `documentation` / `detail`
+- Definition/reference for known symbols where the symbol table supports it
+- Optional code action: open official doc URL
+
+**Hover** (pattern—improve `getWordAt` for Pine identifiers):
+
+```typescript
+connection.onHover((params) => {
+  const doc = documents.get(params.textDocument.uri);
+  if (!doc) return null;
+
+  const word = getWordAt(doc, params.position);
+  const ref = index[word];
+  if (!ref) return null;
+
+  return {
+    contents: {
+      kind: 'markdown',
+      value: `**${word}**\n\n${ref.summary}\n\n[Docs](${ref.url})`,
+    },
+  };
+});
+```
+
+**Completion** (seed list until indexer drives it):
+
+```typescript
+connection.onCompletion(() => [
+  { label: 'indicator', kind: 3, detail: 'Declare indicator' },
+  { label: 'strategy', kind: 3, detail: 'Declare strategy' },
+]);
+```
+
+---
+
+## Syntax highlighting
+
+TextMate grammar: keywords, built-ins, operators, strings, numbers, comments, directives such as `//@version=6`. **Semantic tokens** can refine colors after the symbol table exists.
+
+**Minimal `syntaxes/pine.tmLanguage.json`**
+
+```json
+{
+  "name": "Pine",
+  "scopeName": "source.pinescript",
+  "patterns": [
+    {
+      "match": "\\b(indicator|strategy|plot)\\b",
+      "name": "keyword.control.pine"
+    }
+  ]
+}
+```
+
+---
+
+## Formatter (separate subsystem)
+
+**Build order**: indentation → spacing around operators → call wrapping → block layout → blank lines between top-level declarations. Avoid “smart” rewrites until the printer is **stable**.
+
+**Architecture**: parse → formatting IR or printer state → **TextEdit[]** (do not silently rewrite whole file strings in memory without diffing). Preserve comments and meaningful whitespace where possible.
+
+**VS Code integration**: `DocumentFormattingEditProvider`, optionally `DocumentRangeFormattingEditProvider` / `OnTypeFormattingEditProvider`, or LSP formatting requests—align with whether formatting runs in the server or host.
+
+---
+
+## Testing and packaging
+
+**Dependencies** (example):
+
+```bash
+npm install --save-dev jest ts-jest @types/jest
+```
+
+**Example unit test**
+
+```typescript
+test('flags unknown function call', () => {
+  const ast = parse('foo()');
+  const issues = runRules(ast, 'foo()');
+  expect(issues.length).toBe(1);
+});
+```
+
+**Layers**
+
+- Parser unit tests
+- Rule engine unit tests
+- Integration tests in **Extension Development Host** (VS Code testing API)
+
+**Release**: package and publish with **`vsce`** per Microsoft’s publishing guide (VSIX + Marketplace).
+
+---
+
+## Production hardening, risks, and non-goals
+
+### Mandatory upgrades (before calling it “production”)
+
+1. **Real AST** — expressions, series vs literal, arguments, blocks  
+2. **Scope** — global/local, redeclaration, shadowing  
+3. **Types** — `series float`, `float`, `bool`, `color`, implicit casts (Pine-specific)  
+4. **Pine v6 rule set** — `//@version=6`, deprecated APIs, migration warnings  
+5. **Strategy-oriented rules** — repaint, lookahead, `request.security()` misuse, `strategy.*` misuse  
+
+### Risk table
+
+| Risk | Impact |
+|------|--------|
+| No real parser | Linter is misleading |
+| No type model | Excessive false positives/negatives |
+| No Pine semantics | Low trust for trading workflows |
+| No version gating | v5 vs v6 breakage |
+
+### Non-goals (foundation vs full compiler)
+
+This architecture is a **foundation**, not a full Pine compiler. Expect gaps until iterated:
+
+- Full Pine grammar coverage
+- Full type inference
+- Control-flow graph
+- Advanced constructs (arrays, `var`, full series propagation) — add incrementally
+
+### Future features (high value)
+
+- Static analysis: repaint scoring, indicator/strategy misuse, invalid `security()` combinations  
+- Optional AI assist: explain diagnostic, suggest fix (keep deterministic rules authoritative)  
+- Doc pipeline: scrape/cache TradingView docs with **v6 version lock**  
+- Backtest-aware hints (domain-specific, optional)
+
+### Cursor
+
+No Cursor-specific fork: install the VSIX or marketplace extension in Cursor like VS Code.
+
+---
+
+## Verification checklist
+
+- [ ] Open a `.pine` / `.pinescript` file in VS Code **and** Cursor; language id and grammar apply.  
+- [ ] Comment toggle, brackets, and autoclose behave per `language-configuration.json`.  
+- [ ] Introduce an invalid / unknown symbol; **diagnostic** appears from `source: pineforge`.  
+- [ ] Hover a built-in; markdown shows summary + **official** doc link.  
+- [ ] Completion lists expected symbols with documentation where wired.  
+- [ ] Go-to-definition / find references on a pilot symbol (when implemented).  
+- [ ] Rename pilot (when implemented).  
+- [ ] Load a v5-leaning script under v6 rules; **migration** or version warnings appear where intended.  
+- [ ] `F5` Extension Development Host: extension activates without errors.  
+- [ ] Format Document: stable output, no spurious churn on double-format (when formatter exists).  
+
+---
+
+## Learning sequence and official docs
+
+**Three layers**
+
+1. **Declarative language features** — `package.json`, `language-configuration.json`, TextMate grammar.  
+2. **Programmatic features** — LSP: client in extension host, server subprocess, protocol messages.  
+3. **Formatting** — formatting providers or LSP formatting; separate from lint.
+
+**VS Code topics to read early**: Extension API overview, extension anatomy, language extensions overview, **Language Server Extension Guide**, programmatic language features, language configuration, publishing.
+
+**Phased learning** (maps to implementation): basic extension authoring → LSP fundamentals → static analysis (parse, scope, types, rules) → formatting → tests and Marketplace.
+
+---
+
+## Appendix A: Naming and branding alternatives
+
+**Chosen product name: PineForge** — connotes building, shaping, and validating Pine scripts; short and extensible (future AI, strategy validation, tooling modules).
+
+| Name | Positioning |
+|------|----------------|
+| PineForge | Balanced: developer + trading workflows (**recommended**) |
+| PineGuard | Safety, lint, risk |
+| PineLens | Analysis / insight |
+| PineCore | Language infrastructure |
+| PineFlow | Formatter / structure |
+| PineLint Pro | Literal, functional |
+| PineEngine | Heavy tooling / systems |
+
+Trading-aligned alternatives: PineAlpha, PineQuant, PineSignals, PineRisk, PineExecution.
+
+Toolchain tone: PineKit, PineStack, PineLab, PineSuite.
+
+**Names to avoid**: overly generic “PineScript Linter”; “TradingView Helper” (brand risk); “Pine IDE” (scope mismatch); “Pine Formatter” (undersells).
+
+**Marketplace line**: *PineForge — Pine Script v6 Language Server, Linter & Formatter*.
+
+---
+
+## Appendix B: Tooling stack
+
+| Component | Role |
+|-----------|------|
+| TypeScript | Primary implementation language (VS Code recommendation) |
+| `vscode` types | Extension API typing |
+| `vscode-languageclient` | Host-side LSP client |
+| `vscode-languageserver` (+ `textdocument`) | Server, diagnostics, LSP handlers |
+| Parser (custom or tree-sitter / PEG) | AST and ranges |
+| Jest (or similar) + `@vscode/test-electron` (as needed) | Unit and integration tests |
+| `vsce` | Package and publish |
+
+---
+
+## External references (verify URLs periodically)
+
+- [VS Code Extension API](https://code.visualstudio.com/api)  
+- [Language extensions overview](https://code.visualstudio.com/api/language-extensions/overview)  
+- [Language Server Extension Guide](https://code.visualstudio.com/api/language-extensions/language-server-extension-guide)  
+- [Programmatic language features](https://code.visualstudio.com/api/language-extensions/programmatic-language-features)  
+- [Language configuration](https://code.visualstudio.com/api/language-extensions/language-configuration-guide)  
+- TradingView **Pine Script** v6 **reference** and **migration** documentation (use the current official paths on `tradingview.com` / `pine-script-docs` when linking from the reference index).
