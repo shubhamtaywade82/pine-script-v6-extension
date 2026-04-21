@@ -23,6 +23,7 @@ This document specifies how to build **PineForge**—a VS Code–compatible exte
 17. [Learning sequence and official docs](#learning-sequence-and-official-docs)
 18. [Appendix A: Naming and branding alternatives](#appendix-a-naming-and-branding-alternatives)
 19. [Appendix B: Tooling stack](#appendix-b-tooling-stack)
+20. [External references](#external-references-verify-urls-periodically)
 
 ---
 
@@ -616,9 +617,23 @@ Toolchain tone: PineKit, PineStack, PineLab, PineSuite.
 
 ## External references (verify URLs periodically)
 
-- [VS Code Extension API](https://code.visualstudio.com/api)  
-- [Language extensions overview](https://code.visualstudio.com/api/language-extensions/overview)  
-- [Language Server Extension Guide](https://code.visualstudio.com/api/language-extensions/language-server-extension-guide)  
-- [Programmatic language features](https://code.visualstudio.com/api/language-extensions/programmatic-language-features)  
-- [Language configuration](https://code.visualstudio.com/api/language-extensions/language-configuration-guide)  
-- TradingView **Pine Script** v6 **reference** and **migration** documentation (use the current official paths on `tradingview.com` / `pine-script-docs` when linking from the reference index).
+### VS Code and LSP
+
+- [VS Code Extension API](https://code.visualstudio.com/api) — Extension manifest, activation, contributions.  
+- [Language extensions overview](https://code.visualstudio.com/api/language-extensions/overview) — Declarative vs programmatic language support.  
+- [Language Server Extension Guide](https://code.visualstudio.com/api/language-extensions/language-server-extension-guide) — Client/server split and LSP wiring.  
+- [Programmatic language features](https://code.visualstudio.com/api/language-extensions/programmatic-language-features) — Diagnostics, hover, completion, definition, etc.  
+- [Language configuration](https://code.visualstudio.com/api/language-extensions/language-configuration-guide) — Comments, brackets, autoclose, indentation, folding.
+
+### Official TradingView documentation
+
+Use the site’s **version selector (v6)** when a page offers multiple Pine versions. Re-check URLs when TradingView reorganizes paths; **release notes** are the best signal for language or compiler behavior changes.
+
+- [Pine Script User Manual (hub)](https://www.tradingview.com/pine-script-docs) — Entry point: Primer, Language, Concepts, Release notes.  
+- [Welcome to Pine Script v6](https://www.tradingview.com/pine-script-docs/welcome/) — What Pine is, platform constraints, link into the primer.  
+- [First steps](https://www.tradingview.com/pine-script-docs/primer/first-steps/) — Using scripts on charts, community scripts, reading code, script types (indicator / strategy / library).  
+- [Execution model](https://www.tradingview.com/pine-script-docs/language/execution-model/) — Bar-by-bar execution, time series, `[]` history, realtime bars, rollback/recalculation; ties to the type system for correct semantics and “repaint”-style reasoning.  
+- [Release notes](https://www.tradingview.com/pine-script-docs/release-notes/) — Changelog for new APIs, limits, and editor/compiler rules; review when extending the v6 rule set or reference index.  
+- [Pine Script v6 language reference](https://www.tradingview.com/pine-script-reference/v6/) — Functions, variables, types, operators; use for hover links and signature grounding in the reference index.
+
+For **v5 → v6 migration**, use TradingView’s current migration material from the manual or help center (path may change); search the manual hub for “migration” or “version” when implementing version-gated diagnostics.
