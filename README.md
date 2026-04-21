@@ -79,6 +79,8 @@ Open this folder in VS Code, then **Run → Start Debugging** (F5) with **Run Pi
 
 **Authority:** LSP diagnostics, completions, and quick fixes remain **deterministic**; the model can be wrong — treat AI output as advisory and keep validating on TradingView.
 
+**Troubleshooting (output looks empty):** Command-based AI **reveals the Output panel and focuses it** on the **PineForge AI** channel. If you still see no text, pick **PineForge AI** in the Output dropdown; set **`pineForge.ollama.stream`** to **`false`** once (some models stream only `thinking` first, or odd clients swallow chunks). **Inline ghost text** never uses the output channel — only commands and the “Ask at cursor” / completion item do.
+
 ### Settings (`pineForge.*`)
 
 | Setting | Default | Purpose |
