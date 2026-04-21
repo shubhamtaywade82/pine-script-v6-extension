@@ -1,24 +1,20 @@
 import type { Range } from 'vscode-languageserver-types';
-import type { Range as SrcRange } from '../ast';
-import type { Expression, Program, Statement } from '../ast';
-import { tokenize, TokenType, type Token } from '../lexer';
-import { parseProgram } from './treeParser';
+import { offsetToPosition } from '../position';
 
-/** Named-argument snapshot for migration rules (token path has no args). */
-export interface ParsedCallArg {
-  name: string | null;
-  /** Best-effort text for literals/identifiers; empty for complex expressions. */
+export type AstNode =
+  | { kind: 'call'; name: string; range: Range; args: CallArgument[] }
+  | { kind: 'version'; major: number; range: Range };
+
+export interface CallArgument {
+  name: string | null; // null for positional args
   value: string;
   range: Range;
 }
 
-export type AstNode =
-  | { kind: 'call'; name: string; range: Range; args: ParsedCallArg[] }
-  | { kind: 'version'; major: number; range: Range };
-
 export interface ParsedDocument {
   nodes: AstNode[];
   versionDirective: number | null;
+  source: string;
 }
 
 const NOT_CALLS = new Set([
@@ -44,218 +40,162 @@ const NOT_CALLS = new Set([
   'by',
 ]);
 
-function toLspRange(r: SrcRange): Range {
-  return {
-    start: { line: r.start.line, character: r.start.character },
-    end: { line: r.end.line, character: r.end.character },
-  };
-}
-
-function formatCallee(expr: Expression): string | null {
-  if (expr.type === 'Identifier') return expr.name;
-  if (expr.type === 'MemberExpr') {
-    const base = formatCallee(expr.object);
-    if (base) return `${base}.${expr.property}`;
-    return expr.property;
-  }
-  return null;
-}
-
-function expressionSnapshotText(expr: Expression): string {
-  switch (expr.type) {
-    case 'Identifier':
-      return expr.name;
-    case 'BoolLiteral':
-      return expr.value ? 'true' : 'false';
-    case 'NumberLiteral':
-      return expr.raw;
-    case 'StringLiteral':
-      return expr.value;
-    case 'NALiteral':
-      return 'na';
-    case 'ColorLiteral':
-      return expr.value;
-    default:
-      return '';
-  }
-}
-
-function walkExpression(expr: Expression, nodes: AstNode[]): void {
-  switch (expr.type) {
-    case 'CallExpr': {
-      const name = formatCallee(expr.callee);
-      if (name && !NOT_CALLS.has(name)) {
-        const args: ParsedCallArg[] = expr.args.map((a) => ({
-          name: a.name,
-          value: expressionSnapshotText(a.value),
-          range: toLspRange(a.range),
-        }));
-        nodes.push({ kind: 'call', name, range: toLspRange(expr.range), args });
-      }
-      for (const arg of expr.args) {
-        walkExpression(arg.value, nodes);
-      }
-      walkExpression(expr.callee, nodes);
-      break;
-    }
-    case 'BinaryExpr':
-      walkExpression(expr.left, nodes);
-      walkExpression(expr.right, nodes);
-      break;
-    case 'UnaryExpr':
-      walkExpression(expr.operand, nodes);
-      break;
-    case 'TernaryExpr':
-      walkExpression(expr.condition, nodes);
-      walkExpression(expr.consequent, nodes);
-      walkExpression(expr.alternate, nodes);
-      break;
-    case 'IndexExpr':
-      walkExpression(expr.object, nodes);
-      walkExpression(expr.index, nodes);
-      break;
-    case 'MemberExpr':
-      walkExpression(expr.object, nodes);
-      break;
-    case 'TupleExpr':
-      for (const el of expr.elements) walkExpression(el, nodes);
-      break;
-    default:
-      break;
-  }
-}
-
-function walkStatement(stmt: Statement, nodes: AstNode[]): void {
-  switch (stmt.type) {
-    case 'ExprStmt':
-      walkExpression(stmt.expression, nodes);
-      break;
-    case 'VarDecl':
-      if (stmt.init) walkExpression(stmt.init, nodes);
-      break;
-    case 'Assignment':
-      walkExpression(stmt.target, nodes);
-      walkExpression(stmt.value, nodes);
-      break;
-    case 'FunctionDecl':
-      for (const b of stmt.body) walkStatement(b, nodes);
-      break;
-    case 'IfStmt':
-      walkExpression(stmt.condition, nodes);
-      for (const b of stmt.consequent) walkStatement(b, nodes);
-      if (stmt.alternate) {
-        if (Array.isArray(stmt.alternate)) {
-          for (const b of stmt.alternate) walkStatement(b, nodes);
-        } else {
-          walkStatement(stmt.alternate as Statement, nodes);
-        }
-      }
-      break;
-    case 'ForStmt':
-      walkExpression(stmt.from, nodes);
-      walkExpression(stmt.to, nodes);
-      if (stmt.by) walkExpression(stmt.by, nodes);
-      for (const b of stmt.body) walkStatement(b, nodes);
-      break;
-    case 'WhileStmt':
-      walkExpression(stmt.condition, nodes);
-      for (const b of stmt.body) walkStatement(b, nodes);
-      break;
-    case 'SwitchStmt':
-      if (stmt.subject) walkExpression(stmt.subject, nodes);
-      for (const c of stmt.cases) {
-        walkExpression(c.value, nodes);
-        for (const b of c.body) walkStatement(b, nodes);
-      }
-      if (stmt.defaultBody) {
-        for (const b of stmt.defaultBody) walkStatement(b, nodes);
-      }
-      break;
-    case 'ReturnStmt':
-      if (stmt.value) walkExpression(stmt.value, nodes);
-      break;
-    default:
-      break;
-  }
-}
-
-function programToParsedDocument(program: Program): ParsedDocument {
-  const nodes: AstNode[] = [];
-  if (program.version !== null && program.versionRange) {
-    nodes.push({
-      kind: 'version',
-      major: program.version,
-      range: toLspRange(program.versionRange),
-    });
-  }
-  for (const st of program.body) {
-    walkStatement(st, nodes);
-  }
-  return { nodes, versionDirective: program.version };
-}
-
-function nextMeaningful(tokens: Token[], from: number): number {
-  let j = from;
-  while (j < tokens.length) {
-    const t = tokens[j].type;
-    if (
-      t === TokenType.NEWLINE ||
-      t === TokenType.INDENT ||
-      t === TokenType.DEDENT ||
-      t === TokenType.EOF
-    ) {
-      j++;
-      continue;
-    }
-    return j;
-  }
-  return tokens.length;
-}
-
-function parseDocumentFromTokens(source: string): ParsedDocument {
+export function parseDocument(source: string): ParsedDocument {
   const nodes: AstNode[] = [];
   let versionDirective: number | null = null;
-  const tokens = tokenize(source);
 
-  for (const t of tokens) {
-    if (t.type !== TokenType.ANNOTATION) continue;
-    const m = t.value.match(/\/\/\s*@version\s*=\s*(\d+)/i);
-    if (!m) continue;
-    const major = parseInt(m[1], 10);
+  // Version directive detection
+  const versionRe = /\/\/@version\s*=\s*(\d+)/g;
+  let vm: RegExpExecArray | null;
+  while ((vm = versionRe.exec(source)) !== null) {
+    const major = parseInt(vm[1], 10);
     if (!Number.isFinite(major)) continue;
-    if (versionDirective !== null) break;
-    versionDirective = major;
+    if (versionDirective === null) {
+      versionDirective = major;
+    }
+    const start = vm.index;
+    const end = start + vm[0].length;
     nodes.push({
       kind: 'version',
       major,
-      range: toLspRange(t.range),
+      range: {
+        start: offsetToPosition(source, start),
+        end: offsetToPosition(source, end),
+      },
     });
-    break;
   }
 
-  for (let i = 0; i < tokens.length; i++) {
-    if (tokens[i].type !== TokenType.IDENT) continue;
-    const name = tokens[i].value;
-    if (NOT_CALLS.has(name)) continue;
-    const j = nextMeaningful(tokens, i + 1);
-    if (j < tokens.length && tokens[j].type === TokenType.LPAREN) {
-      nodes.push({
-        kind: 'call',
-        name,
-        range: toLspRange(tokens[i].range),
-        args: [],
-      });
+  let i = 0;
+  const n = source.length;
+
+  function skipWhitespace() {
+    while (i < n) {
+      const ch = source[i];
+      if (/\s/.test(ch)) {
+        i++;
+      } else if (ch === '/' && source[i + 1] === '/') {
+        i += 2;
+        while (i < n && source[i] !== '\n') i++;
+      } else if (ch === '/' && source[i + 1] === '*') {
+        i += 2;
+        while (i < n - 1 && !(source[i] === '*' && source[i + 1] === '/')) i++;
+        i = Math.min(i + 2, n);
+      } else {
+        break;
+      }
     }
   }
 
-  return { nodes, versionDirective };
-}
+  while (i < n) {
+    const ch = source[i];
 
-export function parseDocument(source: string): ParsedDocument {
-  try {
-    const { program } = parseProgram(source);
-    return programToParsedDocument(program);
-  } catch {
-    return parseDocumentFromTokens(source);
+    // Skip comments and strings to avoid false positives
+    if (ch === '/' && (source[i + 1] === '/' || source[i + 1] === '*')) {
+      skipWhitespace();
+      continue;
+    }
+    if (ch === '"' || ch === "'") {
+      const quote = ch;
+      i++;
+      while (i < n) {
+        if (source[i] === '\\') {
+          i += 2;
+          continue;
+        }
+        if (source[i] === quote) {
+          i++;
+          break;
+        }
+        i++;
+      }
+      continue;
+    }
+
+    if (/[a-zA-Z_]/.test(ch)) {
+      const start = i;
+      i++;
+      while (i < n && /[\w.]/.test(source[i])) i++;
+      const name = source.slice(start, i);
+      
+      const savedI = i;
+      skipWhitespace();
+      
+      if (i < n && source[i] === '(' && !NOT_CALLS.has(name)) {
+        const callStart = start;
+        const callNameEnd = savedI;
+        i++; // skip '('
+        
+        const args: CallArgument[] = [];
+        while (i < n && source[i] !== ')') {
+          skipWhitespace();
+          if (i >= n || source[i] === ')') break;
+          
+          const argStart = i;
+          let argName: string | null = null;
+          
+          // Check for named argument e.g. color=color.red
+          const nameMatch = source.slice(i).match(/^([a-zA-Z_]\w*)\s*=/);
+          if (nameMatch) {
+            argName = nameMatch[1];
+            i += nameMatch[0].length;
+            skipWhitespace();
+          }
+          
+          // Parse value (simplified: until next comma or closing paren, handling nested parens)
+          const valueStart = i;
+          let depth = 0;
+          while (i < n) {
+            const c = source[i];
+            if (c === '(' || c === '[' || c === '{') depth++;
+            else if (c === ')' || c === ']' || c === '}') {
+              if (depth === 0) break;
+              depth--;
+            } else if (c === ',' && depth === 0) {
+              break;
+            } else if (c === '"' || c === "'") {
+              const q = c;
+              i++;
+              while (i < n && source[i] !== q) {
+                if (source[i] === '\\') i++;
+                i++;
+              }
+            }
+            i++;
+          }
+          const value = source.slice(valueStart, i).trim();
+          args.push({
+            name: argName,
+            value,
+            range: {
+              start: offsetToPosition(source, argStart),
+              end: offsetToPosition(source, i),
+            },
+          });
+          
+          skipWhitespace();
+          if (source[i] === ',') {
+            i++;
+          }
+        }
+        if (source[i] === ')') i++;
+        
+        nodes.push({
+          kind: 'call',
+          name,
+          range: {
+            start: offsetToPosition(source, callStart),
+            end: offsetToPosition(source, callNameEnd),
+          },
+          args,
+        });
+      } else {
+        // Not a call, backtrack to after name
+        i = savedI;
+      }
+      continue;
+    }
+    i++;
   }
+
+  return { nodes, versionDirective, source };
 }

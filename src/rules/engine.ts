@@ -1,7 +1,8 @@
 import { DiagnosticSeverity } from 'vscode-languageserver/node';
 import type { Range } from 'vscode-languageserver-types';
 import type { ParsedDocument } from '../parser/parser';
-import type { PineForgeSettings } from '../settings';
+import type { PineV6Settings } from '../settings';
+import { offsetToPosition } from '../position';
 
 export interface RuleIssue {
   code: string;
@@ -34,15 +35,16 @@ const STRATEGY_FUNCTIONS = new Set([
 export function runRules(
   parsed: ParsedDocument,
   builtins: Set<string>,
-  settings: PineForgeSettings,
+  settings: PineV6Settings,
 ): RuleIssue[] {
   const issues: RuleIssue[] = [];
+  const source = parsed.source;
 
   // 1. Version Check
   if (settings.strictVersionCheck) {
     if (parsed.versionDirective === null) {
       issues.push({
-        code: 'pine-forge/version-missing',
+        code: 'pine-v6/version-missing',
         message:
           'Declare a Pine version with //@version=6 at the top of the script (strict version check is enabled).',
         range: {
@@ -53,7 +55,7 @@ export function runRules(
       });
     } else if (parsed.versionDirective < 6) {
       issues.push({
-        code: 'pine-forge/version-below-6',
+        code: 'pine-v6/version-below-6',
         message: `Pine v6 tooling: found //@version=${parsed.versionDirective}. See migration: https://www.tradingview.com/pine-script-docs/migration-guides/to-pine-version-6/`,
         range: {
           start: { line: 0, character: 0 },
@@ -70,7 +72,7 @@ export function runRules(
       // Unknown call rule
       if (!builtins.has(node.name)) {
         issues.push({
-          code: 'pine-forge/unknown-call',
+          code: 'pine-v6/unknown-call',
           message: `Unknown or unsupported call '${node.name}' for the bundled reference index.`,
           range: node.range,
           severity: DiagnosticSeverity.Warning,
@@ -82,7 +84,7 @@ export function runRules(
         for (const arg of node.args) {
           if (arg.name === 'transp') {
             issues.push({
-              code: 'pine-forge/deprecated-transp',
+              code: 'pine-v6/deprecated-transp',
               message: `The 'transp' parameter is removed in Pine v6. Use 'color.new(color, transp)' instead.`,
               range: arg.range,
               severity: DiagnosticSeverity.Error,
@@ -96,7 +98,7 @@ export function runRules(
         for (const arg of node.args) {
           if (arg.name === 'when') {
             issues.push({
-              code: 'pine-forge/deprecated-when',
+              code: 'pine-v6/deprecated-when',
               message: `The 'when' parameter is removed in Pine v6. Wrap the function call in an 'if' block instead.`,
               range: arg.range,
               severity: DiagnosticSeverity.Error,
@@ -107,18 +109,36 @@ export function runRules(
 
       // v6 Migration: na() on bool
       if (node.name === 'na' || node.name === 'nz' || node.name === 'fixnan') {
-        // This is a bit speculative as we don't have full type inference,
-        // but we can check if the value looks like a boolean literal or variable
         const firstArg = node.args[0];
         if (firstArg && (firstArg.value === 'true' || firstArg.value === 'false')) {
           issues.push({
-            code: 'pine-forge/bool-na',
+            code: 'pine-v6/bool-na',
             message: `Booleans can no longer be 'na' in Pine v6. 'na()', 'nz()', and 'fixnan()' no longer accept bool arguments.`,
             range: firstArg.range,
             severity: DiagnosticSeverity.Error,
           });
         }
       }
+    }
+  }
+
+  // 3. Regex-based check for implicit bool casting in common cases
+  const commonNonBoolVars = ['bar_index', 'volume', 'close', 'open', 'high', 'low', 'time'];
+  for (const varName of commonNonBoolVars) {
+    const ifRegex = new RegExp(`\\bif\\s+(${varName})\\b`, 'g');
+    let match;
+    while ((match = ifRegex.exec(source)) !== null) {
+      const varStart = match.index + match[0].indexOf(match[1]);
+      const varEnd = varStart + match[1].length;
+      issues.push({
+        code: 'pine-v6/implicit-bool-cast',
+        message: `Implicit cast from '${varName}' to bool is not allowed in Pine v6. Use 'bool(${varName})' or an explicit comparison.`,
+        range: {
+          start: offsetToPosition(source, varStart),
+          end: offsetToPosition(source, varEnd),
+        },
+        severity: DiagnosticSeverity.Error,
+      });
     }
   }
 

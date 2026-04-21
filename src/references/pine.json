@@ -904,2380 +904,2255 @@
     "path": "#var_year",
     "summary": "Pine Script v6 variable: year"
   },
-  "alert()": {
+  "alert": {
     "kind": "function",
     "path": "#fun_alert",
     "summary": "Pine Script v6 function: alert()"
   },
-  "alertcondition()": {
+  "alertcondition": {
     "kind": "function",
     "path": "#fun_alertcondition",
     "summary": "Pine Script v6 function: alertcondition()"
   },
-  "array.abs()": {
+  "array.abs": {
     "kind": "function",
     "path": "#fun_array.abs",
     "summary": "Pine Script v6 function: array.abs()"
   },
-  "array.avg()": {
+  "array.avg": {
     "kind": "function",
     "path": "#fun_array.avg",
     "summary": "Pine Script v6 function: array.avg()"
   },
-  "array.binary_search()": {
+  "array.binary_search": {
     "kind": "function",
     "path": "#fun_array.binary_search",
     "summary": "Pine Script v6 function: array.binary_search()"
   },
-  "array.binary_search_leftmost()": {
+  "array.binary_search_leftmost": {
     "kind": "function",
     "path": "#fun_array.binary_search_leftmost",
     "summary": "Pine Script v6 function: array.binary_search_leftmost()"
   },
-  "array.binary_search_rightmost()": {
+  "array.binary_search_rightmost": {
     "kind": "function",
     "path": "#fun_array.binary_search_rightmost",
     "summary": "Pine Script v6 function: array.binary_search_rightmost()"
   },
-  "array.clear()": {
+  "array.clear": {
     "kind": "function",
     "path": "#fun_array.clear",
     "summary": "Pine Script v6 function: array.clear()"
   },
-  "array.concat()": {
+  "array.concat": {
     "kind": "function",
     "path": "#fun_array.concat",
     "summary": "Pine Script v6 function: array.concat()"
   },
-  "array.copy()": {
+  "array.copy": {
     "kind": "function",
     "path": "#fun_array.copy",
     "summary": "Pine Script v6 function: array.copy()"
   },
-  "array.covariance()": {
+  "array.covariance": {
     "kind": "function",
     "path": "#fun_array.covariance",
     "summary": "Pine Script v6 function: array.covariance()"
   },
-  "array.every()": {
+  "array.every": {
     "kind": "function",
     "path": "#fun_array.every",
     "summary": "Pine Script v6 function: array.every()"
   },
-  "array.fill()": {
+  "array.fill": {
     "kind": "function",
     "path": "#fun_array.fill",
     "summary": "Pine Script v6 function: array.fill()"
   },
-  "array.first()": {
+  "array.first": {
     "kind": "function",
     "path": "#fun_array.first",
     "summary": "Pine Script v6 function: array.first()"
   },
-  "array.from()": {
+  "array.from": {
     "kind": "function",
     "path": "#fun_array.from",
     "summary": "Pine Script v6 function: array.from()"
   },
-  "array.get()": {
+  "array.get": {
     "kind": "function",
     "path": "#fun_array.get",
     "summary": "Pine Script v6 function: array.get()"
   },
-  "array.includes()": {
+  "array.includes": {
     "kind": "function",
     "path": "#fun_array.includes",
     "summary": "Pine Script v6 function: array.includes()"
   },
-  "array.indexof()": {
+  "array.indexof": {
     "kind": "function",
     "path": "#fun_array.indexof",
     "summary": "Pine Script v6 function: array.indexof()"
   },
-  "array.insert()": {
+  "array.insert": {
     "kind": "function",
     "path": "#fun_array.insert",
     "summary": "Pine Script v6 function: array.insert()"
   },
-  "array.join()": {
+  "array.join": {
     "kind": "function",
     "path": "#fun_array.join",
     "summary": "Pine Script v6 function: array.join()"
   },
-  "array.last()": {
+  "array.last": {
     "kind": "function",
     "path": "#fun_array.last",
     "summary": "Pine Script v6 function: array.last()"
   },
-  "array.lastindexof()": {
+  "array.lastindexof": {
     "kind": "function",
     "path": "#fun_array.lastindexof",
     "summary": "Pine Script v6 function: array.lastindexof()"
   },
-  "array.max()": {
+  "array.max": {
     "kind": "function",
     "path": "#fun_array.max",
     "summary": "Pine Script v6 function: array.max()"
   },
-  "array.median()": {
+  "array.median": {
     "kind": "function",
     "path": "#fun_array.median",
     "summary": "Pine Script v6 function: array.median()"
   },
-  "array.min()": {
+  "array.min": {
     "kind": "function",
     "path": "#fun_array.min",
     "summary": "Pine Script v6 function: array.min()"
   },
-  "array.mode()": {
+  "array.mode": {
     "kind": "function",
     "path": "#fun_array.mode",
     "summary": "Pine Script v6 function: array.mode()"
   },
-  "array.new_bool()": {
+  "array.new_bool": {
     "kind": "function",
     "path": "#fun_array.new_bool",
     "summary": "Pine Script v6 function: array.new_bool()"
   },
-  "array.new_box()": {
+  "array.new_box": {
     "kind": "function",
     "path": "#fun_array.new_box",
     "summary": "Pine Script v6 function: array.new_box()"
   },
-  "array.new_color()": {
+  "array.new_color": {
     "kind": "function",
     "path": "#fun_array.new_color",
     "summary": "Pine Script v6 function: array.new_color()"
   },
-  "array.new_float()": {
+  "array.new_float": {
     "kind": "function",
     "path": "#fun_array.new_float",
     "summary": "Pine Script v6 function: array.new_float()"
   },
-  "array.new_int()": {
+  "array.new_int": {
     "kind": "function",
     "path": "#fun_array.new_int",
     "summary": "Pine Script v6 function: array.new_int()"
   },
-  "array.new_label()": {
+  "array.new_label": {
     "kind": "function",
     "path": "#fun_array.new_label",
     "summary": "Pine Script v6 function: array.new_label()"
   },
-  "array.new_line()": {
+  "array.new_line": {
     "kind": "function",
     "path": "#fun_array.new_line",
     "summary": "Pine Script v6 function: array.new_line()"
   },
-  "array.new_linefill()": {
+  "array.new_linefill": {
     "kind": "function",
     "path": "#fun_array.new_linefill",
     "summary": "Pine Script v6 function: array.new_linefill()"
   },
-  "array.new_string()": {
+  "array.new_string": {
     "kind": "function",
     "path": "#fun_array.new_string",
     "summary": "Pine Script v6 function: array.new_string()"
   },
-  "array.new_table()": {
+  "array.new_table": {
     "kind": "function",
     "path": "#fun_array.new_table",
     "summary": "Pine Script v6 function: array.new_table()"
   },
-  "array.new<type>()": {
+  "array.new<type>": {
     "kind": "function",
     "path": "#fun_array.new<type>",
     "summary": "Pine Script v6 function: array.new<type>()"
   },
-  "array.percentile_linear_interpolation()": {
+  "array.percentile_linear_interpolation": {
     "kind": "function",
     "path": "#fun_array.percentile_linear_interpolation",
     "summary": "Pine Script v6 function: array.percentile_linear_interpolation()"
   },
-  "array.percentile_nearest_rank()": {
+  "array.percentile_nearest_rank": {
     "kind": "function",
     "path": "#fun_array.percentile_nearest_rank",
     "summary": "Pine Script v6 function: array.percentile_nearest_rank()"
   },
-  "array.percentrank()": {
+  "array.percentrank": {
     "kind": "function",
     "path": "#fun_array.percentrank",
     "summary": "Pine Script v6 function: array.percentrank()"
   },
-  "array.pop()": {
+  "array.pop": {
     "kind": "function",
     "path": "#fun_array.pop",
     "summary": "Pine Script v6 function: array.pop()"
   },
-  "array.push()": {
+  "array.push": {
     "kind": "function",
     "path": "#fun_array.push",
     "summary": "Pine Script v6 function: array.push()"
   },
-  "array.range()": {
+  "array.range": {
     "kind": "function",
     "path": "#fun_array.range",
     "summary": "Pine Script v6 function: array.range()"
   },
-  "array.remove()": {
+  "array.remove": {
     "kind": "function",
     "path": "#fun_array.remove",
     "summary": "Pine Script v6 function: array.remove()"
   },
-  "array.reverse()": {
+  "array.reverse": {
     "kind": "function",
     "path": "#fun_array.reverse",
     "summary": "Pine Script v6 function: array.reverse()"
   },
-  "array.set()": {
+  "array.set": {
     "kind": "function",
     "path": "#fun_array.set",
     "summary": "Pine Script v6 function: array.set()"
   },
-  "array.shift()": {
+  "array.shift": {
     "kind": "function",
     "path": "#fun_array.shift",
     "summary": "Pine Script v6 function: array.shift()"
   },
-  "array.size()": {
+  "array.size": {
     "kind": "function",
     "path": "#fun_array.size",
     "summary": "Pine Script v6 function: array.size()"
   },
-  "array.slice()": {
+  "array.slice": {
     "kind": "function",
     "path": "#fun_array.slice",
     "summary": "Pine Script v6 function: array.slice()"
   },
-  "array.some()": {
+  "array.some": {
     "kind": "function",
     "path": "#fun_array.some",
     "summary": "Pine Script v6 function: array.some()"
   },
-  "array.sort()": {
+  "array.sort": {
     "kind": "function",
     "path": "#fun_array.sort",
     "summary": "Pine Script v6 function: array.sort()"
   },
-  "array.sort_indices()": {
+  "array.sort_indices": {
     "kind": "function",
     "path": "#fun_array.sort_indices",
     "summary": "Pine Script v6 function: array.sort_indices()"
   },
-  "array.standardize()": {
+  "array.standardize": {
     "kind": "function",
     "path": "#fun_array.standardize",
     "summary": "Pine Script v6 function: array.standardize()"
   },
-  "array.stdev()": {
+  "array.stdev": {
     "kind": "function",
     "path": "#fun_array.stdev",
     "summary": "Pine Script v6 function: array.stdev()"
   },
-  "array.sum()": {
+  "array.sum": {
     "kind": "function",
     "path": "#fun_array.sum",
     "summary": "Pine Script v6 function: array.sum()"
   },
-  "array.unshift()": {
+  "array.unshift": {
     "kind": "function",
     "path": "#fun_array.unshift",
     "summary": "Pine Script v6 function: array.unshift()"
   },
-  "array.variance()": {
+  "array.variance": {
     "kind": "function",
     "path": "#fun_array.variance",
     "summary": "Pine Script v6 function: array.variance()"
   },
-  "barcolor()": {
+  "barcolor": {
     "kind": "function",
     "path": "#fun_barcolor",
     "summary": "Pine Script v6 function: barcolor()"
   },
-  "bgcolor()": {
+  "bgcolor": {
     "kind": "function",
     "path": "#fun_bgcolor",
     "summary": "Pine Script v6 function: bgcolor()"
   },
-  "bool()": {
-    "kind": "function",
-    "path": "#fun_bool",
-    "summary": "Pine Script v6 function: bool()"
-  },
-  "box()": {
-    "kind": "function",
-    "path": "#fun_box",
-    "summary": "Pine Script v6 function: box()"
-  },
-  "box.copy()": {
+  "box.copy": {
     "kind": "function",
     "path": "#fun_box.copy",
     "summary": "Pine Script v6 function: box.copy()"
   },
-  "box.delete()": {
+  "box.delete": {
     "kind": "function",
     "path": "#fun_box.delete",
     "summary": "Pine Script v6 function: box.delete()"
   },
-  "box.get_bottom()": {
+  "box.get_bottom": {
     "kind": "function",
     "path": "#fun_box.get_bottom",
     "summary": "Pine Script v6 function: box.get_bottom()"
   },
-  "box.get_left()": {
+  "box.get_left": {
     "kind": "function",
     "path": "#fun_box.get_left",
     "summary": "Pine Script v6 function: box.get_left()"
   },
-  "box.get_right()": {
+  "box.get_right": {
     "kind": "function",
     "path": "#fun_box.get_right",
     "summary": "Pine Script v6 function: box.get_right()"
   },
-  "box.get_top()": {
+  "box.get_top": {
     "kind": "function",
     "path": "#fun_box.get_top",
     "summary": "Pine Script v6 function: box.get_top()"
   },
-  "box.new()": {
+  "box.new": {
     "kind": "function",
     "path": "#fun_box.new",
     "summary": "Pine Script v6 function: box.new()"
   },
-  "box.set_bgcolor()": {
+  "box.set_bgcolor": {
     "kind": "function",
     "path": "#fun_box.set_bgcolor",
     "summary": "Pine Script v6 function: box.set_bgcolor()"
   },
-  "box.set_border_color()": {
+  "box.set_border_color": {
     "kind": "function",
     "path": "#fun_box.set_border_color",
     "summary": "Pine Script v6 function: box.set_border_color()"
   },
-  "box.set_border_style()": {
+  "box.set_border_style": {
     "kind": "function",
     "path": "#fun_box.set_border_style",
     "summary": "Pine Script v6 function: box.set_border_style()"
   },
-  "box.set_border_width()": {
+  "box.set_border_width": {
     "kind": "function",
     "path": "#fun_box.set_border_width",
     "summary": "Pine Script v6 function: box.set_border_width()"
   },
-  "box.set_bottom()": {
+  "box.set_bottom": {
     "kind": "function",
     "path": "#fun_box.set_bottom",
     "summary": "Pine Script v6 function: box.set_bottom()"
   },
-  "box.set_bottom_right_point()": {
+  "box.set_bottom_right_point": {
     "kind": "function",
     "path": "#fun_box.set_bottom_right_point",
     "summary": "Pine Script v6 function: box.set_bottom_right_point()"
   },
-  "box.set_extend()": {
+  "box.set_extend": {
     "kind": "function",
     "path": "#fun_box.set_extend",
     "summary": "Pine Script v6 function: box.set_extend()"
   },
-  "box.set_left()": {
+  "box.set_left": {
     "kind": "function",
     "path": "#fun_box.set_left",
     "summary": "Pine Script v6 function: box.set_left()"
   },
-  "box.set_lefttop()": {
+  "box.set_lefttop": {
     "kind": "function",
     "path": "#fun_box.set_lefttop",
     "summary": "Pine Script v6 function: box.set_lefttop()"
   },
-  "box.set_right()": {
+  "box.set_right": {
     "kind": "function",
     "path": "#fun_box.set_right",
     "summary": "Pine Script v6 function: box.set_right()"
   },
-  "box.set_rightbottom()": {
+  "box.set_rightbottom": {
     "kind": "function",
     "path": "#fun_box.set_rightbottom",
     "summary": "Pine Script v6 function: box.set_rightbottom()"
   },
-  "box.set_text()": {
+  "box.set_text": {
     "kind": "function",
     "path": "#fun_box.set_text",
     "summary": "Pine Script v6 function: box.set_text()"
   },
-  "box.set_text_color()": {
+  "box.set_text_color": {
     "kind": "function",
     "path": "#fun_box.set_text_color",
     "summary": "Pine Script v6 function: box.set_text_color()"
   },
-  "box.set_text_font_family()": {
+  "box.set_text_font_family": {
     "kind": "function",
     "path": "#fun_box.set_text_font_family",
     "summary": "Pine Script v6 function: box.set_text_font_family()"
   },
-  "box.set_text_formatting()": {
+  "box.set_text_formatting": {
     "kind": "function",
     "path": "#fun_box.set_text_formatting",
     "summary": "Pine Script v6 function: box.set_text_formatting()"
   },
-  "box.set_text_halign()": {
+  "box.set_text_halign": {
     "kind": "function",
     "path": "#fun_box.set_text_halign",
     "summary": "Pine Script v6 function: box.set_text_halign()"
   },
-  "box.set_text_size()": {
+  "box.set_text_size": {
     "kind": "function",
     "path": "#fun_box.set_text_size",
     "summary": "Pine Script v6 function: box.set_text_size()"
   },
-  "box.set_text_valign()": {
+  "box.set_text_valign": {
     "kind": "function",
     "path": "#fun_box.set_text_valign",
     "summary": "Pine Script v6 function: box.set_text_valign()"
   },
-  "box.set_text_wrap()": {
+  "box.set_text_wrap": {
     "kind": "function",
     "path": "#fun_box.set_text_wrap",
     "summary": "Pine Script v6 function: box.set_text_wrap()"
   },
-  "box.set_top()": {
+  "box.set_top": {
     "kind": "function",
     "path": "#fun_box.set_top",
     "summary": "Pine Script v6 function: box.set_top()"
   },
-  "box.set_top_left_point()": {
+  "box.set_top_left_point": {
     "kind": "function",
     "path": "#fun_box.set_top_left_point",
     "summary": "Pine Script v6 function: box.set_top_left_point()"
   },
-  "box.set_xloc()": {
+  "box.set_xloc": {
     "kind": "function",
     "path": "#fun_box.set_xloc",
     "summary": "Pine Script v6 function: box.set_xloc()"
   },
-  "chart.point.copy()": {
+  "chart.point.copy": {
     "kind": "function",
     "path": "#fun_chart.point.copy",
     "summary": "Pine Script v6 function: chart.point.copy()"
   },
-  "chart.point.from_index()": {
+  "chart.point.from_index": {
     "kind": "function",
     "path": "#fun_chart.point.from_index",
     "summary": "Pine Script v6 function: chart.point.from_index()"
   },
-  "chart.point.from_time()": {
+  "chart.point.from_time": {
     "kind": "function",
     "path": "#fun_chart.point.from_time",
     "summary": "Pine Script v6 function: chart.point.from_time()"
   },
-  "chart.point.new()": {
+  "chart.point.new": {
     "kind": "function",
     "path": "#fun_chart.point.new",
     "summary": "Pine Script v6 function: chart.point.new()"
   },
-  "chart.point.now()": {
+  "chart.point.now": {
     "kind": "function",
     "path": "#fun_chart.point.now",
     "summary": "Pine Script v6 function: chart.point.now()"
   },
-  "color()": {
-    "kind": "function",
-    "path": "#fun_color",
-    "summary": "Pine Script v6 function: color()"
-  },
-  "color.b()": {
+  "color.b": {
     "kind": "function",
     "path": "#fun_color.b",
     "summary": "Pine Script v6 function: color.b()"
   },
-  "color.from_gradient()": {
+  "color.from_gradient": {
     "kind": "function",
     "path": "#fun_color.from_gradient",
     "summary": "Pine Script v6 function: color.from_gradient()"
   },
-  "color.g()": {
+  "color.g": {
     "kind": "function",
     "path": "#fun_color.g",
     "summary": "Pine Script v6 function: color.g()"
   },
-  "color.new()": {
+  "color.new": {
     "kind": "function",
     "path": "#fun_color.new",
     "summary": "Pine Script v6 function: color.new()"
   },
-  "color.r()": {
+  "color.r": {
     "kind": "function",
     "path": "#fun_color.r",
     "summary": "Pine Script v6 function: color.r()"
   },
-  "color.rgb()": {
+  "color.rgb": {
     "kind": "function",
     "path": "#fun_color.rgb",
     "summary": "Pine Script v6 function: color.rgb()"
   },
-  "color.t()": {
+  "color.t": {
     "kind": "function",
     "path": "#fun_color.t",
     "summary": "Pine Script v6 function: color.t()"
   },
-  "dayofmonth()": {
-    "kind": "function",
-    "path": "#fun_dayofmonth",
-    "summary": "Pine Script v6 function: dayofmonth()"
-  },
-  "dayofweek()": {
-    "kind": "function",
-    "path": "#fun_dayofweek",
-    "summary": "Pine Script v6 function: dayofweek()"
-  },
-  "fill()": {
+  "fill": {
     "kind": "function",
     "path": "#fun_fill",
     "summary": "Pine Script v6 function: fill()"
   },
-  "fixnan()": {
+  "fixnan": {
     "kind": "function",
     "path": "#fun_fixnan",
     "summary": "Pine Script v6 function: fixnan()"
   },
-  "float()": {
-    "kind": "function",
-    "path": "#fun_float",
-    "summary": "Pine Script v6 function: float()"
-  },
-  "footprint.buy_volume()": {
+  "footprint.buy_volume": {
     "kind": "function",
     "path": "#fun_footprint.buy_volume",
     "summary": "Pine Script v6 function: footprint.buy_volume()"
   },
-  "footprint.delta()": {
+  "footprint.delta": {
     "kind": "function",
     "path": "#fun_footprint.delta",
     "summary": "Pine Script v6 function: footprint.delta()"
   },
-  "footprint.get_row_by_price()": {
+  "footprint.get_row_by_price": {
     "kind": "function",
     "path": "#fun_footprint.get_row_by_price",
     "summary": "Pine Script v6 function: footprint.get_row_by_price()"
   },
-  "footprint.poc()": {
+  "footprint.poc": {
     "kind": "function",
     "path": "#fun_footprint.poc",
     "summary": "Pine Script v6 function: footprint.poc()"
   },
-  "footprint.rows()": {
+  "footprint.rows": {
     "kind": "function",
     "path": "#fun_footprint.rows",
     "summary": "Pine Script v6 function: footprint.rows()"
   },
-  "footprint.sell_volume()": {
+  "footprint.sell_volume": {
     "kind": "function",
     "path": "#fun_footprint.sell_volume",
     "summary": "Pine Script v6 function: footprint.sell_volume()"
   },
-  "footprint.total_volume()": {
+  "footprint.total_volume": {
     "kind": "function",
     "path": "#fun_footprint.total_volume",
     "summary": "Pine Script v6 function: footprint.total_volume()"
   },
-  "footprint.vah()": {
+  "footprint.vah": {
     "kind": "function",
     "path": "#fun_footprint.vah",
     "summary": "Pine Script v6 function: footprint.vah()"
   },
-  "footprint.val()": {
+  "footprint.val": {
     "kind": "function",
     "path": "#fun_footprint.val",
     "summary": "Pine Script v6 function: footprint.val()"
   },
-  "hline()": {
+  "hline": {
     "kind": "function",
     "path": "#fun_hline",
     "summary": "Pine Script v6 function: hline()"
   },
-  "hour()": {
-    "kind": "function",
-    "path": "#fun_hour",
-    "summary": "Pine Script v6 function: hour()"
-  },
-  "indicator()": {
+  "indicator": {
     "kind": "function",
     "path": "#fun_indicator",
     "summary": "Pine Script v6 function: indicator()"
   },
-  "input()": {
+  "input": {
     "kind": "function",
     "path": "#fun_input",
     "summary": "Pine Script v6 function: input()"
   },
-  "input.bool()": {
+  "input.bool": {
     "kind": "function",
     "path": "#fun_input.bool",
     "summary": "Pine Script v6 function: input.bool()"
   },
-  "input.color()": {
+  "input.color": {
     "kind": "function",
     "path": "#fun_input.color",
     "summary": "Pine Script v6 function: input.color()"
   },
-  "input.enum()": {
+  "input.enum": {
     "kind": "function",
     "path": "#fun_input.enum",
     "summary": "Pine Script v6 function: input.enum()"
   },
-  "input.float()": {
+  "input.float": {
     "kind": "function",
     "path": "#fun_input.float",
     "summary": "Pine Script v6 function: input.float()"
   },
-  "input.int()": {
+  "input.int": {
     "kind": "function",
     "path": "#fun_input.int",
     "summary": "Pine Script v6 function: input.int()"
   },
-  "input.price()": {
+  "input.price": {
     "kind": "function",
     "path": "#fun_input.price",
     "summary": "Pine Script v6 function: input.price()"
   },
-  "input.session()": {
+  "input.session": {
     "kind": "function",
     "path": "#fun_input.session",
     "summary": "Pine Script v6 function: input.session()"
   },
-  "input.source()": {
+  "input.source": {
     "kind": "function",
     "path": "#fun_input.source",
     "summary": "Pine Script v6 function: input.source()"
   },
-  "input.string()": {
+  "input.string": {
     "kind": "function",
     "path": "#fun_input.string",
     "summary": "Pine Script v6 function: input.string()"
   },
-  "input.symbol()": {
+  "input.symbol": {
     "kind": "function",
     "path": "#fun_input.symbol",
     "summary": "Pine Script v6 function: input.symbol()"
   },
-  "input.text_area()": {
+  "input.text_area": {
     "kind": "function",
     "path": "#fun_input.text_area",
     "summary": "Pine Script v6 function: input.text_area()"
   },
-  "input.time()": {
+  "input.time": {
     "kind": "function",
     "path": "#fun_input.time",
     "summary": "Pine Script v6 function: input.time()"
   },
-  "input.timeframe()": {
+  "input.timeframe": {
     "kind": "function",
     "path": "#fun_input.timeframe",
     "summary": "Pine Script v6 function: input.timeframe()"
   },
-  "int()": {
-    "kind": "function",
-    "path": "#fun_int",
-    "summary": "Pine Script v6 function: int()"
-  },
-  "label()": {
-    "kind": "function",
-    "path": "#fun_label",
-    "summary": "Pine Script v6 function: label()"
-  },
-  "label.copy()": {
+  "label.copy": {
     "kind": "function",
     "path": "#fun_label.copy",
     "summary": "Pine Script v6 function: label.copy()"
   },
-  "label.delete()": {
+  "label.delete": {
     "kind": "function",
     "path": "#fun_label.delete",
     "summary": "Pine Script v6 function: label.delete()"
   },
-  "label.get_text()": {
+  "label.get_text": {
     "kind": "function",
     "path": "#fun_label.get_text",
     "summary": "Pine Script v6 function: label.get_text()"
   },
-  "label.get_x()": {
+  "label.get_x": {
     "kind": "function",
     "path": "#fun_label.get_x",
     "summary": "Pine Script v6 function: label.get_x()"
   },
-  "label.get_y()": {
+  "label.get_y": {
     "kind": "function",
     "path": "#fun_label.get_y",
     "summary": "Pine Script v6 function: label.get_y()"
   },
-  "label.new()": {
+  "label.new": {
     "kind": "function",
     "path": "#fun_label.new",
     "summary": "Pine Script v6 function: label.new()"
   },
-  "label.set_color()": {
+  "label.set_color": {
     "kind": "function",
     "path": "#fun_label.set_color",
     "summary": "Pine Script v6 function: label.set_color()"
   },
-  "label.set_point()": {
+  "label.set_point": {
     "kind": "function",
     "path": "#fun_label.set_point",
     "summary": "Pine Script v6 function: label.set_point()"
   },
-  "label.set_size()": {
+  "label.set_size": {
     "kind": "function",
     "path": "#fun_label.set_size",
     "summary": "Pine Script v6 function: label.set_size()"
   },
-  "label.set_style()": {
+  "label.set_style": {
     "kind": "function",
     "path": "#fun_label.set_style",
     "summary": "Pine Script v6 function: label.set_style()"
   },
-  "label.set_text()": {
+  "label.set_text": {
     "kind": "function",
     "path": "#fun_label.set_text",
     "summary": "Pine Script v6 function: label.set_text()"
   },
-  "label.set_text_font_family()": {
+  "label.set_text_font_family": {
     "kind": "function",
     "path": "#fun_label.set_text_font_family",
     "summary": "Pine Script v6 function: label.set_text_font_family()"
   },
-  "label.set_text_formatting()": {
+  "label.set_text_formatting": {
     "kind": "function",
     "path": "#fun_label.set_text_formatting",
     "summary": "Pine Script v6 function: label.set_text_formatting()"
   },
-  "label.set_textalign()": {
+  "label.set_textalign": {
     "kind": "function",
     "path": "#fun_label.set_textalign",
     "summary": "Pine Script v6 function: label.set_textalign()"
   },
-  "label.set_textcolor()": {
+  "label.set_textcolor": {
     "kind": "function",
     "path": "#fun_label.set_textcolor",
     "summary": "Pine Script v6 function: label.set_textcolor()"
   },
-  "label.set_tooltip()": {
+  "label.set_tooltip": {
     "kind": "function",
     "path": "#fun_label.set_tooltip",
     "summary": "Pine Script v6 function: label.set_tooltip()"
   },
-  "label.set_x()": {
+  "label.set_x": {
     "kind": "function",
     "path": "#fun_label.set_x",
     "summary": "Pine Script v6 function: label.set_x()"
   },
-  "label.set_xloc()": {
+  "label.set_xloc": {
     "kind": "function",
     "path": "#fun_label.set_xloc",
     "summary": "Pine Script v6 function: label.set_xloc()"
   },
-  "label.set_xy()": {
+  "label.set_xy": {
     "kind": "function",
     "path": "#fun_label.set_xy",
     "summary": "Pine Script v6 function: label.set_xy()"
   },
-  "label.set_y()": {
+  "label.set_y": {
     "kind": "function",
     "path": "#fun_label.set_y",
     "summary": "Pine Script v6 function: label.set_y()"
   },
-  "label.set_yloc()": {
+  "label.set_yloc": {
     "kind": "function",
     "path": "#fun_label.set_yloc",
     "summary": "Pine Script v6 function: label.set_yloc()"
   },
-  "library()": {
+  "library": {
     "kind": "function",
     "path": "#fun_library",
     "summary": "Pine Script v6 function: library()"
   },
-  "line()": {
-    "kind": "function",
-    "path": "#fun_line",
-    "summary": "Pine Script v6 function: line()"
-  },
-  "line.copy()": {
+  "line.copy": {
     "kind": "function",
     "path": "#fun_line.copy",
     "summary": "Pine Script v6 function: line.copy()"
   },
-  "line.delete()": {
+  "line.delete": {
     "kind": "function",
     "path": "#fun_line.delete",
     "summary": "Pine Script v6 function: line.delete()"
   },
-  "line.get_price()": {
+  "line.get_price": {
     "kind": "function",
     "path": "#fun_line.get_price",
     "summary": "Pine Script v6 function: line.get_price()"
   },
-  "line.get_x1()": {
+  "line.get_x1": {
     "kind": "function",
     "path": "#fun_line.get_x1",
     "summary": "Pine Script v6 function: line.get_x1()"
   },
-  "line.get_x2()": {
+  "line.get_x2": {
     "kind": "function",
     "path": "#fun_line.get_x2",
     "summary": "Pine Script v6 function: line.get_x2()"
   },
-  "line.get_y1()": {
+  "line.get_y1": {
     "kind": "function",
     "path": "#fun_line.get_y1",
     "summary": "Pine Script v6 function: line.get_y1()"
   },
-  "line.get_y2()": {
+  "line.get_y2": {
     "kind": "function",
     "path": "#fun_line.get_y2",
     "summary": "Pine Script v6 function: line.get_y2()"
   },
-  "line.new()": {
+  "line.new": {
     "kind": "function",
     "path": "#fun_line.new",
     "summary": "Pine Script v6 function: line.new()"
   },
-  "line.set_color()": {
+  "line.set_color": {
     "kind": "function",
     "path": "#fun_line.set_color",
     "summary": "Pine Script v6 function: line.set_color()"
   },
-  "line.set_extend()": {
+  "line.set_extend": {
     "kind": "function",
     "path": "#fun_line.set_extend",
     "summary": "Pine Script v6 function: line.set_extend()"
   },
-  "line.set_first_point()": {
+  "line.set_first_point": {
     "kind": "function",
     "path": "#fun_line.set_first_point",
     "summary": "Pine Script v6 function: line.set_first_point()"
   },
-  "line.set_second_point()": {
+  "line.set_second_point": {
     "kind": "function",
     "path": "#fun_line.set_second_point",
     "summary": "Pine Script v6 function: line.set_second_point()"
   },
-  "line.set_style()": {
+  "line.set_style": {
     "kind": "function",
     "path": "#fun_line.set_style",
     "summary": "Pine Script v6 function: line.set_style()"
   },
-  "line.set_width()": {
+  "line.set_width": {
     "kind": "function",
     "path": "#fun_line.set_width",
     "summary": "Pine Script v6 function: line.set_width()"
   },
-  "line.set_x1()": {
+  "line.set_x1": {
     "kind": "function",
     "path": "#fun_line.set_x1",
     "summary": "Pine Script v6 function: line.set_x1()"
   },
-  "line.set_x2()": {
+  "line.set_x2": {
     "kind": "function",
     "path": "#fun_line.set_x2",
     "summary": "Pine Script v6 function: line.set_x2()"
   },
-  "line.set_xloc()": {
+  "line.set_xloc": {
     "kind": "function",
     "path": "#fun_line.set_xloc",
     "summary": "Pine Script v6 function: line.set_xloc()"
   },
-  "line.set_xy1()": {
+  "line.set_xy1": {
     "kind": "function",
     "path": "#fun_line.set_xy1",
     "summary": "Pine Script v6 function: line.set_xy1()"
   },
-  "line.set_xy2()": {
+  "line.set_xy2": {
     "kind": "function",
     "path": "#fun_line.set_xy2",
     "summary": "Pine Script v6 function: line.set_xy2()"
   },
-  "line.set_y1()": {
+  "line.set_y1": {
     "kind": "function",
     "path": "#fun_line.set_y1",
     "summary": "Pine Script v6 function: line.set_y1()"
   },
-  "line.set_y2()": {
+  "line.set_y2": {
     "kind": "function",
     "path": "#fun_line.set_y2",
     "summary": "Pine Script v6 function: line.set_y2()"
   },
-  "linefill()": {
-    "kind": "function",
-    "path": "#fun_linefill",
-    "summary": "Pine Script v6 function: linefill()"
-  },
-  "linefill.delete()": {
+  "linefill.delete": {
     "kind": "function",
     "path": "#fun_linefill.delete",
     "summary": "Pine Script v6 function: linefill.delete()"
   },
-  "linefill.get_line1()": {
+  "linefill.get_line1": {
     "kind": "function",
     "path": "#fun_linefill.get_line1",
     "summary": "Pine Script v6 function: linefill.get_line1()"
   },
-  "linefill.get_line2()": {
+  "linefill.get_line2": {
     "kind": "function",
     "path": "#fun_linefill.get_line2",
     "summary": "Pine Script v6 function: linefill.get_line2()"
   },
-  "linefill.new()": {
+  "linefill.new": {
     "kind": "function",
     "path": "#fun_linefill.new",
     "summary": "Pine Script v6 function: linefill.new()"
   },
-  "linefill.set_color()": {
+  "linefill.set_color": {
     "kind": "function",
     "path": "#fun_linefill.set_color",
     "summary": "Pine Script v6 function: linefill.set_color()"
   },
-  "log.error()": {
+  "log.error": {
     "kind": "function",
     "path": "#fun_log.error",
     "summary": "Pine Script v6 function: log.error()"
   },
-  "log.info()": {
+  "log.info": {
     "kind": "function",
     "path": "#fun_log.info",
     "summary": "Pine Script v6 function: log.info()"
   },
-  "log.warning()": {
+  "log.warning": {
     "kind": "function",
     "path": "#fun_log.warning",
     "summary": "Pine Script v6 function: log.warning()"
   },
-  "map.clear()": {
+  "map.clear": {
     "kind": "function",
     "path": "#fun_map.clear",
     "summary": "Pine Script v6 function: map.clear()"
   },
-  "map.contains()": {
+  "map.contains": {
     "kind": "function",
     "path": "#fun_map.contains",
     "summary": "Pine Script v6 function: map.contains()"
   },
-  "map.copy()": {
+  "map.copy": {
     "kind": "function",
     "path": "#fun_map.copy",
     "summary": "Pine Script v6 function: map.copy()"
   },
-  "map.get()": {
+  "map.get": {
     "kind": "function",
     "path": "#fun_map.get",
     "summary": "Pine Script v6 function: map.get()"
   },
-  "map.keys()": {
+  "map.keys": {
     "kind": "function",
     "path": "#fun_map.keys",
     "summary": "Pine Script v6 function: map.keys()"
   },
-  "map.new<type,type>()": {
+  "map.new<type,type>": {
     "kind": "function",
     "path": "#fun_map.new<type,type>",
     "summary": "Pine Script v6 function: map.new<type,type>()"
   },
-  "map.put()": {
+  "map.put": {
     "kind": "function",
     "path": "#fun_map.put",
     "summary": "Pine Script v6 function: map.put()"
   },
-  "map.put_all()": {
+  "map.put_all": {
     "kind": "function",
     "path": "#fun_map.put_all",
     "summary": "Pine Script v6 function: map.put_all()"
   },
-  "map.remove()": {
+  "map.remove": {
     "kind": "function",
     "path": "#fun_map.remove",
     "summary": "Pine Script v6 function: map.remove()"
   },
-  "map.size()": {
+  "map.size": {
     "kind": "function",
     "path": "#fun_map.size",
     "summary": "Pine Script v6 function: map.size()"
   },
-  "map.values()": {
+  "map.values": {
     "kind": "function",
     "path": "#fun_map.values",
     "summary": "Pine Script v6 function: map.values()"
   },
-  "math.abs()": {
+  "math.abs": {
     "kind": "function",
     "path": "#fun_math.abs",
     "summary": "Pine Script v6 function: math.abs()"
   },
-  "math.acos()": {
+  "math.acos": {
     "kind": "function",
     "path": "#fun_math.acos",
     "summary": "Pine Script v6 function: math.acos()"
   },
-  "math.asin()": {
+  "math.asin": {
     "kind": "function",
     "path": "#fun_math.asin",
     "summary": "Pine Script v6 function: math.asin()"
   },
-  "math.atan()": {
+  "math.atan": {
     "kind": "function",
     "path": "#fun_math.atan",
     "summary": "Pine Script v6 function: math.atan()"
   },
-  "math.avg()": {
+  "math.avg": {
     "kind": "function",
     "path": "#fun_math.avg",
     "summary": "Pine Script v6 function: math.avg()"
   },
-  "math.ceil()": {
+  "math.ceil": {
     "kind": "function",
     "path": "#fun_math.ceil",
     "summary": "Pine Script v6 function: math.ceil()"
   },
-  "math.cos()": {
+  "math.cos": {
     "kind": "function",
     "path": "#fun_math.cos",
     "summary": "Pine Script v6 function: math.cos()"
   },
-  "math.exp()": {
+  "math.exp": {
     "kind": "function",
     "path": "#fun_math.exp",
     "summary": "Pine Script v6 function: math.exp()"
   },
-  "math.floor()": {
+  "math.floor": {
     "kind": "function",
     "path": "#fun_math.floor",
     "summary": "Pine Script v6 function: math.floor()"
   },
-  "math.log()": {
+  "math.log": {
     "kind": "function",
     "path": "#fun_math.log",
     "summary": "Pine Script v6 function: math.log()"
   },
-  "math.log10()": {
+  "math.log10": {
     "kind": "function",
     "path": "#fun_math.log10",
     "summary": "Pine Script v6 function: math.log10()"
   },
-  "math.max()": {
+  "math.max": {
     "kind": "function",
     "path": "#fun_math.max",
     "summary": "Pine Script v6 function: math.max()"
   },
-  "math.min()": {
+  "math.min": {
     "kind": "function",
     "path": "#fun_math.min",
     "summary": "Pine Script v6 function: math.min()"
   },
-  "math.pow()": {
+  "math.pow": {
     "kind": "function",
     "path": "#fun_math.pow",
     "summary": "Pine Script v6 function: math.pow()"
   },
-  "math.random()": {
+  "math.random": {
     "kind": "function",
     "path": "#fun_math.random",
     "summary": "Pine Script v6 function: math.random()"
   },
-  "math.round()": {
+  "math.round": {
     "kind": "function",
     "path": "#fun_math.round",
     "summary": "Pine Script v6 function: math.round()"
   },
-  "math.round_to_mintick()": {
+  "math.round_to_mintick": {
     "kind": "function",
     "path": "#fun_math.round_to_mintick",
     "summary": "Pine Script v6 function: math.round_to_mintick()"
   },
-  "math.sign()": {
+  "math.sign": {
     "kind": "function",
     "path": "#fun_math.sign",
     "summary": "Pine Script v6 function: math.sign()"
   },
-  "math.sin()": {
+  "math.sin": {
     "kind": "function",
     "path": "#fun_math.sin",
     "summary": "Pine Script v6 function: math.sin()"
   },
-  "math.sqrt()": {
+  "math.sqrt": {
     "kind": "function",
     "path": "#fun_math.sqrt",
     "summary": "Pine Script v6 function: math.sqrt()"
   },
-  "math.sum()": {
+  "math.sum": {
     "kind": "function",
     "path": "#fun_math.sum",
     "summary": "Pine Script v6 function: math.sum()"
   },
-  "math.tan()": {
+  "math.tan": {
     "kind": "function",
     "path": "#fun_math.tan",
     "summary": "Pine Script v6 function: math.tan()"
   },
-  "math.todegrees()": {
+  "math.todegrees": {
     "kind": "function",
     "path": "#fun_math.todegrees",
     "summary": "Pine Script v6 function: math.todegrees()"
   },
-  "math.toradians()": {
+  "math.toradians": {
     "kind": "function",
     "path": "#fun_math.toradians",
     "summary": "Pine Script v6 function: math.toradians()"
   },
-  "matrix.add_col()": {
+  "matrix.add_col": {
     "kind": "function",
     "path": "#fun_matrix.add_col",
     "summary": "Pine Script v6 function: matrix.add_col()"
   },
-  "matrix.add_row()": {
+  "matrix.add_row": {
     "kind": "function",
     "path": "#fun_matrix.add_row",
     "summary": "Pine Script v6 function: matrix.add_row()"
   },
-  "matrix.avg()": {
+  "matrix.avg": {
     "kind": "function",
     "path": "#fun_matrix.avg",
     "summary": "Pine Script v6 function: matrix.avg()"
   },
-  "matrix.col()": {
+  "matrix.col": {
     "kind": "function",
     "path": "#fun_matrix.col",
     "summary": "Pine Script v6 function: matrix.col()"
   },
-  "matrix.columns()": {
+  "matrix.columns": {
     "kind": "function",
     "path": "#fun_matrix.columns",
     "summary": "Pine Script v6 function: matrix.columns()"
   },
-  "matrix.concat()": {
+  "matrix.concat": {
     "kind": "function",
     "path": "#fun_matrix.concat",
     "summary": "Pine Script v6 function: matrix.concat()"
   },
-  "matrix.copy()": {
+  "matrix.copy": {
     "kind": "function",
     "path": "#fun_matrix.copy",
     "summary": "Pine Script v6 function: matrix.copy()"
   },
-  "matrix.det()": {
+  "matrix.det": {
     "kind": "function",
     "path": "#fun_matrix.det",
     "summary": "Pine Script v6 function: matrix.det()"
   },
-  "matrix.diff()": {
+  "matrix.diff": {
     "kind": "function",
     "path": "#fun_matrix.diff",
     "summary": "Pine Script v6 function: matrix.diff()"
   },
-  "matrix.eigenvalues()": {
+  "matrix.eigenvalues": {
     "kind": "function",
     "path": "#fun_matrix.eigenvalues",
     "summary": "Pine Script v6 function: matrix.eigenvalues()"
   },
-  "matrix.eigenvectors()": {
+  "matrix.eigenvectors": {
     "kind": "function",
     "path": "#fun_matrix.eigenvectors",
     "summary": "Pine Script v6 function: matrix.eigenvectors()"
   },
-  "matrix.elements_count()": {
+  "matrix.elements_count": {
     "kind": "function",
     "path": "#fun_matrix.elements_count",
     "summary": "Pine Script v6 function: matrix.elements_count()"
   },
-  "matrix.fill()": {
+  "matrix.fill": {
     "kind": "function",
     "path": "#fun_matrix.fill",
     "summary": "Pine Script v6 function: matrix.fill()"
   },
-  "matrix.get()": {
+  "matrix.get": {
     "kind": "function",
     "path": "#fun_matrix.get",
     "summary": "Pine Script v6 function: matrix.get()"
   },
-  "matrix.inv()": {
+  "matrix.inv": {
     "kind": "function",
     "path": "#fun_matrix.inv",
     "summary": "Pine Script v6 function: matrix.inv()"
   },
-  "matrix.is_antidiagonal()": {
+  "matrix.is_antidiagonal": {
     "kind": "function",
     "path": "#fun_matrix.is_antidiagonal",
     "summary": "Pine Script v6 function: matrix.is_antidiagonal()"
   },
-  "matrix.is_antisymmetric()": {
+  "matrix.is_antisymmetric": {
     "kind": "function",
     "path": "#fun_matrix.is_antisymmetric",
     "summary": "Pine Script v6 function: matrix.is_antisymmetric()"
   },
-  "matrix.is_binary()": {
+  "matrix.is_binary": {
     "kind": "function",
     "path": "#fun_matrix.is_binary",
     "summary": "Pine Script v6 function: matrix.is_binary()"
   },
-  "matrix.is_diagonal()": {
+  "matrix.is_diagonal": {
     "kind": "function",
     "path": "#fun_matrix.is_diagonal",
     "summary": "Pine Script v6 function: matrix.is_diagonal()"
   },
-  "matrix.is_identity()": {
+  "matrix.is_identity": {
     "kind": "function",
     "path": "#fun_matrix.is_identity",
     "summary": "Pine Script v6 function: matrix.is_identity()"
   },
-  "matrix.is_square()": {
+  "matrix.is_square": {
     "kind": "function",
     "path": "#fun_matrix.is_square",
     "summary": "Pine Script v6 function: matrix.is_square()"
   },
-  "matrix.is_stochastic()": {
+  "matrix.is_stochastic": {
     "kind": "function",
     "path": "#fun_matrix.is_stochastic",
     "summary": "Pine Script v6 function: matrix.is_stochastic()"
   },
-  "matrix.is_symmetric()": {
+  "matrix.is_symmetric": {
     "kind": "function",
     "path": "#fun_matrix.is_symmetric",
     "summary": "Pine Script v6 function: matrix.is_symmetric()"
   },
-  "matrix.is_triangular()": {
+  "matrix.is_triangular": {
     "kind": "function",
     "path": "#fun_matrix.is_triangular",
     "summary": "Pine Script v6 function: matrix.is_triangular()"
   },
-  "matrix.is_zero()": {
+  "matrix.is_zero": {
     "kind": "function",
     "path": "#fun_matrix.is_zero",
     "summary": "Pine Script v6 function: matrix.is_zero()"
   },
-  "matrix.kron()": {
+  "matrix.kron": {
     "kind": "function",
     "path": "#fun_matrix.kron",
     "summary": "Pine Script v6 function: matrix.kron()"
   },
-  "matrix.max()": {
+  "matrix.max": {
     "kind": "function",
     "path": "#fun_matrix.max",
     "summary": "Pine Script v6 function: matrix.max()"
   },
-  "matrix.median()": {
+  "matrix.median": {
     "kind": "function",
     "path": "#fun_matrix.median",
     "summary": "Pine Script v6 function: matrix.median()"
   },
-  "matrix.min()": {
+  "matrix.min": {
     "kind": "function",
     "path": "#fun_matrix.min",
     "summary": "Pine Script v6 function: matrix.min()"
   },
-  "matrix.mode()": {
+  "matrix.mode": {
     "kind": "function",
     "path": "#fun_matrix.mode",
     "summary": "Pine Script v6 function: matrix.mode()"
   },
-  "matrix.mult()": {
+  "matrix.mult": {
     "kind": "function",
     "path": "#fun_matrix.mult",
     "summary": "Pine Script v6 function: matrix.mult()"
   },
-  "matrix.new<type>()": {
+  "matrix.new<type>": {
     "kind": "function",
     "path": "#fun_matrix.new<type>",
     "summary": "Pine Script v6 function: matrix.new<type>()"
   },
-  "matrix.pinv()": {
+  "matrix.pinv": {
     "kind": "function",
     "path": "#fun_matrix.pinv",
     "summary": "Pine Script v6 function: matrix.pinv()"
   },
-  "matrix.pow()": {
+  "matrix.pow": {
     "kind": "function",
     "path": "#fun_matrix.pow",
     "summary": "Pine Script v6 function: matrix.pow()"
   },
-  "matrix.rank()": {
+  "matrix.rank": {
     "kind": "function",
     "path": "#fun_matrix.rank",
     "summary": "Pine Script v6 function: matrix.rank()"
   },
-  "matrix.remove_col()": {
+  "matrix.remove_col": {
     "kind": "function",
     "path": "#fun_matrix.remove_col",
     "summary": "Pine Script v6 function: matrix.remove_col()"
   },
-  "matrix.remove_row()": {
+  "matrix.remove_row": {
     "kind": "function",
     "path": "#fun_matrix.remove_row",
     "summary": "Pine Script v6 function: matrix.remove_row()"
   },
-  "matrix.reshape()": {
+  "matrix.reshape": {
     "kind": "function",
     "path": "#fun_matrix.reshape",
     "summary": "Pine Script v6 function: matrix.reshape()"
   },
-  "matrix.reverse()": {
+  "matrix.reverse": {
     "kind": "function",
     "path": "#fun_matrix.reverse",
     "summary": "Pine Script v6 function: matrix.reverse()"
   },
-  "matrix.row()": {
+  "matrix.row": {
     "kind": "function",
     "path": "#fun_matrix.row",
     "summary": "Pine Script v6 function: matrix.row()"
   },
-  "matrix.rows()": {
+  "matrix.rows": {
     "kind": "function",
     "path": "#fun_matrix.rows",
     "summary": "Pine Script v6 function: matrix.rows()"
   },
-  "matrix.set()": {
+  "matrix.set": {
     "kind": "function",
     "path": "#fun_matrix.set",
     "summary": "Pine Script v6 function: matrix.set()"
   },
-  "matrix.sort()": {
+  "matrix.sort": {
     "kind": "function",
     "path": "#fun_matrix.sort",
     "summary": "Pine Script v6 function: matrix.sort()"
   },
-  "matrix.submatrix()": {
+  "matrix.submatrix": {
     "kind": "function",
     "path": "#fun_matrix.submatrix",
     "summary": "Pine Script v6 function: matrix.submatrix()"
   },
-  "matrix.sum()": {
+  "matrix.sum": {
     "kind": "function",
     "path": "#fun_matrix.sum",
     "summary": "Pine Script v6 function: matrix.sum()"
   },
-  "matrix.swap_columns()": {
+  "matrix.swap_columns": {
     "kind": "function",
     "path": "#fun_matrix.swap_columns",
     "summary": "Pine Script v6 function: matrix.swap_columns()"
   },
-  "matrix.swap_rows()": {
+  "matrix.swap_rows": {
     "kind": "function",
     "path": "#fun_matrix.swap_rows",
     "summary": "Pine Script v6 function: matrix.swap_rows()"
   },
-  "matrix.trace()": {
+  "matrix.trace": {
     "kind": "function",
     "path": "#fun_matrix.trace",
     "summary": "Pine Script v6 function: matrix.trace()"
   },
-  "matrix.transpose()": {
+  "matrix.transpose": {
     "kind": "function",
     "path": "#fun_matrix.transpose",
     "summary": "Pine Script v6 function: matrix.transpose()"
   },
-  "max_bars_back()": {
+  "max_bars_back": {
     "kind": "function",
     "path": "#fun_max_bars_back",
     "summary": "Pine Script v6 function: max_bars_back()"
   },
-  "minute()": {
-    "kind": "function",
-    "path": "#fun_minute",
-    "summary": "Pine Script v6 function: minute()"
-  },
-  "month()": {
-    "kind": "function",
-    "path": "#fun_month",
-    "summary": "Pine Script v6 function: month()"
-  },
-  "na()": {
-    "kind": "function",
-    "path": "#fun_na",
-    "summary": "Pine Script v6 function: na()"
-  },
-  "nz()": {
+  "nz": {
     "kind": "function",
     "path": "#fun_nz",
     "summary": "Pine Script v6 function: nz()"
   },
-  "plot()": {
+  "plot": {
     "kind": "function",
     "path": "#fun_plot",
     "summary": "Pine Script v6 function: plot()"
   },
-  "plotarrow()": {
+  "plotarrow": {
     "kind": "function",
     "path": "#fun_plotarrow",
     "summary": "Pine Script v6 function: plotarrow()"
   },
-  "plotbar()": {
+  "plotbar": {
     "kind": "function",
     "path": "#fun_plotbar",
     "summary": "Pine Script v6 function: plotbar()"
   },
-  "plotcandle()": {
+  "plotcandle": {
     "kind": "function",
     "path": "#fun_plotcandle",
     "summary": "Pine Script v6 function: plotcandle()"
   },
-  "plotchar()": {
+  "plotchar": {
     "kind": "function",
     "path": "#fun_plotchar",
     "summary": "Pine Script v6 function: plotchar()"
   },
-  "plotshape()": {
+  "plotshape": {
     "kind": "function",
     "path": "#fun_plotshape",
     "summary": "Pine Script v6 function: plotshape()"
   },
-  "polyline.delete()": {
+  "polyline.delete": {
     "kind": "function",
     "path": "#fun_polyline.delete",
     "summary": "Pine Script v6 function: polyline.delete()"
   },
-  "polyline.new()": {
+  "polyline.new": {
     "kind": "function",
     "path": "#fun_polyline.new",
     "summary": "Pine Script v6 function: polyline.new()"
   },
-  "request.currency_rate()": {
+  "request.currency_rate": {
     "kind": "function",
     "path": "#fun_request.currency_rate",
     "summary": "Pine Script v6 function: request.currency_rate()"
   },
-  "request.dividends()": {
+  "request.dividends": {
     "kind": "function",
     "path": "#fun_request.dividends",
     "summary": "Pine Script v6 function: request.dividends()"
   },
-  "request.earnings()": {
+  "request.earnings": {
     "kind": "function",
     "path": "#fun_request.earnings",
     "summary": "Pine Script v6 function: request.earnings()"
   },
-  "request.economic()": {
+  "request.economic": {
     "kind": "function",
     "path": "#fun_request.economic",
     "summary": "Pine Script v6 function: request.economic()"
   },
-  "request.financial()": {
+  "request.financial": {
     "kind": "function",
     "path": "#fun_request.financial",
     "summary": "Pine Script v6 function: request.financial()"
   },
-  "request.footprint()": {
+  "request.footprint": {
     "kind": "function",
     "path": "#fun_request.footprint",
     "summary": "Pine Script v6 function: request.footprint()"
   },
-  "request.quandl()": {
+  "request.quandl": {
     "kind": "function",
     "path": "#fun_request.quandl",
     "summary": "Pine Script v6 function: request.quandl()"
   },
-  "request.security()": {
+  "request.security": {
     "kind": "function",
     "path": "#fun_request.security",
     "summary": "Pine Script v6 function: request.security()"
   },
-  "request.security_lower_tf()": {
+  "request.security_lower_tf": {
     "kind": "function",
     "path": "#fun_request.security_lower_tf",
     "summary": "Pine Script v6 function: request.security_lower_tf()"
   },
-  "request.seed()": {
+  "request.seed": {
     "kind": "function",
     "path": "#fun_request.seed",
     "summary": "Pine Script v6 function: request.seed()"
   },
-  "request.splits()": {
+  "request.splits": {
     "kind": "function",
     "path": "#fun_request.splits",
     "summary": "Pine Script v6 function: request.splits()"
   },
-  "runtime.error()": {
+  "runtime.error": {
     "kind": "function",
     "path": "#fun_runtime.error",
     "summary": "Pine Script v6 function: runtime.error()"
   },
-  "second()": {
-    "kind": "function",
-    "path": "#fun_second",
-    "summary": "Pine Script v6 function: second()"
-  },
-  "str.contains()": {
+  "str.contains": {
     "kind": "function",
     "path": "#fun_str.contains",
     "summary": "Pine Script v6 function: str.contains()"
   },
-  "str.endswith()": {
+  "str.endswith": {
     "kind": "function",
     "path": "#fun_str.endswith",
     "summary": "Pine Script v6 function: str.endswith()"
   },
-  "str.format()": {
+  "str.format": {
     "kind": "function",
     "path": "#fun_str.format",
     "summary": "Pine Script v6 function: str.format()"
   },
-  "str.format_time()": {
+  "str.format_time": {
     "kind": "function",
     "path": "#fun_str.format_time",
     "summary": "Pine Script v6 function: str.format_time()"
   },
-  "str.length()": {
+  "str.length": {
     "kind": "function",
     "path": "#fun_str.length",
     "summary": "Pine Script v6 function: str.length()"
   },
-  "str.lower()": {
+  "str.lower": {
     "kind": "function",
     "path": "#fun_str.lower",
     "summary": "Pine Script v6 function: str.lower()"
   },
-  "str.match()": {
+  "str.match": {
     "kind": "function",
     "path": "#fun_str.match",
     "summary": "Pine Script v6 function: str.match()"
   },
-  "str.pos()": {
+  "str.pos": {
     "kind": "function",
     "path": "#fun_str.pos",
     "summary": "Pine Script v6 function: str.pos()"
   },
-  "str.repeat()": {
+  "str.repeat": {
     "kind": "function",
     "path": "#fun_str.repeat",
     "summary": "Pine Script v6 function: str.repeat()"
   },
-  "str.replace()": {
+  "str.replace": {
     "kind": "function",
     "path": "#fun_str.replace",
     "summary": "Pine Script v6 function: str.replace()"
   },
-  "str.replace_all()": {
+  "str.replace_all": {
     "kind": "function",
     "path": "#fun_str.replace_all",
     "summary": "Pine Script v6 function: str.replace_all()"
   },
-  "str.split()": {
+  "str.split": {
     "kind": "function",
     "path": "#fun_str.split",
     "summary": "Pine Script v6 function: str.split()"
   },
-  "str.startswith()": {
+  "str.startswith": {
     "kind": "function",
     "path": "#fun_str.startswith",
     "summary": "Pine Script v6 function: str.startswith()"
   },
-  "str.substring()": {
+  "str.substring": {
     "kind": "function",
     "path": "#fun_str.substring",
     "summary": "Pine Script v6 function: str.substring()"
   },
-  "str.tonumber()": {
+  "str.tonumber": {
     "kind": "function",
     "path": "#fun_str.tonumber",
     "summary": "Pine Script v6 function: str.tonumber()"
   },
-  "str.tostring()": {
+  "str.tostring": {
     "kind": "function",
     "path": "#fun_str.tostring",
     "summary": "Pine Script v6 function: str.tostring()"
   },
-  "str.trim()": {
+  "str.trim": {
     "kind": "function",
     "path": "#fun_str.trim",
     "summary": "Pine Script v6 function: str.trim()"
   },
-  "str.upper()": {
+  "str.upper": {
     "kind": "function",
     "path": "#fun_str.upper",
     "summary": "Pine Script v6 function: str.upper()"
   },
-  "strategy()": {
+  "strategy": {
     "kind": "function",
     "path": "#fun_strategy",
     "summary": "Pine Script v6 function: strategy()"
   },
-  "strategy.cancel()": {
+  "strategy.cancel": {
     "kind": "function",
     "path": "#fun_strategy.cancel",
     "summary": "Pine Script v6 function: strategy.cancel()"
   },
-  "strategy.cancel_all()": {
+  "strategy.cancel_all": {
     "kind": "function",
     "path": "#fun_strategy.cancel_all",
     "summary": "Pine Script v6 function: strategy.cancel_all()"
   },
-  "strategy.close()": {
+  "strategy.close": {
     "kind": "function",
     "path": "#fun_strategy.close",
     "summary": "Pine Script v6 function: strategy.close()"
   },
-  "strategy.close_all()": {
+  "strategy.close_all": {
     "kind": "function",
     "path": "#fun_strategy.close_all",
     "summary": "Pine Script v6 function: strategy.close_all()"
   },
-  "strategy.closedtrades.commission()": {
+  "strategy.closedtrades.commission": {
     "kind": "function",
     "path": "#fun_strategy.closedtrades.commission",
     "summary": "Pine Script v6 function: strategy.closedtrades.commission()"
   },
-  "strategy.closedtrades.entry_bar_index()": {
+  "strategy.closedtrades.entry_bar_index": {
     "kind": "function",
     "path": "#fun_strategy.closedtrades.entry_bar_index",
     "summary": "Pine Script v6 function: strategy.closedtrades.entry_bar_index()"
   },
-  "strategy.closedtrades.entry_comment()": {
+  "strategy.closedtrades.entry_comment": {
     "kind": "function",
     "path": "#fun_strategy.closedtrades.entry_comment",
     "summary": "Pine Script v6 function: strategy.closedtrades.entry_comment()"
   },
-  "strategy.closedtrades.entry_id()": {
+  "strategy.closedtrades.entry_id": {
     "kind": "function",
     "path": "#fun_strategy.closedtrades.entry_id",
     "summary": "Pine Script v6 function: strategy.closedtrades.entry_id()"
   },
-  "strategy.closedtrades.entry_price()": {
+  "strategy.closedtrades.entry_price": {
     "kind": "function",
     "path": "#fun_strategy.closedtrades.entry_price",
     "summary": "Pine Script v6 function: strategy.closedtrades.entry_price()"
   },
-  "strategy.closedtrades.entry_time()": {
+  "strategy.closedtrades.entry_time": {
     "kind": "function",
     "path": "#fun_strategy.closedtrades.entry_time",
     "summary": "Pine Script v6 function: strategy.closedtrades.entry_time()"
   },
-  "strategy.closedtrades.exit_bar_index()": {
+  "strategy.closedtrades.exit_bar_index": {
     "kind": "function",
     "path": "#fun_strategy.closedtrades.exit_bar_index",
     "summary": "Pine Script v6 function: strategy.closedtrades.exit_bar_index()"
   },
-  "strategy.closedtrades.exit_comment()": {
+  "strategy.closedtrades.exit_comment": {
     "kind": "function",
     "path": "#fun_strategy.closedtrades.exit_comment",
     "summary": "Pine Script v6 function: strategy.closedtrades.exit_comment()"
   },
-  "strategy.closedtrades.exit_id()": {
+  "strategy.closedtrades.exit_id": {
     "kind": "function",
     "path": "#fun_strategy.closedtrades.exit_id",
     "summary": "Pine Script v6 function: strategy.closedtrades.exit_id()"
   },
-  "strategy.closedtrades.exit_price()": {
+  "strategy.closedtrades.exit_price": {
     "kind": "function",
     "path": "#fun_strategy.closedtrades.exit_price",
     "summary": "Pine Script v6 function: strategy.closedtrades.exit_price()"
   },
-  "strategy.closedtrades.exit_time()": {
+  "strategy.closedtrades.exit_time": {
     "kind": "function",
     "path": "#fun_strategy.closedtrades.exit_time",
     "summary": "Pine Script v6 function: strategy.closedtrades.exit_time()"
   },
-  "strategy.closedtrades.max_drawdown()": {
+  "strategy.closedtrades.max_drawdown": {
     "kind": "function",
     "path": "#fun_strategy.closedtrades.max_drawdown",
     "summary": "Pine Script v6 function: strategy.closedtrades.max_drawdown()"
   },
-  "strategy.closedtrades.max_drawdown_percent()": {
+  "strategy.closedtrades.max_drawdown_percent": {
     "kind": "function",
     "path": "#fun_strategy.closedtrades.max_drawdown_percent",
     "summary": "Pine Script v6 function: strategy.closedtrades.max_drawdown_percent()"
   },
-  "strategy.closedtrades.max_runup()": {
+  "strategy.closedtrades.max_runup": {
     "kind": "function",
     "path": "#fun_strategy.closedtrades.max_runup",
     "summary": "Pine Script v6 function: strategy.closedtrades.max_runup()"
   },
-  "strategy.closedtrades.max_runup_percent()": {
+  "strategy.closedtrades.max_runup_percent": {
     "kind": "function",
     "path": "#fun_strategy.closedtrades.max_runup_percent",
     "summary": "Pine Script v6 function: strategy.closedtrades.max_runup_percent()"
   },
-  "strategy.closedtrades.profit()": {
+  "strategy.closedtrades.profit": {
     "kind": "function",
     "path": "#fun_strategy.closedtrades.profit",
     "summary": "Pine Script v6 function: strategy.closedtrades.profit()"
   },
-  "strategy.closedtrades.profit_percent()": {
+  "strategy.closedtrades.profit_percent": {
     "kind": "function",
     "path": "#fun_strategy.closedtrades.profit_percent",
     "summary": "Pine Script v6 function: strategy.closedtrades.profit_percent()"
   },
-  "strategy.closedtrades.size()": {
+  "strategy.closedtrades.size": {
     "kind": "function",
     "path": "#fun_strategy.closedtrades.size",
     "summary": "Pine Script v6 function: strategy.closedtrades.size()"
   },
-  "strategy.convert_to_account()": {
+  "strategy.convert_to_account": {
     "kind": "function",
     "path": "#fun_strategy.convert_to_account",
     "summary": "Pine Script v6 function: strategy.convert_to_account()"
   },
-  "strategy.convert_to_symbol()": {
+  "strategy.convert_to_symbol": {
     "kind": "function",
     "path": "#fun_strategy.convert_to_symbol",
     "summary": "Pine Script v6 function: strategy.convert_to_symbol()"
   },
-  "strategy.default_entry_qty()": {
+  "strategy.default_entry_qty": {
     "kind": "function",
     "path": "#fun_strategy.default_entry_qty",
     "summary": "Pine Script v6 function: strategy.default_entry_qty()"
   },
-  "strategy.entry()": {
+  "strategy.entry": {
     "kind": "function",
     "path": "#fun_strategy.entry",
     "summary": "Pine Script v6 function: strategy.entry()"
   },
-  "strategy.exit()": {
+  "strategy.exit": {
     "kind": "function",
     "path": "#fun_strategy.exit",
     "summary": "Pine Script v6 function: strategy.exit()"
   },
-  "strategy.opentrades.commission()": {
+  "strategy.opentrades.commission": {
     "kind": "function",
     "path": "#fun_strategy.opentrades.commission",
     "summary": "Pine Script v6 function: strategy.opentrades.commission()"
   },
-  "strategy.opentrades.entry_bar_index()": {
+  "strategy.opentrades.entry_bar_index": {
     "kind": "function",
     "path": "#fun_strategy.opentrades.entry_bar_index",
     "summary": "Pine Script v6 function: strategy.opentrades.entry_bar_index()"
   },
-  "strategy.opentrades.entry_comment()": {
+  "strategy.opentrades.entry_comment": {
     "kind": "function",
     "path": "#fun_strategy.opentrades.entry_comment",
     "summary": "Pine Script v6 function: strategy.opentrades.entry_comment()"
   },
-  "strategy.opentrades.entry_id()": {
+  "strategy.opentrades.entry_id": {
     "kind": "function",
     "path": "#fun_strategy.opentrades.entry_id",
     "summary": "Pine Script v6 function: strategy.opentrades.entry_id()"
   },
-  "strategy.opentrades.entry_price()": {
+  "strategy.opentrades.entry_price": {
     "kind": "function",
     "path": "#fun_strategy.opentrades.entry_price",
     "summary": "Pine Script v6 function: strategy.opentrades.entry_price()"
   },
-  "strategy.opentrades.entry_time()": {
+  "strategy.opentrades.entry_time": {
     "kind": "function",
     "path": "#fun_strategy.opentrades.entry_time",
     "summary": "Pine Script v6 function: strategy.opentrades.entry_time()"
   },
-  "strategy.opentrades.max_drawdown()": {
+  "strategy.opentrades.max_drawdown": {
     "kind": "function",
     "path": "#fun_strategy.opentrades.max_drawdown",
     "summary": "Pine Script v6 function: strategy.opentrades.max_drawdown()"
   },
-  "strategy.opentrades.max_drawdown_percent()": {
+  "strategy.opentrades.max_drawdown_percent": {
     "kind": "function",
     "path": "#fun_strategy.opentrades.max_drawdown_percent",
     "summary": "Pine Script v6 function: strategy.opentrades.max_drawdown_percent()"
   },
-  "strategy.opentrades.max_runup()": {
+  "strategy.opentrades.max_runup": {
     "kind": "function",
     "path": "#fun_strategy.opentrades.max_runup",
     "summary": "Pine Script v6 function: strategy.opentrades.max_runup()"
   },
-  "strategy.opentrades.max_runup_percent()": {
+  "strategy.opentrades.max_runup_percent": {
     "kind": "function",
     "path": "#fun_strategy.opentrades.max_runup_percent",
     "summary": "Pine Script v6 function: strategy.opentrades.max_runup_percent()"
   },
-  "strategy.opentrades.profit()": {
+  "strategy.opentrades.profit": {
     "kind": "function",
     "path": "#fun_strategy.opentrades.profit",
     "summary": "Pine Script v6 function: strategy.opentrades.profit()"
   },
-  "strategy.opentrades.profit_percent()": {
+  "strategy.opentrades.profit_percent": {
     "kind": "function",
     "path": "#fun_strategy.opentrades.profit_percent",
     "summary": "Pine Script v6 function: strategy.opentrades.profit_percent()"
   },
-  "strategy.opentrades.size()": {
+  "strategy.opentrades.size": {
     "kind": "function",
     "path": "#fun_strategy.opentrades.size",
     "summary": "Pine Script v6 function: strategy.opentrades.size()"
   },
-  "strategy.order()": {
+  "strategy.order": {
     "kind": "function",
     "path": "#fun_strategy.order",
     "summary": "Pine Script v6 function: strategy.order()"
   },
-  "strategy.risk.allow_entry_in()": {
+  "strategy.risk.allow_entry_in": {
     "kind": "function",
     "path": "#fun_strategy.risk.allow_entry_in",
     "summary": "Pine Script v6 function: strategy.risk.allow_entry_in()"
   },
-  "strategy.risk.max_cons_loss_days()": {
+  "strategy.risk.max_cons_loss_days": {
     "kind": "function",
     "path": "#fun_strategy.risk.max_cons_loss_days",
     "summary": "Pine Script v6 function: strategy.risk.max_cons_loss_days()"
   },
-  "strategy.risk.max_drawdown()": {
+  "strategy.risk.max_drawdown": {
     "kind": "function",
     "path": "#fun_strategy.risk.max_drawdown",
     "summary": "Pine Script v6 function: strategy.risk.max_drawdown()"
   },
-  "strategy.risk.max_intraday_filled_orders()": {
+  "strategy.risk.max_intraday_filled_orders": {
     "kind": "function",
     "path": "#fun_strategy.risk.max_intraday_filled_orders",
     "summary": "Pine Script v6 function: strategy.risk.max_intraday_filled_orders()"
   },
-  "strategy.risk.max_intraday_loss()": {
+  "strategy.risk.max_intraday_loss": {
     "kind": "function",
     "path": "#fun_strategy.risk.max_intraday_loss",
     "summary": "Pine Script v6 function: strategy.risk.max_intraday_loss()"
   },
-  "strategy.risk.max_position_size()": {
+  "strategy.risk.max_position_size": {
     "kind": "function",
     "path": "#fun_strategy.risk.max_position_size",
     "summary": "Pine Script v6 function: strategy.risk.max_position_size()"
   },
-  "string()": {
-    "kind": "function",
-    "path": "#fun_string",
-    "summary": "Pine Script v6 function: string()"
-  },
-  "syminfo.prefix()": {
-    "kind": "function",
-    "path": "#fun_syminfo.prefix",
-    "summary": "Pine Script v6 function: syminfo.prefix()"
-  },
-  "syminfo.ticker()": {
-    "kind": "function",
-    "path": "#fun_syminfo.ticker",
-    "summary": "Pine Script v6 function: syminfo.ticker()"
-  },
-  "ta.alma()": {
+  "ta.alma": {
     "kind": "function",
     "path": "#fun_ta.alma",
     "summary": "Pine Script v6 function: ta.alma()"
   },
-  "ta.atr()": {
+  "ta.atr": {
     "kind": "function",
     "path": "#fun_ta.atr",
     "summary": "Pine Script v6 function: ta.atr()"
   },
-  "ta.barssince()": {
+  "ta.barssince": {
     "kind": "function",
     "path": "#fun_ta.barssince",
     "summary": "Pine Script v6 function: ta.barssince()"
   },
-  "ta.bb()": {
+  "ta.bb": {
     "kind": "function",
     "path": "#fun_ta.bb",
     "summary": "Pine Script v6 function: ta.bb()"
   },
-  "ta.bbw()": {
+  "ta.bbw": {
     "kind": "function",
     "path": "#fun_ta.bbw",
     "summary": "Pine Script v6 function: ta.bbw()"
   },
-  "ta.cci()": {
+  "ta.cci": {
     "kind": "function",
     "path": "#fun_ta.cci",
     "summary": "Pine Script v6 function: ta.cci()"
   },
-  "ta.change()": {
+  "ta.change": {
     "kind": "function",
     "path": "#fun_ta.change",
     "summary": "Pine Script v6 function: ta.change()"
   },
-  "ta.cmo()": {
+  "ta.cmo": {
     "kind": "function",
     "path": "#fun_ta.cmo",
     "summary": "Pine Script v6 function: ta.cmo()"
   },
-  "ta.cog()": {
+  "ta.cog": {
     "kind": "function",
     "path": "#fun_ta.cog",
     "summary": "Pine Script v6 function: ta.cog()"
   },
-  "ta.correlation()": {
+  "ta.correlation": {
     "kind": "function",
     "path": "#fun_ta.correlation",
     "summary": "Pine Script v6 function: ta.correlation()"
   },
-  "ta.cross()": {
+  "ta.cross": {
     "kind": "function",
     "path": "#fun_ta.cross",
     "summary": "Pine Script v6 function: ta.cross()"
   },
-  "ta.crossover()": {
+  "ta.crossover": {
     "kind": "function",
     "path": "#fun_ta.crossover",
     "summary": "Pine Script v6 function: ta.crossover()"
   },
-  "ta.crossunder()": {
+  "ta.crossunder": {
     "kind": "function",
     "path": "#fun_ta.crossunder",
     "summary": "Pine Script v6 function: ta.crossunder()"
   },
-  "ta.cum()": {
+  "ta.cum": {
     "kind": "function",
     "path": "#fun_ta.cum",
     "summary": "Pine Script v6 function: ta.cum()"
   },
-  "ta.dev()": {
+  "ta.dev": {
     "kind": "function",
     "path": "#fun_ta.dev",
     "summary": "Pine Script v6 function: ta.dev()"
   },
-  "ta.dmi()": {
+  "ta.dmi": {
     "kind": "function",
     "path": "#fun_ta.dmi",
     "summary": "Pine Script v6 function: ta.dmi()"
   },
-  "ta.ema()": {
+  "ta.ema": {
     "kind": "function",
     "path": "#fun_ta.ema",
     "summary": "Pine Script v6 function: ta.ema()"
   },
-  "ta.falling()": {
+  "ta.falling": {
     "kind": "function",
     "path": "#fun_ta.falling",
     "summary": "Pine Script v6 function: ta.falling()"
   },
-  "ta.highest()": {
+  "ta.highest": {
     "kind": "function",
     "path": "#fun_ta.highest",
     "summary": "Pine Script v6 function: ta.highest()"
   },
-  "ta.highestbars()": {
+  "ta.highestbars": {
     "kind": "function",
     "path": "#fun_ta.highestbars",
     "summary": "Pine Script v6 function: ta.highestbars()"
   },
-  "ta.hma()": {
+  "ta.hma": {
     "kind": "function",
     "path": "#fun_ta.hma",
     "summary": "Pine Script v6 function: ta.hma()"
   },
-  "ta.kc()": {
+  "ta.kc": {
     "kind": "function",
     "path": "#fun_ta.kc",
     "summary": "Pine Script v6 function: ta.kc()"
   },
-  "ta.kcw()": {
+  "ta.kcw": {
     "kind": "function",
     "path": "#fun_ta.kcw",
     "summary": "Pine Script v6 function: ta.kcw()"
   },
-  "ta.linreg()": {
+  "ta.linreg": {
     "kind": "function",
     "path": "#fun_ta.linreg",
     "summary": "Pine Script v6 function: ta.linreg()"
   },
-  "ta.lowest()": {
+  "ta.lowest": {
     "kind": "function",
     "path": "#fun_ta.lowest",
     "summary": "Pine Script v6 function: ta.lowest()"
   },
-  "ta.lowestbars()": {
+  "ta.lowestbars": {
     "kind": "function",
     "path": "#fun_ta.lowestbars",
     "summary": "Pine Script v6 function: ta.lowestbars()"
   },
-  "ta.macd()": {
+  "ta.macd": {
     "kind": "function",
     "path": "#fun_ta.macd",
     "summary": "Pine Script v6 function: ta.macd()"
   },
-  "ta.max()": {
+  "ta.max": {
     "kind": "function",
     "path": "#fun_ta.max",
     "summary": "Pine Script v6 function: ta.max()"
   },
-  "ta.median()": {
+  "ta.median": {
     "kind": "function",
     "path": "#fun_ta.median",
     "summary": "Pine Script v6 function: ta.median()"
   },
-  "ta.mfi()": {
+  "ta.mfi": {
     "kind": "function",
     "path": "#fun_ta.mfi",
     "summary": "Pine Script v6 function: ta.mfi()"
   },
-  "ta.min()": {
+  "ta.min": {
     "kind": "function",
     "path": "#fun_ta.min",
     "summary": "Pine Script v6 function: ta.min()"
   },
-  "ta.mode()": {
+  "ta.mode": {
     "kind": "function",
     "path": "#fun_ta.mode",
     "summary": "Pine Script v6 function: ta.mode()"
   },
-  "ta.mom()": {
+  "ta.mom": {
     "kind": "function",
     "path": "#fun_ta.mom",
     "summary": "Pine Script v6 function: ta.mom()"
   },
-  "ta.percentile_linear_interpolation()": {
+  "ta.percentile_linear_interpolation": {
     "kind": "function",
     "path": "#fun_ta.percentile_linear_interpolation",
     "summary": "Pine Script v6 function: ta.percentile_linear_interpolation()"
   },
-  "ta.percentile_nearest_rank()": {
+  "ta.percentile_nearest_rank": {
     "kind": "function",
     "path": "#fun_ta.percentile_nearest_rank",
     "summary": "Pine Script v6 function: ta.percentile_nearest_rank()"
   },
-  "ta.percentrank()": {
+  "ta.percentrank": {
     "kind": "function",
     "path": "#fun_ta.percentrank",
     "summary": "Pine Script v6 function: ta.percentrank()"
   },
-  "ta.pivot_point_levels()": {
+  "ta.pivot_point_levels": {
     "kind": "function",
     "path": "#fun_ta.pivot_point_levels",
     "summary": "Pine Script v6 function: ta.pivot_point_levels()"
   },
-  "ta.pivothigh()": {
+  "ta.pivothigh": {
     "kind": "function",
     "path": "#fun_ta.pivothigh",
     "summary": "Pine Script v6 function: ta.pivothigh()"
   },
-  "ta.pivotlow()": {
+  "ta.pivotlow": {
     "kind": "function",
     "path": "#fun_ta.pivotlow",
     "summary": "Pine Script v6 function: ta.pivotlow()"
   },
-  "ta.range()": {
+  "ta.range": {
     "kind": "function",
     "path": "#fun_ta.range",
     "summary": "Pine Script v6 function: ta.range()"
   },
-  "ta.rci()": {
+  "ta.rci": {
     "kind": "function",
     "path": "#fun_ta.rci",
     "summary": "Pine Script v6 function: ta.rci()"
   },
-  "ta.rising()": {
+  "ta.rising": {
     "kind": "function",
     "path": "#fun_ta.rising",
     "summary": "Pine Script v6 function: ta.rising()"
   },
-  "ta.rma()": {
+  "ta.rma": {
     "kind": "function",
     "path": "#fun_ta.rma",
     "summary": "Pine Script v6 function: ta.rma()"
   },
-  "ta.roc()": {
+  "ta.roc": {
     "kind": "function",
     "path": "#fun_ta.roc",
     "summary": "Pine Script v6 function: ta.roc()"
   },
-  "ta.rsi()": {
+  "ta.rsi": {
     "kind": "function",
     "path": "#fun_ta.rsi",
     "summary": "Pine Script v6 function: ta.rsi()"
   },
-  "ta.sar()": {
+  "ta.sar": {
     "kind": "function",
     "path": "#fun_ta.sar",
     "summary": "Pine Script v6 function: ta.sar()"
   },
-  "ta.sma()": {
+  "ta.sma": {
     "kind": "function",
     "path": "#fun_ta.sma",
     "summary": "Pine Script v6 function: ta.sma()"
   },
-  "ta.stdev()": {
+  "ta.stdev": {
     "kind": "function",
     "path": "#fun_ta.stdev",
     "summary": "Pine Script v6 function: ta.stdev()"
   },
-  "ta.stoch()": {
+  "ta.stoch": {
     "kind": "function",
     "path": "#fun_ta.stoch",
     "summary": "Pine Script v6 function: ta.stoch()"
   },
-  "ta.supertrend()": {
+  "ta.supertrend": {
     "kind": "function",
     "path": "#fun_ta.supertrend",
     "summary": "Pine Script v6 function: ta.supertrend()"
   },
-  "ta.swma()": {
+  "ta.swma": {
     "kind": "function",
     "path": "#fun_ta.swma",
     "summary": "Pine Script v6 function: ta.swma()"
   },
-  "ta.tr()": {
-    "kind": "function",
-    "path": "#fun_ta.tr",
-    "summary": "Pine Script v6 function: ta.tr()"
-  },
-  "ta.tsi()": {
+  "ta.tsi": {
     "kind": "function",
     "path": "#fun_ta.tsi",
     "summary": "Pine Script v6 function: ta.tsi()"
   },
-  "ta.valuewhen()": {
+  "ta.valuewhen": {
     "kind": "function",
     "path": "#fun_ta.valuewhen",
     "summary": "Pine Script v6 function: ta.valuewhen()"
   },
-  "ta.variance()": {
+  "ta.variance": {
     "kind": "function",
     "path": "#fun_ta.variance",
     "summary": "Pine Script v6 function: ta.variance()"
   },
-  "ta.vwap()": {
-    "kind": "function",
-    "path": "#fun_ta.vwap",
-    "summary": "Pine Script v6 function: ta.vwap()"
-  },
-  "ta.vwma()": {
+  "ta.vwma": {
     "kind": "function",
     "path": "#fun_ta.vwma",
     "summary": "Pine Script v6 function: ta.vwma()"
   },
-  "ta.wma()": {
+  "ta.wma": {
     "kind": "function",
     "path": "#fun_ta.wma",
     "summary": "Pine Script v6 function: ta.wma()"
   },
-  "ta.wpr()": {
+  "ta.wpr": {
     "kind": "function",
     "path": "#fun_ta.wpr",
     "summary": "Pine Script v6 function: ta.wpr()"
   },
-  "table()": {
-    "kind": "function",
-    "path": "#fun_table",
-    "summary": "Pine Script v6 function: table()"
-  },
-  "table.cell()": {
+  "table.cell": {
     "kind": "function",
     "path": "#fun_table.cell",
     "summary": "Pine Script v6 function: table.cell()"
   },
-  "table.cell_set_bgcolor()": {
+  "table.cell_set_bgcolor": {
     "kind": "function",
     "path": "#fun_table.cell_set_bgcolor",
     "summary": "Pine Script v6 function: table.cell_set_bgcolor()"
   },
-  "table.cell_set_height()": {
+  "table.cell_set_height": {
     "kind": "function",
     "path": "#fun_table.cell_set_height",
     "summary": "Pine Script v6 function: table.cell_set_height()"
   },
-  "table.cell_set_text()": {
+  "table.cell_set_text": {
     "kind": "function",
     "path": "#fun_table.cell_set_text",
     "summary": "Pine Script v6 function: table.cell_set_text()"
   },
-  "table.cell_set_text_color()": {
+  "table.cell_set_text_color": {
     "kind": "function",
     "path": "#fun_table.cell_set_text_color",
     "summary": "Pine Script v6 function: table.cell_set_text_color()"
   },
-  "table.cell_set_text_font_family()": {
+  "table.cell_set_text_font_family": {
     "kind": "function",
     "path": "#fun_table.cell_set_text_font_family",
     "summary": "Pine Script v6 function: table.cell_set_text_font_family()"
   },
-  "table.cell_set_text_formatting()": {
+  "table.cell_set_text_formatting": {
     "kind": "function",
     "path": "#fun_table.cell_set_text_formatting",
     "summary": "Pine Script v6 function: table.cell_set_text_formatting()"
   },
-  "table.cell_set_text_halign()": {
+  "table.cell_set_text_halign": {
     "kind": "function",
     "path": "#fun_table.cell_set_text_halign",
     "summary": "Pine Script v6 function: table.cell_set_text_halign()"
   },
-  "table.cell_set_text_size()": {
+  "table.cell_set_text_size": {
     "kind": "function",
     "path": "#fun_table.cell_set_text_size",
     "summary": "Pine Script v6 function: table.cell_set_text_size()"
   },
-  "table.cell_set_text_valign()": {
+  "table.cell_set_text_valign": {
     "kind": "function",
     "path": "#fun_table.cell_set_text_valign",
     "summary": "Pine Script v6 function: table.cell_set_text_valign()"
   },
-  "table.cell_set_tooltip()": {
+  "table.cell_set_tooltip": {
     "kind": "function",
     "path": "#fun_table.cell_set_tooltip",
     "summary": "Pine Script v6 function: table.cell_set_tooltip()"
   },
-  "table.cell_set_width()": {
+  "table.cell_set_width": {
     "kind": "function",
     "path": "#fun_table.cell_set_width",
     "summary": "Pine Script v6 function: table.cell_set_width()"
   },
-  "table.clear()": {
+  "table.clear": {
     "kind": "function",
     "path": "#fun_table.clear",
     "summary": "Pine Script v6 function: table.clear()"
   },
-  "table.delete()": {
+  "table.delete": {
     "kind": "function",
     "path": "#fun_table.delete",
     "summary": "Pine Script v6 function: table.delete()"
   },
-  "table.merge_cells()": {
+  "table.merge_cells": {
     "kind": "function",
     "path": "#fun_table.merge_cells",
     "summary": "Pine Script v6 function: table.merge_cells()"
   },
-  "table.new()": {
+  "table.new": {
     "kind": "function",
     "path": "#fun_table.new",
     "summary": "Pine Script v6 function: table.new()"
   },
-  "table.set_bgcolor()": {
+  "table.set_bgcolor": {
     "kind": "function",
     "path": "#fun_table.set_bgcolor",
     "summary": "Pine Script v6 function: table.set_bgcolor()"
   },
-  "table.set_border_color()": {
+  "table.set_border_color": {
     "kind": "function",
     "path": "#fun_table.set_border_color",
     "summary": "Pine Script v6 function: table.set_border_color()"
   },
-  "table.set_border_width()": {
+  "table.set_border_width": {
     "kind": "function",
     "path": "#fun_table.set_border_width",
     "summary": "Pine Script v6 function: table.set_border_width()"
   },
-  "table.set_frame_color()": {
+  "table.set_frame_color": {
     "kind": "function",
     "path": "#fun_table.set_frame_color",
     "summary": "Pine Script v6 function: table.set_frame_color()"
   },
-  "table.set_frame_width()": {
+  "table.set_frame_width": {
     "kind": "function",
     "path": "#fun_table.set_frame_width",
     "summary": "Pine Script v6 function: table.set_frame_width()"
   },
-  "table.set_position()": {
+  "table.set_position": {
     "kind": "function",
     "path": "#fun_table.set_position",
     "summary": "Pine Script v6 function: table.set_position()"
   },
-  "ticker.heikinashi()": {
+  "ticker.heikinashi": {
     "kind": "function",
     "path": "#fun_ticker.heikinashi",
     "summary": "Pine Script v6 function: ticker.heikinashi()"
   },
-  "ticker.inherit()": {
+  "ticker.inherit": {
     "kind": "function",
     "path": "#fun_ticker.inherit",
     "summary": "Pine Script v6 function: ticker.inherit()"
   },
-  "ticker.kagi()": {
+  "ticker.kagi": {
     "kind": "function",
     "path": "#fun_ticker.kagi",
     "summary": "Pine Script v6 function: ticker.kagi()"
   },
-  "ticker.linebreak()": {
+  "ticker.linebreak": {
     "kind": "function",
     "path": "#fun_ticker.linebreak",
     "summary": "Pine Script v6 function: ticker.linebreak()"
   },
-  "ticker.modify()": {
+  "ticker.modify": {
     "kind": "function",
     "path": "#fun_ticker.modify",
     "summary": "Pine Script v6 function: ticker.modify()"
   },
-  "ticker.new()": {
+  "ticker.new": {
     "kind": "function",
     "path": "#fun_ticker.new",
     "summary": "Pine Script v6 function: ticker.new()"
   },
-  "ticker.pointfigure()": {
+  "ticker.pointfigure": {
     "kind": "function",
     "path": "#fun_ticker.pointfigure",
     "summary": "Pine Script v6 function: ticker.pointfigure()"
   },
-  "ticker.renko()": {
+  "ticker.renko": {
     "kind": "function",
     "path": "#fun_ticker.renko",
     "summary": "Pine Script v6 function: ticker.renko()"
   },
-  "ticker.standard()": {
+  "ticker.standard": {
     "kind": "function",
     "path": "#fun_ticker.standard",
     "summary": "Pine Script v6 function: ticker.standard()"
   },
-  "time()": {
-    "kind": "function",
-    "path": "#fun_time",
-    "summary": "Pine Script v6 function: time()"
-  },
-  "time_close()": {
-    "kind": "function",
-    "path": "#fun_time_close",
-    "summary": "Pine Script v6 function: time_close()"
-  },
-  "timeframe.change()": {
+  "timeframe.change": {
     "kind": "function",
     "path": "#fun_timeframe.change",
     "summary": "Pine Script v6 function: timeframe.change()"
   },
-  "timeframe.from_seconds()": {
+  "timeframe.from_seconds": {
     "kind": "function",
     "path": "#fun_timeframe.from_seconds",
     "summary": "Pine Script v6 function: timeframe.from_seconds()"
   },
-  "timeframe.in_seconds()": {
+  "timeframe.in_seconds": {
     "kind": "function",
     "path": "#fun_timeframe.in_seconds",
     "summary": "Pine Script v6 function: timeframe.in_seconds()"
   },
-  "timestamp()": {
+  "timestamp": {
     "kind": "function",
     "path": "#fun_timestamp",
     "summary": "Pine Script v6 function: timestamp()"
   },
-  "volume_row.buy_volume()": {
+  "volume_row.buy_volume": {
     "kind": "function",
     "path": "#fun_volume_row.buy_volume",
     "summary": "Pine Script v6 function: volume_row.buy_volume()"
   },
-  "volume_row.delta()": {
+  "volume_row.delta": {
     "kind": "function",
     "path": "#fun_volume_row.delta",
     "summary": "Pine Script v6 function: volume_row.delta()"
   },
-  "volume_row.down_price()": {
+  "volume_row.down_price": {
     "kind": "function",
     "path": "#fun_volume_row.down_price",
     "summary": "Pine Script v6 function: volume_row.down_price()"
   },
-  "volume_row.has_buy_imbalance()": {
+  "volume_row.has_buy_imbalance": {
     "kind": "function",
     "path": "#fun_volume_row.has_buy_imbalance",
     "summary": "Pine Script v6 function: volume_row.has_buy_imbalance()"
   },
-  "volume_row.has_sell_imbalance()": {
+  "volume_row.has_sell_imbalance": {
     "kind": "function",
     "path": "#fun_volume_row.has_sell_imbalance",
     "summary": "Pine Script v6 function: volume_row.has_sell_imbalance()"
   },
-  "volume_row.sell_volume()": {
+  "volume_row.sell_volume": {
     "kind": "function",
     "path": "#fun_volume_row.sell_volume",
     "summary": "Pine Script v6 function: volume_row.sell_volume()"
   },
-  "volume_row.total_volume()": {
+  "volume_row.total_volume": {
     "kind": "function",
     "path": "#fun_volume_row.total_volume",
     "summary": "Pine Script v6 function: volume_row.total_volume()"
   },
-  "volume_row.up_price()": {
+  "volume_row.up_price": {
     "kind": "function",
     "path": "#fun_volume_row.up_price",
     "summary": "Pine Script v6 function: volume_row.up_price()"
-  },
-  "weekofyear()": {
-    "kind": "function",
-    "path": "#fun_weekofyear",
-    "summary": "Pine Script v6 function: weekofyear()"
-  },
-  "year()": {
-    "kind": "function",
-    "path": "#fun_year",
-    "summary": "Pine Script v6 function: year()"
   },
   "and": {
     "kind": "keyword",
@@ -3354,236 +3229,6 @@
     "path": "#kw_while",
     "summary": "Pine Script v6 keyword: while"
   },
-  "array.abs(id) → array<float>": {
-    "kind": "function",
-    "path": "#fun_array.abs-0",
-    "summary": "Pine Script v6 function: array.abs(id) → array<float>"
-  },
-  "array.abs(id) → array<int>": {
-    "kind": "function",
-    "path": "#fun_array.abs-1",
-    "summary": "Pine Script v6 function: array.abs(id) → array<int>"
-  },
-  "array.avg(id) → series float": {
-    "kind": "function",
-    "path": "#fun_array.avg-0",
-    "summary": "Pine Script v6 function: array.avg(id) → series float"
-  },
-  "array.avg(id) → series int": {
-    "kind": "function",
-    "path": "#fun_array.avg-1",
-    "summary": "Pine Script v6 function: array.avg(id) → series int"
-  },
-  "array.from(arg0, arg1, ...) → array<type>": {
-    "kind": "function",
-    "path": "#fun_array.from-0",
-    "summary": "Pine Script v6 function: array.from(arg0, arg1, ...) → array<type>"
-  },
-  "array.from(arg0, arg1, ...) → array<enum>": {
-    "kind": "function",
-    "path": "#fun_array.from-1",
-    "summary": "Pine Script v6 function: array.from(arg0, arg1, ...) → array<enum>"
-  },
-  "array.from(arg0, arg1, ...) → array<label>": {
-    "kind": "function",
-    "path": "#fun_array.from-2",
-    "summary": "Pine Script v6 function: array.from(arg0, arg1, ...) → array<label>"
-  },
-  "array.from(arg0, arg1, ...) → array<line>": {
-    "kind": "function",
-    "path": "#fun_array.from-3",
-    "summary": "Pine Script v6 function: array.from(arg0, arg1, ...) → array<line>"
-  },
-  "array.from(arg0, arg1, ...) → array<box>": {
-    "kind": "function",
-    "path": "#fun_array.from-4",
-    "summary": "Pine Script v6 function: array.from(arg0, arg1, ...) → array<box>"
-  },
-  "array.from(arg0, arg1, ...) → array<table>": {
-    "kind": "function",
-    "path": "#fun_array.from-5",
-    "summary": "Pine Script v6 function: array.from(arg0, arg1, ...) → array<table>"
-  },
-  "array.from(arg0, arg1, ...) → array<linefill>": {
-    "kind": "function",
-    "path": "#fun_array.from-6",
-    "summary": "Pine Script v6 function: array.from(arg0, arg1, ...) → array<linefill>"
-  },
-  "array.from(arg0, arg1, ...) → array<string>": {
-    "kind": "function",
-    "path": "#fun_array.from-7",
-    "summary": "Pine Script v6 function: array.from(arg0, arg1, ...) → array<string>"
-  },
-  "array.from(arg0, arg1, ...) → array<color>": {
-    "kind": "function",
-    "path": "#fun_array.from-8",
-    "summary": "Pine Script v6 function: array.from(arg0, arg1, ...) → array<color>"
-  },
-  "array.from(arg0, arg1, ...) → array<int>": {
-    "kind": "function",
-    "path": "#fun_array.from-9",
-    "summary": "Pine Script v6 function: array.from(arg0, arg1, ...) → array<int>"
-  },
-  "array.from(arg0, arg1, ...) → array<float>": {
-    "kind": "function",
-    "path": "#fun_array.from-10",
-    "summary": "Pine Script v6 function: array.from(arg0, arg1, ...) → array<float>"
-  },
-  "array.from(arg0, arg1, ...) → array<bool>": {
-    "kind": "function",
-    "path": "#fun_array.from-11",
-    "summary": "Pine Script v6 function: array.from(arg0, arg1, ...) → array<bool>"
-  },
-  "array.max(id, nth) → series float": {
-    "kind": "function",
-    "path": "#fun_array.max-0",
-    "summary": "Pine Script v6 function: array.max(id, nth) → series float"
-  },
-  "array.max(id, nth) → series int": {
-    "kind": "function",
-    "path": "#fun_array.max-1",
-    "summary": "Pine Script v6 function: array.max(id, nth) → series int"
-  },
-  "array.median(id) → series float": {
-    "kind": "function",
-    "path": "#fun_array.median-0",
-    "summary": "Pine Script v6 function: array.median(id) → series float"
-  },
-  "array.median(id) → series int": {
-    "kind": "function",
-    "path": "#fun_array.median-1",
-    "summary": "Pine Script v6 function: array.median(id) → series int"
-  },
-  "array.min(id, nth) → series float": {
-    "kind": "function",
-    "path": "#fun_array.min-0",
-    "summary": "Pine Script v6 function: array.min(id, nth) → series float"
-  },
-  "array.min(id, nth) → series int": {
-    "kind": "function",
-    "path": "#fun_array.min-1",
-    "summary": "Pine Script v6 function: array.min(id, nth) → series int"
-  },
-  "array.mode(id) → series float": {
-    "kind": "function",
-    "path": "#fun_array.mode-0",
-    "summary": "Pine Script v6 function: array.mode(id) → series float"
-  },
-  "array.mode(id) → series int": {
-    "kind": "function",
-    "path": "#fun_array.mode-1",
-    "summary": "Pine Script v6 function: array.mode(id) → series int"
-  },
-  "array.percentile_linear_interpolation(id, percentage) → series float": {
-    "kind": "function",
-    "path": "#fun_array.percentile_linear_interpolation-0",
-    "summary": "Pine Script v6 function: array.percentile_linear_interpolation(id, percentage) → series float"
-  },
-  "array.percentile_linear_interpolation(id, percentage) → series int": {
-    "kind": "function",
-    "path": "#fun_array.percentile_linear_interpolation-1",
-    "summary": "Pine Script v6 function: array.percentile_linear_interpolation(id, percentage) → series int"
-  },
-  "array.percentile_nearest_rank(id, percentage) → series float": {
-    "kind": "function",
-    "path": "#fun_array.percentile_nearest_rank-0",
-    "summary": "Pine Script v6 function: array.percentile_nearest_rank(id, percentage) → series float"
-  },
-  "array.percentile_nearest_rank(id, percentage) → series int": {
-    "kind": "function",
-    "path": "#fun_array.percentile_nearest_rank-1",
-    "summary": "Pine Script v6 function: array.percentile_nearest_rank(id, percentage) → series int"
-  },
-  "array.percentrank(id, index) → series float": {
-    "kind": "function",
-    "path": "#fun_array.percentrank-0",
-    "summary": "Pine Script v6 function: array.percentrank(id, index) → series float"
-  },
-  "array.percentrank(id, index) → series int": {
-    "kind": "function",
-    "path": "#fun_array.percentrank-1",
-    "summary": "Pine Script v6 function: array.percentrank(id, index) → series int"
-  },
-  "array.range(id) → series float": {
-    "kind": "function",
-    "path": "#fun_array.range-0",
-    "summary": "Pine Script v6 function: array.range(id) → series float"
-  },
-  "array.range(id) → series int": {
-    "kind": "function",
-    "path": "#fun_array.range-1",
-    "summary": "Pine Script v6 function: array.range(id) → series int"
-  },
-  "array.standardize(id) → array<float>": {
-    "kind": "function",
-    "path": "#fun_array.standardize-0",
-    "summary": "Pine Script v6 function: array.standardize(id) → array<float>"
-  },
-  "array.standardize(id) → array<int>": {
-    "kind": "function",
-    "path": "#fun_array.standardize-1",
-    "summary": "Pine Script v6 function: array.standardize(id) → array<int>"
-  },
-  "array.stdev(id, biased) → series float": {
-    "kind": "function",
-    "path": "#fun_array.stdev-0",
-    "summary": "Pine Script v6 function: array.stdev(id, biased) → series float"
-  },
-  "array.stdev(id, biased) → series int": {
-    "kind": "function",
-    "path": "#fun_array.stdev-1",
-    "summary": "Pine Script v6 function: array.stdev(id, biased) → series int"
-  },
-  "array.sum(id) → series float": {
-    "kind": "function",
-    "path": "#fun_array.sum-0",
-    "summary": "Pine Script v6 function: array.sum(id) → series float"
-  },
-  "array.sum(id) → series int": {
-    "kind": "function",
-    "path": "#fun_array.sum-1",
-    "summary": "Pine Script v6 function: array.sum(id) → series int"
-  },
-  "array.variance(id, biased) → series float": {
-    "kind": "function",
-    "path": "#fun_array.variance-0",
-    "summary": "Pine Script v6 function: array.variance(id, biased) → series float"
-  },
-  "array.variance(id, biased) → series int": {
-    "kind": "function",
-    "path": "#fun_array.variance-1",
-    "summary": "Pine Script v6 function: array.variance(id, biased) → series int"
-  },
-  "bool(x) → const bool": {
-    "kind": "function",
-    "path": "#fun_bool-0",
-    "summary": "Pine Script v6 function: bool(x) → const bool"
-  },
-  "bool(x) → input bool": {
-    "kind": "function",
-    "path": "#fun_bool-1",
-    "summary": "Pine Script v6 function: bool(x) → input bool"
-  },
-  "bool(x) → simple bool": {
-    "kind": "function",
-    "path": "#fun_bool-2",
-    "summary": "Pine Script v6 function: bool(x) → simple bool"
-  },
-  "bool(x) → series bool": {
-    "kind": "function",
-    "path": "#fun_bool-3",
-    "summary": "Pine Script v6 function: bool(x) → series bool"
-  },
-  "box.new(top_left, bottom_right, border_color, border_width, border_style, extend, xloc, bgcolor, text, text_size, text_color, text_halign, text_valign, text_wrap, text_font_family, force_overlay, text_formatting) → series box": {
-    "kind": "function",
-    "path": "#fun_box.new-0",
-    "summary": "Pine Script v6 function: box.new(top_left, bottom_right, border_color, border_width, border_style, extend, xloc, bgcolor, text, text_size, text_color, text_halign, text_valign, text_wrap, text_font_family, force_overlay, text_formatting) → series box"
-  },
-  "box.new(left, top, right, bottom, border_color, border_width, border_style, extend, xloc, bgcolor, text, text_size, text_color, text_halign, text_valign, text_wrap, text_font_family, force_overlay, text_formatting) → series box": {
-    "kind": "function",
-    "path": "#fun_box.new-1",
-    "summary": "Pine Script v6 function: box.new(left, top, right, bottom, border_color, border_width, border_style, extend, xloc, bgcolor, text, text_size, text_color, text_halign, text_valign, text_wrap, text_font_family, force_overlay, text_formatting) → series box"
-  },
   "text.format_none": {
     "kind": "variable",
     "path": "#var_text.format_none",
@@ -3598,226 +3243,6 @@
     "kind": "variable",
     "path": "#var_text.format_italic",
     "summary": "Pine Script v6 variable: text.format_italic"
-  },
-  "color(x) → const color": {
-    "kind": "function",
-    "path": "#fun_color-0",
-    "summary": "Pine Script v6 function: color(x) → const color"
-  },
-  "color(x) → input color": {
-    "kind": "function",
-    "path": "#fun_color-1",
-    "summary": "Pine Script v6 function: color(x) → input color"
-  },
-  "color(x) → simple color": {
-    "kind": "function",
-    "path": "#fun_color-2",
-    "summary": "Pine Script v6 function: color(x) → simple color"
-  },
-  "color(x) → series color": {
-    "kind": "function",
-    "path": "#fun_color-3",
-    "summary": "Pine Script v6 function: color(x) → series color"
-  },
-  "color.b(color) → const float": {
-    "kind": "function",
-    "path": "#fun_color.b-0",
-    "summary": "Pine Script v6 function: color.b(color) → const float"
-  },
-  "color.b(color) → input float": {
-    "kind": "function",
-    "path": "#fun_color.b-1",
-    "summary": "Pine Script v6 function: color.b(color) → input float"
-  },
-  "color.b(color) → simple float": {
-    "kind": "function",
-    "path": "#fun_color.b-2",
-    "summary": "Pine Script v6 function: color.b(color) → simple float"
-  },
-  "color.b(color) → series float": {
-    "kind": "function",
-    "path": "#fun_color.b-3",
-    "summary": "Pine Script v6 function: color.b(color) → series float"
-  },
-  "color.g(color) → const float": {
-    "kind": "function",
-    "path": "#fun_color.g-0",
-    "summary": "Pine Script v6 function: color.g(color) → const float"
-  },
-  "color.g(color) → input float": {
-    "kind": "function",
-    "path": "#fun_color.g-1",
-    "summary": "Pine Script v6 function: color.g(color) → input float"
-  },
-  "color.g(color) → simple float": {
-    "kind": "function",
-    "path": "#fun_color.g-2",
-    "summary": "Pine Script v6 function: color.g(color) → simple float"
-  },
-  "color.g(color) → series float": {
-    "kind": "function",
-    "path": "#fun_color.g-3",
-    "summary": "Pine Script v6 function: color.g(color) → series float"
-  },
-  "color.new(color, transp) → const color": {
-    "kind": "function",
-    "path": "#fun_color.new-0",
-    "summary": "Pine Script v6 function: color.new(color, transp) → const color"
-  },
-  "color.new(color, transp) → input color": {
-    "kind": "function",
-    "path": "#fun_color.new-1",
-    "summary": "Pine Script v6 function: color.new(color, transp) → input color"
-  },
-  "color.new(color, transp) → simple color": {
-    "kind": "function",
-    "path": "#fun_color.new-2",
-    "summary": "Pine Script v6 function: color.new(color, transp) → simple color"
-  },
-  "color.new(color, transp) → series color": {
-    "kind": "function",
-    "path": "#fun_color.new-3",
-    "summary": "Pine Script v6 function: color.new(color, transp) → series color"
-  },
-  "color.r(color) → const float": {
-    "kind": "function",
-    "path": "#fun_color.r-0",
-    "summary": "Pine Script v6 function: color.r(color) → const float"
-  },
-  "color.r(color) → input float": {
-    "kind": "function",
-    "path": "#fun_color.r-1",
-    "summary": "Pine Script v6 function: color.r(color) → input float"
-  },
-  "color.r(color) → simple float": {
-    "kind": "function",
-    "path": "#fun_color.r-2",
-    "summary": "Pine Script v6 function: color.r(color) → simple float"
-  },
-  "color.r(color) → series float": {
-    "kind": "function",
-    "path": "#fun_color.r-3",
-    "summary": "Pine Script v6 function: color.r(color) → series float"
-  },
-  "color.rgb(red, green, blue, transp) → const color": {
-    "kind": "function",
-    "path": "#fun_color.rgb-0",
-    "summary": "Pine Script v6 function: color.rgb(red, green, blue, transp) → const color"
-  },
-  "color.rgb(red, green, blue, transp) → input color": {
-    "kind": "function",
-    "path": "#fun_color.rgb-1",
-    "summary": "Pine Script v6 function: color.rgb(red, green, blue, transp) → input color"
-  },
-  "color.rgb(red, green, blue, transp) → simple color": {
-    "kind": "function",
-    "path": "#fun_color.rgb-2",
-    "summary": "Pine Script v6 function: color.rgb(red, green, blue, transp) → simple color"
-  },
-  "color.rgb(red, green, blue, transp) → series color": {
-    "kind": "function",
-    "path": "#fun_color.rgb-3",
-    "summary": "Pine Script v6 function: color.rgb(red, green, blue, transp) → series color"
-  },
-  "color.t(color) → const float": {
-    "kind": "function",
-    "path": "#fun_color.t-0",
-    "summary": "Pine Script v6 function: color.t(color) → const float"
-  },
-  "color.t(color) → input float": {
-    "kind": "function",
-    "path": "#fun_color.t-1",
-    "summary": "Pine Script v6 function: color.t(color) → input float"
-  },
-  "color.t(color) → simple float": {
-    "kind": "function",
-    "path": "#fun_color.t-2",
-    "summary": "Pine Script v6 function: color.t(color) → simple float"
-  },
-  "color.t(color) → series float": {
-    "kind": "function",
-    "path": "#fun_color.t-3",
-    "summary": "Pine Script v6 function: color.t(color) → series float"
-  },
-  "fill(hline1, hline2, color, title, editable, fillgaps, display) → void": {
-    "kind": "function",
-    "path": "#fun_fill-0",
-    "summary": "Pine Script v6 function: fill(hline1, hline2, color, title, editable, fillgaps, display) → void"
-  },
-  "fill(plot1, plot2, color, title, editable, show_last, fillgaps, display) → void": {
-    "kind": "function",
-    "path": "#fun_fill-1",
-    "summary": "Pine Script v6 function: fill(plot1, plot2, color, title, editable, show_last, fillgaps, display) → void"
-  },
-  "fill(plot1, plot2, top_value, bottom_value, top_color, bottom_color, title, display, fillgaps, editable) → void": {
-    "kind": "function",
-    "path": "#fun_fill-2",
-    "summary": "Pine Script v6 function: fill(plot1, plot2, top_value, bottom_value, top_color, bottom_color, title, display, fillgaps, editable) → void"
-  },
-  "fixnan(source) → series color": {
-    "kind": "function",
-    "path": "#fun_fixnan-0",
-    "summary": "Pine Script v6 function: fixnan(source) → series color"
-  },
-  "fixnan(source) → series int": {
-    "kind": "function",
-    "path": "#fun_fixnan-1",
-    "summary": "Pine Script v6 function: fixnan(source) → series int"
-  },
-  "fixnan(source) → series float": {
-    "kind": "function",
-    "path": "#fun_fixnan-2",
-    "summary": "Pine Script v6 function: fixnan(source) → series float"
-  },
-  "float(x) → const float": {
-    "kind": "function",
-    "path": "#fun_float-0",
-    "summary": "Pine Script v6 function: float(x) → const float"
-  },
-  "float(x) → input float": {
-    "kind": "function",
-    "path": "#fun_float-1",
-    "summary": "Pine Script v6 function: float(x) → input float"
-  },
-  "float(x) → simple float": {
-    "kind": "function",
-    "path": "#fun_float-2",
-    "summary": "Pine Script v6 function: float(x) → simple float"
-  },
-  "float(x) → series float": {
-    "kind": "function",
-    "path": "#fun_float-3",
-    "summary": "Pine Script v6 function: float(x) → series float"
-  },
-  "input(defval, title, tooltip, inline, group, display, active) → input color": {
-    "kind": "function",
-    "path": "#fun_input-0",
-    "summary": "Pine Script v6 function: input(defval, title, tooltip, inline, group, display, active) → input color"
-  },
-  "input(defval, title, tooltip, inline, group, display, active) → input string": {
-    "kind": "function",
-    "path": "#fun_input-1",
-    "summary": "Pine Script v6 function: input(defval, title, tooltip, inline, group, display, active) → input string"
-  },
-  "input(defval, title, tooltip, inline, group, display, active) → input int": {
-    "kind": "function",
-    "path": "#fun_input-2",
-    "summary": "Pine Script v6 function: input(defval, title, tooltip, inline, group, display, active) → input int"
-  },
-  "input(defval, title, tooltip, inline, group, display, active) → input float": {
-    "kind": "function",
-    "path": "#fun_input-3",
-    "summary": "Pine Script v6 function: input(defval, title, tooltip, inline, group, display, active) → input float"
-  },
-  "input(defval, title, inline, group, tooltip, display, active) → series float": {
-    "kind": "function",
-    "path": "#fun_input-4",
-    "summary": "Pine Script v6 function: input(defval, title, inline, group, tooltip, display, active) → series float"
-  },
-  "input(defval, title, tooltip, inline, group, display, active) → input bool": {
-    "kind": "function",
-    "path": "#fun_input-5",
-    "summary": "Pine Script v6 function: input(defval, title, tooltip, inline, group, display, active) → input bool"
   },
   "display.none": {
     "kind": "variable",
@@ -3839,1230 +3264,20 @@
     "path": "#var_display.all",
     "summary": "Pine Script v6 variable: display.all"
   },
-  "input.float(defval, title, options, tooltip, inline, group, confirm, display, active) → input float": {
-    "kind": "function",
-    "path": "#fun_input.float-0",
-    "summary": "Pine Script v6 function: input.float(defval, title, options, tooltip, inline, group, confirm, display, active) → input float"
-  },
-  "input.float(defval, title, minval, maxval, step, tooltip, inline, group, confirm, display, active) → input float": {
-    "kind": "function",
-    "path": "#fun_input.float-1",
-    "summary": "Pine Script v6 function: input.float(defval, title, minval, maxval, step, tooltip, inline, group, confirm, display, active) → input float"
-  },
-  "input.int(defval, title, options, tooltip, inline, group, confirm, display, active) → input int": {
-    "kind": "function",
-    "path": "#fun_input.int-0",
-    "summary": "Pine Script v6 function: input.int(defval, title, options, tooltip, inline, group, confirm, display, active) → input int"
-  },
-  "input.int(defval, title, minval, maxval, step, tooltip, inline, group, confirm, display, active) → input int": {
-    "kind": "function",
-    "path": "#fun_input.int-1",
-    "summary": "Pine Script v6 function: input.int(defval, title, minval, maxval, step, tooltip, inline, group, confirm, display, active) → input int"
-  },
-  "input.resolution()": {
+  "input.resolution": {
     "kind": "function",
     "path": "#fun_input.resolution",
     "summary": "Pine Script v6 function: input.resolution()"
   },
-  "int(x) → const int": {
-    "kind": "function",
-    "path": "#fun_int-0",
-    "summary": "Pine Script v6 function: int(x) → const int"
-  },
-  "int(x) → input int": {
-    "kind": "function",
-    "path": "#fun_int-1",
-    "summary": "Pine Script v6 function: int(x) → input int"
-  },
-  "int(x) → simple int": {
-    "kind": "function",
-    "path": "#fun_int-2",
-    "summary": "Pine Script v6 function: int(x) → simple int"
-  },
-  "int(x) → series int": {
-    "kind": "function",
-    "path": "#fun_int-3",
-    "summary": "Pine Script v6 function: int(x) → series int"
-  },
-  "label.new(point, text, xloc, yloc, color, style, textcolor, size, textalign, tooltip, text_font_family, force_overlay, text_formatting) → series label": {
-    "kind": "function",
-    "path": "#fun_label.new-0",
-    "summary": "Pine Script v6 function: label.new(point, text, xloc, yloc, color, style, textcolor, size, textalign, tooltip, text_font_family, force_overlay, text_formatting) → series label"
-  },
-  "label.new(x, y, text, xloc, yloc, color, style, textcolor, size, textalign, tooltip, text_font_family, force_overlay, text_formatting) → series label": {
-    "kind": "function",
-    "path": "#fun_label.new-1",
-    "summary": "Pine Script v6 function: label.new(x, y, text, xloc, yloc, color, style, textcolor, size, textalign, tooltip, text_font_family, force_overlay, text_formatting) → series label"
-  },
-  "line.new(first_point, second_point, xloc, extend, color, style, width, force_overlay) → series line": {
-    "kind": "function",
-    "path": "#fun_line.new-0",
-    "summary": "Pine Script v6 function: line.new(first_point, second_point, xloc, extend, color, style, width, force_overlay) → series line"
-  },
-  "line.new(x1, y1, x2, y2, xloc, extend, color, style, width, force_overlay) → series line": {
-    "kind": "function",
-    "path": "#fun_line.new-1",
-    "summary": "Pine Script v6 function: line.new(x1, y1, x2, y2, xloc, extend, color, style, width, force_overlay) → series line"
-  },
-  "line.set_xy()": {
+  "line.set_xy": {
     "kind": "function",
     "path": "#fun_line.set_xy",
     "summary": "Pine Script v6 function: line.set_xy()"
   },
-  "log.error(message) → void": {
-    "kind": "function",
-    "path": "#fun_log.error-0",
-    "summary": "Pine Script v6 function: log.error(message) → void"
-  },
-  "log.error(formatString, arg0, arg1, ...) → void": {
-    "kind": "function",
-    "path": "#fun_log.error-1",
-    "summary": "Pine Script v6 function: log.error(formatString, arg0, arg1, ...) → void"
-  },
-  "log.info(message) → void": {
-    "kind": "function",
-    "path": "#fun_log.info-0",
-    "summary": "Pine Script v6 function: log.info(message) → void"
-  },
-  "log.info(formatString, arg0, arg1, ...) → void": {
-    "kind": "function",
-    "path": "#fun_log.info-1",
-    "summary": "Pine Script v6 function: log.info(formatString, arg0, arg1, ...) → void"
-  },
-  "log.warning(message) → void": {
-    "kind": "function",
-    "path": "#fun_log.warning-0",
-    "summary": "Pine Script v6 function: log.warning(message) → void"
-  },
-  "log.warning(formatString, arg0, arg1, ...) → void": {
-    "kind": "function",
-    "path": "#fun_log.warning-1",
-    "summary": "Pine Script v6 function: log.warning(formatString, arg0, arg1, ...) → void"
-  },
-  "math.abs(number) → const int": {
-    "kind": "function",
-    "path": "#fun_math.abs-0",
-    "summary": "Pine Script v6 function: math.abs(number) → const int"
-  },
-  "math.abs(number) → input int": {
-    "kind": "function",
-    "path": "#fun_math.abs-1",
-    "summary": "Pine Script v6 function: math.abs(number) → input int"
-  },
-  "math.abs(number) → const float": {
-    "kind": "function",
-    "path": "#fun_math.abs-2",
-    "summary": "Pine Script v6 function: math.abs(number) → const float"
-  },
-  "math.abs(number) → simple int": {
-    "kind": "function",
-    "path": "#fun_math.abs-3",
-    "summary": "Pine Script v6 function: math.abs(number) → simple int"
-  },
-  "math.abs(number) → input float": {
-    "kind": "function",
-    "path": "#fun_math.abs-4",
-    "summary": "Pine Script v6 function: math.abs(number) → input float"
-  },
-  "math.abs(number) → series int": {
-    "kind": "function",
-    "path": "#fun_math.abs-5",
-    "summary": "Pine Script v6 function: math.abs(number) → series int"
-  },
-  "math.abs(number) → simple float": {
-    "kind": "function",
-    "path": "#fun_math.abs-6",
-    "summary": "Pine Script v6 function: math.abs(number) → simple float"
-  },
-  "math.abs(number) → series float": {
-    "kind": "function",
-    "path": "#fun_math.abs-7",
-    "summary": "Pine Script v6 function: math.abs(number) → series float"
-  },
-  "math.acos(angle) → const float": {
-    "kind": "function",
-    "path": "#fun_math.acos-0",
-    "summary": "Pine Script v6 function: math.acos(angle) → const float"
-  },
-  "math.acos(angle) → input float": {
-    "kind": "function",
-    "path": "#fun_math.acos-1",
-    "summary": "Pine Script v6 function: math.acos(angle) → input float"
-  },
-  "math.acos(angle) → simple float": {
-    "kind": "function",
-    "path": "#fun_math.acos-2",
-    "summary": "Pine Script v6 function: math.acos(angle) → simple float"
-  },
-  "math.acos(angle) → series float": {
-    "kind": "function",
-    "path": "#fun_math.acos-3",
-    "summary": "Pine Script v6 function: math.acos(angle) → series float"
-  },
-  "math.asin(angle) → const float": {
-    "kind": "function",
-    "path": "#fun_math.asin-0",
-    "summary": "Pine Script v6 function: math.asin(angle) → const float"
-  },
-  "math.asin(angle) → input float": {
-    "kind": "function",
-    "path": "#fun_math.asin-1",
-    "summary": "Pine Script v6 function: math.asin(angle) → input float"
-  },
-  "math.asin(angle) → simple float": {
-    "kind": "function",
-    "path": "#fun_math.asin-2",
-    "summary": "Pine Script v6 function: math.asin(angle) → simple float"
-  },
-  "math.asin(angle) → series float": {
-    "kind": "function",
-    "path": "#fun_math.asin-3",
-    "summary": "Pine Script v6 function: math.asin(angle) → series float"
-  },
-  "math.atan(angle) → const float": {
-    "kind": "function",
-    "path": "#fun_math.atan-0",
-    "summary": "Pine Script v6 function: math.atan(angle) → const float"
-  },
-  "math.atan(angle) → input float": {
-    "kind": "function",
-    "path": "#fun_math.atan-1",
-    "summary": "Pine Script v6 function: math.atan(angle) → input float"
-  },
-  "math.atan(angle) → simple float": {
-    "kind": "function",
-    "path": "#fun_math.atan-2",
-    "summary": "Pine Script v6 function: math.atan(angle) → simple float"
-  },
-  "math.atan(angle) → series float": {
-    "kind": "function",
-    "path": "#fun_math.atan-3",
-    "summary": "Pine Script v6 function: math.atan(angle) → series float"
-  },
-  "math.avg(number0, number1, ...) → simple float": {
-    "kind": "function",
-    "path": "#fun_math.avg-0",
-    "summary": "Pine Script v6 function: math.avg(number0, number1, ...) → simple float"
-  },
-  "math.avg(number0, number1, ...) → series float": {
-    "kind": "function",
-    "path": "#fun_math.avg-1",
-    "summary": "Pine Script v6 function: math.avg(number0, number1, ...) → series float"
-  },
-  "math.ceil(number) → const int": {
-    "kind": "function",
-    "path": "#fun_math.ceil-0",
-    "summary": "Pine Script v6 function: math.ceil(number) → const int"
-  },
-  "math.ceil(number) → input int": {
-    "kind": "function",
-    "path": "#fun_math.ceil-1",
-    "summary": "Pine Script v6 function: math.ceil(number) → input int"
-  },
-  "math.ceil(number) → simple int": {
-    "kind": "function",
-    "path": "#fun_math.ceil-2",
-    "summary": "Pine Script v6 function: math.ceil(number) → simple int"
-  },
-  "math.ceil(number) → series int": {
-    "kind": "function",
-    "path": "#fun_math.ceil-3",
-    "summary": "Pine Script v6 function: math.ceil(number) → series int"
-  },
-  "math.cos(angle) → const float": {
-    "kind": "function",
-    "path": "#fun_math.cos-0",
-    "summary": "Pine Script v6 function: math.cos(angle) → const float"
-  },
-  "math.cos(angle) → input float": {
-    "kind": "function",
-    "path": "#fun_math.cos-1",
-    "summary": "Pine Script v6 function: math.cos(angle) → input float"
-  },
-  "math.cos(angle) → simple float": {
-    "kind": "function",
-    "path": "#fun_math.cos-2",
-    "summary": "Pine Script v6 function: math.cos(angle) → simple float"
-  },
-  "math.cos(angle) → series float": {
-    "kind": "function",
-    "path": "#fun_math.cos-3",
-    "summary": "Pine Script v6 function: math.cos(angle) → series float"
-  },
-  "math.exp(number) → const float": {
-    "kind": "function",
-    "path": "#fun_math.exp-0",
-    "summary": "Pine Script v6 function: math.exp(number) → const float"
-  },
-  "math.exp(number) → input float": {
-    "kind": "function",
-    "path": "#fun_math.exp-1",
-    "summary": "Pine Script v6 function: math.exp(number) → input float"
-  },
-  "math.exp(number) → simple float": {
-    "kind": "function",
-    "path": "#fun_math.exp-2",
-    "summary": "Pine Script v6 function: math.exp(number) → simple float"
-  },
-  "math.exp(number) → series float": {
-    "kind": "function",
-    "path": "#fun_math.exp-3",
-    "summary": "Pine Script v6 function: math.exp(number) → series float"
-  },
-  "math.floor(number) → const int": {
-    "kind": "function",
-    "path": "#fun_math.floor-0",
-    "summary": "Pine Script v6 function: math.floor(number) → const int"
-  },
-  "math.floor(number) → input int": {
-    "kind": "function",
-    "path": "#fun_math.floor-1",
-    "summary": "Pine Script v6 function: math.floor(number) → input int"
-  },
-  "math.floor(number) → simple int": {
-    "kind": "function",
-    "path": "#fun_math.floor-2",
-    "summary": "Pine Script v6 function: math.floor(number) → simple int"
-  },
-  "math.floor(number) → series int": {
-    "kind": "function",
-    "path": "#fun_math.floor-3",
-    "summary": "Pine Script v6 function: math.floor(number) → series int"
-  },
-  "math.log(number) → const float": {
-    "kind": "function",
-    "path": "#fun_math.log-0",
-    "summary": "Pine Script v6 function: math.log(number) → const float"
-  },
-  "math.log(number) → input float": {
-    "kind": "function",
-    "path": "#fun_math.log-1",
-    "summary": "Pine Script v6 function: math.log(number) → input float"
-  },
-  "math.log(number) → simple float": {
-    "kind": "function",
-    "path": "#fun_math.log-2",
-    "summary": "Pine Script v6 function: math.log(number) → simple float"
-  },
-  "math.log(number) → series float": {
-    "kind": "function",
-    "path": "#fun_math.log-3",
-    "summary": "Pine Script v6 function: math.log(number) → series float"
-  },
-  "math.log10(number) → const float": {
-    "kind": "function",
-    "path": "#fun_math.log10-0",
-    "summary": "Pine Script v6 function: math.log10(number) → const float"
-  },
-  "math.log10(number) → input float": {
-    "kind": "function",
-    "path": "#fun_math.log10-1",
-    "summary": "Pine Script v6 function: math.log10(number) → input float"
-  },
-  "math.log10(number) → simple float": {
-    "kind": "function",
-    "path": "#fun_math.log10-2",
-    "summary": "Pine Script v6 function: math.log10(number) → simple float"
-  },
-  "math.log10(number) → series float": {
-    "kind": "function",
-    "path": "#fun_math.log10-3",
-    "summary": "Pine Script v6 function: math.log10(number) → series float"
-  },
-  "math.max(number0, number1, ...) → const int": {
-    "kind": "function",
-    "path": "#fun_math.max-0",
-    "summary": "Pine Script v6 function: math.max(number0, number1, ...) → const int"
-  },
-  "math.max(number0, number1, ...) → const float": {
-    "kind": "function",
-    "path": "#fun_math.max-1",
-    "summary": "Pine Script v6 function: math.max(number0, number1, ...) → const float"
-  },
-  "math.max(number0, number1, ...) → input int": {
-    "kind": "function",
-    "path": "#fun_math.max-2",
-    "summary": "Pine Script v6 function: math.max(number0, number1, ...) → input int"
-  },
-  "math.max(number0, number1, ...) → simple int": {
-    "kind": "function",
-    "path": "#fun_math.max-3",
-    "summary": "Pine Script v6 function: math.max(number0, number1, ...) → simple int"
-  },
-  "math.max(number0, number1, ...) → input float": {
-    "kind": "function",
-    "path": "#fun_math.max-4",
-    "summary": "Pine Script v6 function: math.max(number0, number1, ...) → input float"
-  },
-  "math.max(number0, number1, ...) → series int": {
-    "kind": "function",
-    "path": "#fun_math.max-5",
-    "summary": "Pine Script v6 function: math.max(number0, number1, ...) → series int"
-  },
-  "math.max(number0, number1, ...) → simple float": {
-    "kind": "function",
-    "path": "#fun_math.max-6",
-    "summary": "Pine Script v6 function: math.max(number0, number1, ...) → simple float"
-  },
-  "math.max(number0, number1, ...) → series float": {
-    "kind": "function",
-    "path": "#fun_math.max-7",
-    "summary": "Pine Script v6 function: math.max(number0, number1, ...) → series float"
-  },
-  "math.min(number0, number1, ...) → const int": {
-    "kind": "function",
-    "path": "#fun_math.min-0",
-    "summary": "Pine Script v6 function: math.min(number0, number1, ...) → const int"
-  },
-  "math.min(number0, number1, ...) → const float": {
-    "kind": "function",
-    "path": "#fun_math.min-1",
-    "summary": "Pine Script v6 function: math.min(number0, number1, ...) → const float"
-  },
-  "math.min(number0, number1, ...) → input int": {
-    "kind": "function",
-    "path": "#fun_math.min-2",
-    "summary": "Pine Script v6 function: math.min(number0, number1, ...) → input int"
-  },
-  "math.min(number0, number1, ...) → simple int": {
-    "kind": "function",
-    "path": "#fun_math.min-3",
-    "summary": "Pine Script v6 function: math.min(number0, number1, ...) → simple int"
-  },
-  "math.min(number0, number1, ...) → input float": {
-    "kind": "function",
-    "path": "#fun_math.min-4",
-    "summary": "Pine Script v6 function: math.min(number0, number1, ...) → input float"
-  },
-  "math.min(number0, number1, ...) → series int": {
-    "kind": "function",
-    "path": "#fun_math.min-5",
-    "summary": "Pine Script v6 function: math.min(number0, number1, ...) → series int"
-  },
-  "math.min(number0, number1, ...) → simple float": {
-    "kind": "function",
-    "path": "#fun_math.min-6",
-    "summary": "Pine Script v6 function: math.min(number0, number1, ...) → simple float"
-  },
-  "math.min(number0, number1, ...) → series float": {
-    "kind": "function",
-    "path": "#fun_math.min-7",
-    "summary": "Pine Script v6 function: math.min(number0, number1, ...) → series float"
-  },
-  "math.pow(base, exponent) → const float": {
-    "kind": "function",
-    "path": "#fun_math.pow-0",
-    "summary": "Pine Script v6 function: math.pow(base, exponent) → const float"
-  },
-  "math.pow(base, exponent) → input float": {
-    "kind": "function",
-    "path": "#fun_math.pow-1",
-    "summary": "Pine Script v6 function: math.pow(base, exponent) → input float"
-  },
-  "math.pow(base, exponent) → simple float": {
-    "kind": "function",
-    "path": "#fun_math.pow-2",
-    "summary": "Pine Script v6 function: math.pow(base, exponent) → simple float"
-  },
-  "math.pow(base, exponent) → series float": {
-    "kind": "function",
-    "path": "#fun_math.pow-3",
-    "summary": "Pine Script v6 function: math.pow(base, exponent) → series float"
-  },
-  "math.round(number) → const int": {
-    "kind": "function",
-    "path": "#fun_math.round-0",
-    "summary": "Pine Script v6 function: math.round(number) → const int"
-  },
-  "math.round(number) → input int": {
-    "kind": "function",
-    "path": "#fun_math.round-1",
-    "summary": "Pine Script v6 function: math.round(number) → input int"
-  },
-  "math.round(number) → simple int": {
-    "kind": "function",
-    "path": "#fun_math.round-2",
-    "summary": "Pine Script v6 function: math.round(number) → simple int"
-  },
-  "math.round(number) → series int": {
-    "kind": "function",
-    "path": "#fun_math.round-3",
-    "summary": "Pine Script v6 function: math.round(number) → series int"
-  },
-  "math.round(number, precision) → const float": {
-    "kind": "function",
-    "path": "#fun_math.round-4",
-    "summary": "Pine Script v6 function: math.round(number, precision) → const float"
-  },
-  "math.round(number, precision) → input float": {
-    "kind": "function",
-    "path": "#fun_math.round-5",
-    "summary": "Pine Script v6 function: math.round(number, precision) → input float"
-  },
-  "math.round(number, precision) → simple float": {
-    "kind": "function",
-    "path": "#fun_math.round-6",
-    "summary": "Pine Script v6 function: math.round(number, precision) → simple float"
-  },
-  "math.round(number, precision) → series float": {
-    "kind": "function",
-    "path": "#fun_math.round-7",
-    "summary": "Pine Script v6 function: math.round(number, precision) → series float"
-  },
-  "math.round_to_mintick(number) → simple float": {
-    "kind": "function",
-    "path": "#fun_math.round_to_mintick-0",
-    "summary": "Pine Script v6 function: math.round_to_mintick(number) → simple float"
-  },
-  "math.round_to_mintick(number) → series float": {
-    "kind": "function",
-    "path": "#fun_math.round_to_mintick-1",
-    "summary": "Pine Script v6 function: math.round_to_mintick(number) → series float"
-  },
-  "math.sign(number) → const float": {
-    "kind": "function",
-    "path": "#fun_math.sign-0",
-    "summary": "Pine Script v6 function: math.sign(number) → const float"
-  },
-  "math.sign(number) → input float": {
-    "kind": "function",
-    "path": "#fun_math.sign-1",
-    "summary": "Pine Script v6 function: math.sign(number) → input float"
-  },
-  "math.sign(number) → simple float": {
-    "kind": "function",
-    "path": "#fun_math.sign-2",
-    "summary": "Pine Script v6 function: math.sign(number) → simple float"
-  },
-  "math.sign(number) → series float": {
-    "kind": "function",
-    "path": "#fun_math.sign-3",
-    "summary": "Pine Script v6 function: math.sign(number) → series float"
-  },
-  "math.sin(angle) → const float": {
-    "kind": "function",
-    "path": "#fun_math.sin-0",
-    "summary": "Pine Script v6 function: math.sin(angle) → const float"
-  },
-  "math.sin(angle) → input float": {
-    "kind": "function",
-    "path": "#fun_math.sin-1",
-    "summary": "Pine Script v6 function: math.sin(angle) → input float"
-  },
-  "math.sin(angle) → simple float": {
-    "kind": "function",
-    "path": "#fun_math.sin-2",
-    "summary": "Pine Script v6 function: math.sin(angle) → simple float"
-  },
-  "math.sin(angle) → series float": {
-    "kind": "function",
-    "path": "#fun_math.sin-3",
-    "summary": "Pine Script v6 function: math.sin(angle) → series float"
-  },
-  "math.sqrt(number) → const float": {
-    "kind": "function",
-    "path": "#fun_math.sqrt-0",
-    "summary": "Pine Script v6 function: math.sqrt(number) → const float"
-  },
-  "math.sqrt(number) → input float": {
-    "kind": "function",
-    "path": "#fun_math.sqrt-1",
-    "summary": "Pine Script v6 function: math.sqrt(number) → input float"
-  },
-  "math.sqrt(number) → simple float": {
-    "kind": "function",
-    "path": "#fun_math.sqrt-2",
-    "summary": "Pine Script v6 function: math.sqrt(number) → simple float"
-  },
-  "math.sqrt(number) → series float": {
-    "kind": "function",
-    "path": "#fun_math.sqrt-3",
-    "summary": "Pine Script v6 function: math.sqrt(number) → series float"
-  },
-  "math.tan(angle) → const float": {
-    "kind": "function",
-    "path": "#fun_math.tan-0",
-    "summary": "Pine Script v6 function: math.tan(angle) → const float"
-  },
-  "math.tan(angle) → input float": {
-    "kind": "function",
-    "path": "#fun_math.tan-1",
-    "summary": "Pine Script v6 function: math.tan(angle) → input float"
-  },
-  "math.tan(angle) → simple float": {
-    "kind": "function",
-    "path": "#fun_math.tan-2",
-    "summary": "Pine Script v6 function: math.tan(angle) → simple float"
-  },
-  "math.tan(angle) → series float": {
-    "kind": "function",
-    "path": "#fun_math.tan-3",
-    "summary": "Pine Script v6 function: math.tan(angle) → series float"
-  },
-  "matrix.avg(id) → series float": {
-    "kind": "function",
-    "path": "#fun_matrix.avg-0",
-    "summary": "Pine Script v6 function: matrix.avg(id) → series float"
-  },
-  "matrix.avg(id) → series int": {
-    "kind": "function",
-    "path": "#fun_matrix.avg-1",
-    "summary": "Pine Script v6 function: matrix.avg(id) → series int"
-  },
-  "matrix.det(id) → series float": {
-    "kind": "function",
-    "path": "#fun_matrix.det-0",
-    "summary": "Pine Script v6 function: matrix.det(id) → series float"
-  },
-  "matrix.det(id) → series int": {
-    "kind": "function",
-    "path": "#fun_matrix.det-1",
-    "summary": "Pine Script v6 function: matrix.det(id) → series int"
-  },
-  "matrix.diff(id1, id2) → matrix<int>": {
-    "kind": "function",
-    "path": "#fun_matrix.diff-0",
-    "summary": "Pine Script v6 function: matrix.diff(id1, id2) → matrix<int>"
-  },
-  "matrix.diff(id1, id2) → matrix<float>": {
-    "kind": "function",
-    "path": "#fun_matrix.diff-1",
-    "summary": "Pine Script v6 function: matrix.diff(id1, id2) → matrix<float>"
-  },
-  "matrix.eigenvalues(id) → array<float>": {
-    "kind": "function",
-    "path": "#fun_matrix.eigenvalues-0",
-    "summary": "Pine Script v6 function: matrix.eigenvalues(id) → array<float>"
-  },
-  "matrix.eigenvalues(id) → array<int>": {
-    "kind": "function",
-    "path": "#fun_matrix.eigenvalues-1",
-    "summary": "Pine Script v6 function: matrix.eigenvalues(id) → array<int>"
-  },
-  "matrix.eigenvectors(id) → matrix<float>": {
-    "kind": "function",
-    "path": "#fun_matrix.eigenvectors-0",
-    "summary": "Pine Script v6 function: matrix.eigenvectors(id) → matrix<float>"
-  },
-  "matrix.eigenvectors(id) → matrix<int>": {
-    "kind": "function",
-    "path": "#fun_matrix.eigenvectors-1",
-    "summary": "Pine Script v6 function: matrix.eigenvectors(id) → matrix<int>"
-  },
-  "matrix.inv(id) → matrix<float>": {
-    "kind": "function",
-    "path": "#fun_matrix.inv-0",
-    "summary": "Pine Script v6 function: matrix.inv(id) → matrix<float>"
-  },
-  "matrix.inv(id) → matrix<int>": {
-    "kind": "function",
-    "path": "#fun_matrix.inv-1",
-    "summary": "Pine Script v6 function: matrix.inv(id) → matrix<int>"
-  },
-  "matrix.kron(id1, id2) → matrix<float>": {
-    "kind": "function",
-    "path": "#fun_matrix.kron-0",
-    "summary": "Pine Script v6 function: matrix.kron(id1, id2) → matrix<float>"
-  },
-  "matrix.kron(id1, id2) → matrix<int>": {
-    "kind": "function",
-    "path": "#fun_matrix.kron-1",
-    "summary": "Pine Script v6 function: matrix.kron(id1, id2) → matrix<int>"
-  },
-  "matrix.max(id) → series float": {
-    "kind": "function",
-    "path": "#fun_matrix.max-0",
-    "summary": "Pine Script v6 function: matrix.max(id) → series float"
-  },
-  "matrix.max(id) → series int": {
-    "kind": "function",
-    "path": "#fun_matrix.max-1",
-    "summary": "Pine Script v6 function: matrix.max(id) → series int"
-  },
-  "matrix.median(id) → series float": {
-    "kind": "function",
-    "path": "#fun_matrix.median-0",
-    "summary": "Pine Script v6 function: matrix.median(id) → series float"
-  },
-  "matrix.median(id) → series int": {
-    "kind": "function",
-    "path": "#fun_matrix.median-1",
-    "summary": "Pine Script v6 function: matrix.median(id) → series int"
-  },
-  "matrix.min(id) → series float": {
-    "kind": "function",
-    "path": "#fun_matrix.min-0",
-    "summary": "Pine Script v6 function: matrix.min(id) → series float"
-  },
-  "matrix.min(id) → series int": {
-    "kind": "function",
-    "path": "#fun_matrix.min-1",
-    "summary": "Pine Script v6 function: matrix.min(id) → series int"
-  },
-  "matrix.mode(id) → series float": {
-    "kind": "function",
-    "path": "#fun_matrix.mode-0",
-    "summary": "Pine Script v6 function: matrix.mode(id) → series float"
-  },
-  "matrix.mode(id) → series int": {
-    "kind": "function",
-    "path": "#fun_matrix.mode-1",
-    "summary": "Pine Script v6 function: matrix.mode(id) → series int"
-  },
-  "matrix.mult(id1, id2) → array<int>": {
-    "kind": "function",
-    "path": "#fun_matrix.mult-0",
-    "summary": "Pine Script v6 function: matrix.mult(id1, id2) → array<int>"
-  },
-  "matrix.mult(id1, id2) → array<float>": {
-    "kind": "function",
-    "path": "#fun_matrix.mult-1",
-    "summary": "Pine Script v6 function: matrix.mult(id1, id2) → array<float>"
-  },
-  "matrix.mult(id1, id2) → matrix<int>": {
-    "kind": "function",
-    "path": "#fun_matrix.mult-2",
-    "summary": "Pine Script v6 function: matrix.mult(id1, id2) → matrix<int>"
-  },
-  "matrix.mult(id1, id2) → matrix<float>": {
-    "kind": "function",
-    "path": "#fun_matrix.mult-3",
-    "summary": "Pine Script v6 function: matrix.mult(id1, id2) → matrix<float>"
-  },
-  "matrix.pinv(id) → matrix<float>": {
-    "kind": "function",
-    "path": "#fun_matrix.pinv-0",
-    "summary": "Pine Script v6 function: matrix.pinv(id) → matrix<float>"
-  },
-  "matrix.pinv(id) → matrix<int>": {
-    "kind": "function",
-    "path": "#fun_matrix.pinv-1",
-    "summary": "Pine Script v6 function: matrix.pinv(id) → matrix<int>"
-  },
-  "matrix.pow(id, power) → matrix<float>": {
-    "kind": "function",
-    "path": "#fun_matrix.pow-0",
-    "summary": "Pine Script v6 function: matrix.pow(id, power) → matrix<float>"
-  },
-  "matrix.pow(id, power) → matrix<int>": {
-    "kind": "function",
-    "path": "#fun_matrix.pow-1",
-    "summary": "Pine Script v6 function: matrix.pow(id, power) → matrix<int>"
-  },
-  "matrix.sum(id1, id2) → matrix<int>": {
-    "kind": "function",
-    "path": "#fun_matrix.sum-0",
-    "summary": "Pine Script v6 function: matrix.sum(id1, id2) → matrix<int>"
-  },
-  "matrix.sum(id1, id2) → matrix<float>": {
-    "kind": "function",
-    "path": "#fun_matrix.sum-1",
-    "summary": "Pine Script v6 function: matrix.sum(id1, id2) → matrix<float>"
-  },
-  "matrix.trace(id) → series float": {
-    "kind": "function",
-    "path": "#fun_matrix.trace-0",
-    "summary": "Pine Script v6 function: matrix.trace(id) → series float"
-  },
-  "matrix.trace(id) → series int": {
-    "kind": "function",
-    "path": "#fun_matrix.trace-1",
-    "summary": "Pine Script v6 function: matrix.trace(id) → series int"
-  },
-  "na(x) → simple bool": {
-    "kind": "function",
-    "path": "#fun_na-0",
-    "summary": "Pine Script v6 function: na(x) → simple bool"
-  },
-  "na(x) → series bool": {
-    "kind": "function",
-    "path": "#fun_na-1",
-    "summary": "Pine Script v6 function: na(x) → series bool"
-  },
-  "nz(source, replacement) → simple color": {
-    "kind": "function",
-    "path": "#fun_nz-0",
-    "summary": "Pine Script v6 function: nz(source, replacement) → simple color"
-  },
-  "nz(source, replacement) → simple int": {
-    "kind": "function",
-    "path": "#fun_nz-1",
-    "summary": "Pine Script v6 function: nz(source, replacement) → simple int"
-  },
-  "nz(source, replacement) → series color": {
-    "kind": "function",
-    "path": "#fun_nz-2",
-    "summary": "Pine Script v6 function: nz(source, replacement) → series color"
-  },
-  "nz(source, replacement) → series int": {
-    "kind": "function",
-    "path": "#fun_nz-3",
-    "summary": "Pine Script v6 function: nz(source, replacement) → series int"
-  },
-  "nz(source, replacement) → simple float": {
-    "kind": "function",
-    "path": "#fun_nz-4",
-    "summary": "Pine Script v6 function: nz(source, replacement) → simple float"
-  },
-  "nz(source, replacement) → series float": {
-    "kind": "function",
-    "path": "#fun_nz-5",
-    "summary": "Pine Script v6 function: nz(source, replacement) → series float"
-  },
-  "str.contains(source, str) → const bool": {
-    "kind": "function",
-    "path": "#fun_str.contains-0",
-    "summary": "Pine Script v6 function: str.contains(source, str) → const bool"
-  },
-  "str.contains(source, str) → simple bool": {
-    "kind": "function",
-    "path": "#fun_str.contains-1",
-    "summary": "Pine Script v6 function: str.contains(source, str) → simple bool"
-  },
-  "str.contains(source, str) → series bool": {
-    "kind": "function",
-    "path": "#fun_str.contains-2",
-    "summary": "Pine Script v6 function: str.contains(source, str) → series bool"
-  },
-  "str.endswith(source, str) → const bool": {
-    "kind": "function",
-    "path": "#fun_str.endswith-0",
-    "summary": "Pine Script v6 function: str.endswith(source, str) → const bool"
-  },
-  "str.endswith(source, str) → simple bool": {
-    "kind": "function",
-    "path": "#fun_str.endswith-1",
-    "summary": "Pine Script v6 function: str.endswith(source, str) → simple bool"
-  },
-  "str.endswith(source, str) → series bool": {
-    "kind": "function",
-    "path": "#fun_str.endswith-2",
-    "summary": "Pine Script v6 function: str.endswith(source, str) → series bool"
-  },
-  "str.format(formatString, arg0, arg1, ...) → simple string": {
-    "kind": "function",
-    "path": "#fun_str.format-0",
-    "summary": "Pine Script v6 function: str.format(formatString, arg0, arg1, ...) → simple string"
-  },
-  "str.format(formatString, arg0, arg1, ...) → series string": {
-    "kind": "function",
-    "path": "#fun_str.format-1",
-    "summary": "Pine Script v6 function: str.format(formatString, arg0, arg1, ...) → series string"
-  },
-  "str.length(string) → const int": {
-    "kind": "function",
-    "path": "#fun_str.length-0",
-    "summary": "Pine Script v6 function: str.length(string) → const int"
-  },
-  "str.length(string) → simple int": {
-    "kind": "function",
-    "path": "#fun_str.length-1",
-    "summary": "Pine Script v6 function: str.length(string) → simple int"
-  },
-  "str.length(string) → series int": {
-    "kind": "function",
-    "path": "#fun_str.length-2",
-    "summary": "Pine Script v6 function: str.length(string) → series int"
-  },
-  "str.lower(source) → const string": {
-    "kind": "function",
-    "path": "#fun_str.lower-0",
-    "summary": "Pine Script v6 function: str.lower(source) → const string"
-  },
-  "str.lower(source) → simple string": {
-    "kind": "function",
-    "path": "#fun_str.lower-1",
-    "summary": "Pine Script v6 function: str.lower(source) → simple string"
-  },
-  "str.lower(source) → series string": {
-    "kind": "function",
-    "path": "#fun_str.lower-2",
-    "summary": "Pine Script v6 function: str.lower(source) → series string"
-  },
-  "str.match(source, regex) → simple string": {
-    "kind": "function",
-    "path": "#fun_str.match-0",
-    "summary": "Pine Script v6 function: str.match(source, regex) → simple string"
-  },
-  "str.match(source, regex) → series string": {
-    "kind": "function",
-    "path": "#fun_str.match-1",
-    "summary": "Pine Script v6 function: str.match(source, regex) → series string"
-  },
-  "str.pos(source, str) → const int": {
-    "kind": "function",
-    "path": "#fun_str.pos-0",
-    "summary": "Pine Script v6 function: str.pos(source, str) → const int"
-  },
-  "str.pos(source, str) → simple int": {
-    "kind": "function",
-    "path": "#fun_str.pos-1",
-    "summary": "Pine Script v6 function: str.pos(source, str) → simple int"
-  },
-  "str.pos(source, str) → series int": {
-    "kind": "function",
-    "path": "#fun_str.pos-2",
-    "summary": "Pine Script v6 function: str.pos(source, str) → series int"
-  },
-  "str.repeat(source, repeat, separator) → const string": {
-    "kind": "function",
-    "path": "#fun_str.repeat-0",
-    "summary": "Pine Script v6 function: str.repeat(source, repeat, separator) → const string"
-  },
-  "str.repeat(source, repeat, separator) → input string": {
-    "kind": "function",
-    "path": "#fun_str.repeat-1",
-    "summary": "Pine Script v6 function: str.repeat(source, repeat, separator) → input string"
-  },
-  "str.repeat(source, repeat, separator) → simple string": {
-    "kind": "function",
-    "path": "#fun_str.repeat-2",
-    "summary": "Pine Script v6 function: str.repeat(source, repeat, separator) → simple string"
-  },
-  "str.repeat(source, repeat, separator) → series string": {
-    "kind": "function",
-    "path": "#fun_str.repeat-3",
-    "summary": "Pine Script v6 function: str.repeat(source, repeat, separator) → series string"
-  },
-  "str.replace(source, target, replacement, occurrence) → const string": {
-    "kind": "function",
-    "path": "#fun_str.replace-0",
-    "summary": "Pine Script v6 function: str.replace(source, target, replacement, occurrence) → const string"
-  },
-  "str.replace(source, target, replacement, occurrence) → simple string": {
-    "kind": "function",
-    "path": "#fun_str.replace-1",
-    "summary": "Pine Script v6 function: str.replace(source, target, replacement, occurrence) → simple string"
-  },
-  "str.replace(source, target, replacement, occurrence) → series string": {
-    "kind": "function",
-    "path": "#fun_str.replace-2",
-    "summary": "Pine Script v6 function: str.replace(source, target, replacement, occurrence) → series string"
-  },
-  "str.replace_all(source, target, replacement) → simple string": {
-    "kind": "function",
-    "path": "#fun_str.replace_all-0",
-    "summary": "Pine Script v6 function: str.replace_all(source, target, replacement) → simple string"
-  },
-  "str.replace_all(source, target, replacement) → series string": {
-    "kind": "function",
-    "path": "#fun_str.replace_all-1",
-    "summary": "Pine Script v6 function: str.replace_all(source, target, replacement) → series string"
-  },
-  "str.startswith(source, str) → const bool": {
-    "kind": "function",
-    "path": "#fun_str.startswith-0",
-    "summary": "Pine Script v6 function: str.startswith(source, str) → const bool"
-  },
-  "str.startswith(source, str) → simple bool": {
-    "kind": "function",
-    "path": "#fun_str.startswith-1",
-    "summary": "Pine Script v6 function: str.startswith(source, str) → simple bool"
-  },
-  "str.startswith(source, str) → series bool": {
-    "kind": "function",
-    "path": "#fun_str.startswith-2",
-    "summary": "Pine Script v6 function: str.startswith(source, str) → series bool"
-  },
-  "str.substring(source, begin_pos, end_pos) → const string": {
-    "kind": "function",
-    "path": "#fun_str.substring-0",
-    "summary": "Pine Script v6 function: str.substring(source, begin_pos, end_pos) → const string"
-  },
-  "str.substring(source, begin_pos, end_pos) → simple string": {
-    "kind": "function",
-    "path": "#fun_str.substring-1",
-    "summary": "Pine Script v6 function: str.substring(source, begin_pos, end_pos) → simple string"
-  },
-  "str.substring(source, begin_pos, end_pos) → series string": {
-    "kind": "function",
-    "path": "#fun_str.substring-2",
-    "summary": "Pine Script v6 function: str.substring(source, begin_pos, end_pos) → series string"
-  },
-  "str.tonumber(string) → const float": {
-    "kind": "function",
-    "path": "#fun_str.tonumber-0",
-    "summary": "Pine Script v6 function: str.tonumber(string) → const float"
-  },
-  "str.tonumber(string) → input float": {
-    "kind": "function",
-    "path": "#fun_str.tonumber-1",
-    "summary": "Pine Script v6 function: str.tonumber(string) → input float"
-  },
-  "str.tonumber(string) → simple float": {
-    "kind": "function",
-    "path": "#fun_str.tonumber-2",
-    "summary": "Pine Script v6 function: str.tonumber(string) → simple float"
-  },
-  "str.tonumber(string) → series float": {
-    "kind": "function",
-    "path": "#fun_str.tonumber-3",
-    "summary": "Pine Script v6 function: str.tonumber(string) → series float"
-  },
-  "str.tostring(value) → const string": {
-    "kind": "function",
-    "path": "#fun_str.tostring-0",
-    "summary": "Pine Script v6 function: str.tostring(value) → const string"
-  },
-  "str.tostring(value, format) → simple string": {
-    "kind": "function",
-    "path": "#fun_str.tostring-1",
-    "summary": "Pine Script v6 function: str.tostring(value, format) → simple string"
-  },
-  "str.tostring(value, format) → series string": {
-    "kind": "function",
-    "path": "#fun_str.tostring-2",
-    "summary": "Pine Script v6 function: str.tostring(value, format) → series string"
-  },
-  "str.tostring(value) → simple string": {
-    "kind": "function",
-    "path": "#fun_str.tostring-3",
-    "summary": "Pine Script v6 function: str.tostring(value) → simple string"
-  },
-  "str.tostring(value) → series string": {
-    "kind": "function",
-    "path": "#fun_str.tostring-4",
-    "summary": "Pine Script v6 function: str.tostring(value) → series string"
-  },
-  "str.trim(source) → const string": {
-    "kind": "function",
-    "path": "#fun_str.trim-0",
-    "summary": "Pine Script v6 function: str.trim(source) → const string"
-  },
-  "str.trim(source) → input string": {
-    "kind": "function",
-    "path": "#fun_str.trim-1",
-    "summary": "Pine Script v6 function: str.trim(source) → input string"
-  },
-  "str.trim(source) → simple string": {
-    "kind": "function",
-    "path": "#fun_str.trim-2",
-    "summary": "Pine Script v6 function: str.trim(source) → simple string"
-  },
-  "str.trim(source) → series string": {
-    "kind": "function",
-    "path": "#fun_str.trim-3",
-    "summary": "Pine Script v6 function: str.trim(source) → series string"
-  },
-  "str.upper(source) → const string": {
-    "kind": "function",
-    "path": "#fun_str.upper-0",
-    "summary": "Pine Script v6 function: str.upper(source) → const string"
-  },
-  "str.upper(source) → simple string": {
-    "kind": "function",
-    "path": "#fun_str.upper-1",
-    "summary": "Pine Script v6 function: str.upper(source) → simple string"
-  },
-  "str.upper(source) → series string": {
-    "kind": "function",
-    "path": "#fun_str.upper-2",
-    "summary": "Pine Script v6 function: str.upper(source) → series string"
-  },
-  "strategy.closedtrades()": {
-    "kind": "function",
-    "path": "#fun_strategy.closedtrades",
-    "summary": "Pine Script v6 function: strategy.closedtrades()"
-  },
-  "strategy.risk_allow_entry_in()": {
+  "strategy.risk_allow_entry_in": {
     "kind": "function",
     "path": "#fun_strategy.risk_allow_entry_in",
     "summary": "Pine Script v6 function: strategy.risk_allow_entry_in()"
-  },
-  "string(x) → const string": {
-    "kind": "function",
-    "path": "#fun_string-0",
-    "summary": "Pine Script v6 function: string(x) → const string"
-  },
-  "string(x) → input string": {
-    "kind": "function",
-    "path": "#fun_string-1",
-    "summary": "Pine Script v6 function: string(x) → input string"
-  },
-  "string(x) → simple string": {
-    "kind": "function",
-    "path": "#fun_string-2",
-    "summary": "Pine Script v6 function: string(x) → simple string"
-  },
-  "string(x) → series string": {
-    "kind": "function",
-    "path": "#fun_string-3",
-    "summary": "Pine Script v6 function: string(x) → series string"
-  },
-  "syminfo.prefix(symbol) → simple string": {
-    "kind": "function",
-    "path": "#fun_syminfo.prefix-0",
-    "summary": "Pine Script v6 function: syminfo.prefix(symbol) → simple string"
-  },
-  "syminfo.prefix(symbol) → series string": {
-    "kind": "function",
-    "path": "#fun_syminfo.prefix-1",
-    "summary": "Pine Script v6 function: syminfo.prefix(symbol) → series string"
-  },
-  "syminfo.ticker(symbol) → simple string": {
-    "kind": "function",
-    "path": "#fun_syminfo.ticker-0",
-    "summary": "Pine Script v6 function: syminfo.ticker(symbol) → simple string"
-  },
-  "syminfo.ticker(symbol) → series string": {
-    "kind": "function",
-    "path": "#fun_syminfo.ticker-1",
-    "summary": "Pine Script v6 function: syminfo.ticker(symbol) → series string"
-  },
-  "ta.change(source, length) → series int": {
-    "kind": "function",
-    "path": "#fun_ta.change-0",
-    "summary": "Pine Script v6 function: ta.change(source, length) → series int"
-  },
-  "ta.change(source, length) → series float": {
-    "kind": "function",
-    "path": "#fun_ta.change-1",
-    "summary": "Pine Script v6 function: ta.change(source, length) → series float"
-  },
-  "ta.change(source, length) → series bool": {
-    "kind": "function",
-    "path": "#fun_ta.change-2",
-    "summary": "Pine Script v6 function: ta.change(source, length) → series bool"
-  },
-  "ta.median(source, length) → series int": {
-    "kind": "function",
-    "path": "#fun_ta.median-0",
-    "summary": "Pine Script v6 function: ta.median(source, length) → series int"
-  },
-  "ta.median(source, length) → series float": {
-    "kind": "function",
-    "path": "#fun_ta.median-1",
-    "summary": "Pine Script v6 function: ta.median(source, length) → series float"
-  },
-  "ta.mode(source, length) → series int": {
-    "kind": "function",
-    "path": "#fun_ta.mode-0",
-    "summary": "Pine Script v6 function: ta.mode(source, length) → series int"
-  },
-  "ta.mode(source, length) → series float": {
-    "kind": "function",
-    "path": "#fun_ta.mode-1",
-    "summary": "Pine Script v6 function: ta.mode(source, length) → series float"
-  },
-  "ta.pivothigh(leftbars, rightbars) → series float": {
-    "kind": "function",
-    "path": "#fun_ta.pivothigh-0",
-    "summary": "Pine Script v6 function: ta.pivothigh(leftbars, rightbars) → series float"
-  },
-  "ta.pivothigh(source, leftbars, rightbars) → series float": {
-    "kind": "function",
-    "path": "#fun_ta.pivothigh-1",
-    "summary": "Pine Script v6 function: ta.pivothigh(source, leftbars, rightbars) → series float"
-  },
-  "ta.pivotlow(leftbars, rightbars) → series float": {
-    "kind": "function",
-    "path": "#fun_ta.pivotlow-0",
-    "summary": "Pine Script v6 function: ta.pivotlow(leftbars, rightbars) → series float"
-  },
-  "ta.pivotlow(source, leftbars, rightbars) → series float": {
-    "kind": "function",
-    "path": "#fun_ta.pivotlow-1",
-    "summary": "Pine Script v6 function: ta.pivotlow(source, leftbars, rightbars) → series float"
-  },
-  "ta.range(source, length) → series int": {
-    "kind": "function",
-    "path": "#fun_ta.range-0",
-    "summary": "Pine Script v6 function: ta.range(source, length) → series int"
-  },
-  "ta.range(source, length) → series float": {
-    "kind": "function",
-    "path": "#fun_ta.range-1",
-    "summary": "Pine Script v6 function: ta.range(source, length) → series float"
-  },
-  "ta.valuewhen(condition, source, occurrence) → series color": {
-    "kind": "function",
-    "path": "#fun_ta.valuewhen-0",
-    "summary": "Pine Script v6 function: ta.valuewhen(condition, source, occurrence) → series color"
-  },
-  "ta.valuewhen(condition, source, occurrence) → series int": {
-    "kind": "function",
-    "path": "#fun_ta.valuewhen-1",
-    "summary": "Pine Script v6 function: ta.valuewhen(condition, source, occurrence) → series int"
-  },
-  "ta.valuewhen(condition, source, occurrence) → series float": {
-    "kind": "function",
-    "path": "#fun_ta.valuewhen-2",
-    "summary": "Pine Script v6 function: ta.valuewhen(condition, source, occurrence) → series float"
-  },
-  "ta.valuewhen(condition, source, occurrence) → series bool": {
-    "kind": "function",
-    "path": "#fun_ta.valuewhen-3",
-    "summary": "Pine Script v6 function: ta.valuewhen(condition, source, occurrence) → series bool"
-  },
-  "ta.vwap(source, anchor) → series float": {
-    "kind": "function",
-    "path": "#fun_ta.vwap-0",
-    "summary": "Pine Script v6 function: ta.vwap(source, anchor) → series float"
-  },
-  "ta.vwap(source, anchor, stdev_mult) → [series float, series float, series float]": {
-    "kind": "function",
-    "path": "#fun_ta.vwap-1",
-    "summary": "Pine Script v6 function: ta.vwap(source, anchor, stdev_mult) → [series float, series float, series float]"
-  },
-  "ticker.heikinashi(symbol) → simple string": {
-    "kind": "function",
-    "path": "#fun_ticker.heikinashi-0",
-    "summary": "Pine Script v6 function: ticker.heikinashi(symbol) → simple string"
-  },
-  "ticker.heikinashi(symbol) → series string": {
-    "kind": "function",
-    "path": "#fun_ticker.heikinashi-1",
-    "summary": "Pine Script v6 function: ticker.heikinashi(symbol) → series string"
-  },
-  "ticker.inherit(from_tickerid, symbol) → simple string": {
-    "kind": "function",
-    "path": "#fun_ticker.inherit-0",
-    "summary": "Pine Script v6 function: ticker.inherit(from_tickerid, symbol) → simple string"
-  },
-  "ticker.inherit(from_tickerid, symbol) → series string": {
-    "kind": "function",
-    "path": "#fun_ticker.inherit-1",
-    "summary": "Pine Script v6 function: ticker.inherit(from_tickerid, symbol) → series string"
-  },
-  "ticker.kagi(symbol, reversal) → simple string": {
-    "kind": "function",
-    "path": "#fun_ticker.kagi-0",
-    "summary": "Pine Script v6 function: ticker.kagi(symbol, reversal) → simple string"
-  },
-  "ticker.kagi(symbol, reversal) → series string": {
-    "kind": "function",
-    "path": "#fun_ticker.kagi-1",
-    "summary": "Pine Script v6 function: ticker.kagi(symbol, reversal) → series string"
-  },
-  "ticker.kagi(symbol, param, style) → simple string": {
-    "kind": "function",
-    "path": "#fun_ticker.kagi-2",
-    "summary": "Pine Script v6 function: ticker.kagi(symbol, param, style) → simple string"
-  },
-  "ticker.kagi(symbol, param, style) → series string": {
-    "kind": "function",
-    "path": "#fun_ticker.kagi-3",
-    "summary": "Pine Script v6 function: ticker.kagi(symbol, param, style) → series string"
-  },
-  "ticker.linebreak(symbol, number_of_lines) → simple string": {
-    "kind": "function",
-    "path": "#fun_ticker.linebreak-0",
-    "summary": "Pine Script v6 function: ticker.linebreak(symbol, number_of_lines) → simple string"
-  },
-  "ticker.linebreak(symbol, number_of_lines) → series string": {
-    "kind": "function",
-    "path": "#fun_ticker.linebreak-1",
-    "summary": "Pine Script v6 function: ticker.linebreak(symbol, number_of_lines) → series string"
-  },
-  "ticker.modify(tickerid, session, adjustment, backadjustment, settlement_as_close) → simple string": {
-    "kind": "function",
-    "path": "#fun_ticker.modify-0",
-    "summary": "Pine Script v6 function: ticker.modify(tickerid, session, adjustment, backadjustment, settlement_as_close) → simple string"
-  },
-  "ticker.modify(tickerid, session, adjustment, backadjustment, settlement_as_close) → series string": {
-    "kind": "function",
-    "path": "#fun_ticker.modify-1",
-    "summary": "Pine Script v6 function: ticker.modify(tickerid, session, adjustment, backadjustment, settlement_as_close) → series string"
   },
   "backadjustment.inherit": {
     "kind": "variable",
@@ -5094,16 +3309,6 @@
     "path": "#var_settlement_as_close.off",
     "summary": "Pine Script v6 variable: settlement_as_close.off"
   },
-  "ticker.new(prefix, ticker, session, adjustment, backadjustment, settlement_as_close) → simple string": {
-    "kind": "function",
-    "path": "#fun_ticker.new-0",
-    "summary": "Pine Script v6 function: ticker.new(prefix, ticker, session, adjustment, backadjustment, settlement_as_close) → simple string"
-  },
-  "ticker.new(prefix, ticker, session, adjustment, backadjustment, settlement_as_close) → series string": {
-    "kind": "function",
-    "path": "#fun_ticker.new-1",
-    "summary": "Pine Script v6 function: ticker.new(prefix, ticker, session, adjustment, backadjustment, settlement_as_close) → series string"
-  },
   "adjustment.none": {
     "kind": "variable",
     "path": "#var_adjustment.none",
@@ -5118,115 +3323,5 @@
     "kind": "variable",
     "path": "#var_adjustment.dividends",
     "summary": "Pine Script v6 variable: adjustment.dividends"
-  },
-  "ticker.pointfigure(symbol, source, style, param, reversal) → simple string": {
-    "kind": "function",
-    "path": "#fun_ticker.pointfigure-0",
-    "summary": "Pine Script v6 function: ticker.pointfigure(symbol, source, style, param, reversal) → simple string"
-  },
-  "ticker.pointfigure(symbol, source, style, param, reversal) → series string": {
-    "kind": "function",
-    "path": "#fun_ticker.pointfigure-1",
-    "summary": "Pine Script v6 function: ticker.pointfigure(symbol, source, style, param, reversal) → series string"
-  },
-  "ticker.renko(symbol, style, param, request_wicks, source) → simple string": {
-    "kind": "function",
-    "path": "#fun_ticker.renko-0",
-    "summary": "Pine Script v6 function: ticker.renko(symbol, style, param, request_wicks, source) → simple string"
-  },
-  "ticker.renko(symbol, style, param, request_wicks, source) → series string": {
-    "kind": "function",
-    "path": "#fun_ticker.renko-1",
-    "summary": "Pine Script v6 function: ticker.renko(symbol, style, param, request_wicks, source) → series string"
-  },
-  "ticker.standard(symbol) → simple string": {
-    "kind": "function",
-    "path": "#fun_ticker.standard-0",
-    "summary": "Pine Script v6 function: ticker.standard(symbol) → simple string"
-  },
-  "ticker.standard(symbol) → series string": {
-    "kind": "function",
-    "path": "#fun_ticker.standard-1",
-    "summary": "Pine Script v6 function: ticker.standard(symbol) → series string"
-  },
-  "time(timeframe, session, bars_back, timeframe_bars_back) → series int": {
-    "kind": "function",
-    "path": "#fun_time-0",
-    "summary": "Pine Script v6 function: time(timeframe, session, bars_back, timeframe_bars_back) → series int"
-  },
-  "time(timeframe, session, timezone, bars_back, timeframe_bars_back) → series int": {
-    "kind": "function",
-    "path": "#fun_time-1",
-    "summary": "Pine Script v6 function: time(timeframe, session, timezone, bars_back, timeframe_bars_back) → series int"
-  },
-  "time_close(timeframe, session, bars_back, timeframe_bars_back) → series int": {
-    "kind": "function",
-    "path": "#fun_time_close-0",
-    "summary": "Pine Script v6 function: time_close(timeframe, session, bars_back, timeframe_bars_back) → series int"
-  },
-  "time_close(timeframe, session, timezone, bars_back, timeframe_bars_back) → series int": {
-    "kind": "function",
-    "path": "#fun_time_close-1",
-    "summary": "Pine Script v6 function: time_close(timeframe, session, timezone, bars_back, timeframe_bars_back) → series int"
-  },
-  "timeframe.from_seconds(seconds) → simple string": {
-    "kind": "function",
-    "path": "#fun_timeframe.from_seconds-0",
-    "summary": "Pine Script v6 function: timeframe.from_seconds(seconds) → simple string"
-  },
-  "timeframe.from_seconds(seconds) → series string": {
-    "kind": "function",
-    "path": "#fun_timeframe.from_seconds-1",
-    "summary": "Pine Script v6 function: timeframe.from_seconds(seconds) → series string"
-  },
-  "request.security": {
-    "kind": "variable",
-    "path": "#var_request.security",
-    "summary": "Pine Script v6 variable: request.security"
-  },
-  "request.security_lower_tf": {
-    "kind": "variable",
-    "path": "#var_request.security_lower_tf",
-    "summary": "Pine Script v6 variable: request.security_lower_tf"
-  },
-  "timeframe.in_seconds(timeframe) → simple int": {
-    "kind": "function",
-    "path": "#fun_timeframe.in_seconds-0",
-    "summary": "Pine Script v6 function: timeframe.in_seconds(timeframe) → simple int"
-  },
-  "timeframe.in_seconds(timeframe) → series int": {
-    "kind": "function",
-    "path": "#fun_timeframe.in_seconds-1",
-    "summary": "Pine Script v6 function: timeframe.in_seconds(timeframe) → series int"
-  },
-  "timestamp(dateString) → const int": {
-    "kind": "function",
-    "path": "#fun_timestamp-0",
-    "summary": "Pine Script v6 function: timestamp(dateString) → const int"
-  },
-  "timestamp(dateString) → series int": {
-    "kind": "function",
-    "path": "#fun_timestamp-1",
-    "summary": "Pine Script v6 function: timestamp(dateString) → series int"
-  },
-  "timestamp(year, month, day, hour, minute, second) → simple int": {
-    "kind": "function",
-    "path": "#fun_timestamp-2",
-    "summary": "Pine Script v6 function: timestamp(year, month, day, hour, minute, second) → simple int"
-  },
-  "timestamp(year, month, day, hour, minute, second) → series int": {
-    "kind": "function",
-    "path": "#fun_timestamp-3",
-    "summary": "Pine Script v6 function: timestamp(year, month, day, hour, minute, second) → series int"
-  },
-  "timestamp(timezone, year, month, day, hour, minute, second) → simple int": {
-    "kind": "function",
-    "path": "#fun_timestamp-4",
-    "summary": "Pine Script v6 function: timestamp(timezone, year, month, day, hour, minute, second) → simple int"
-  },
-  "timestamp(timezone, year, month, day, hour, minute, second) → series int": {
-    "kind": "function",
-    "path": "#fun_timestamp-5",
-    "summary": "Pine Script v6 function: timestamp(timezone, year, month, day, hour, minute, second) → series int"
   }
 }
