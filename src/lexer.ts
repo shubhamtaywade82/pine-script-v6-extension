@@ -238,9 +238,8 @@ function lexLine(line: string, lineIdx: number, indentStack: number[]): Token[] 
       }
       if (i < line.length) i++;
       const raw = line.slice(start, i);
-      tokens.push(
-        makeToken(TokenType.STRING, raw.slice(1, Math.max(1, raw.length - 1)), posRange(lineIdx, start, lineIdx, i)),
-      );
+      const inner = raw.length >= 2 ? raw.slice(1, -1) : raw;
+      tokens.push(makeToken(TokenType.STRING, inner, posRange(lineIdx, start, lineIdx, i)));
       i = skipWhitespace(line, i);
       continue;
     }

@@ -33,7 +33,6 @@ import type {
   MemberExpr,
   TupleExpr,
   Range,
-  Position,
 } from '../ast';
 
 export interface ParseResult {
@@ -707,7 +706,6 @@ class Parser {
   private parseArgs(): Argument[] {
     const args: Argument[] = [];
     while (!this.check(TokenType.RPAREN) && !this.isAtEnd()) {
-      const start = this.current().range.start;
       let name: string | null = null;
       if (this.check(TokenType.IDENT) && this.peek(1)?.type === TokenType.EQ) {
         name = this.advance().value;
@@ -718,7 +716,7 @@ class Parser {
         type: 'Argument',
         name,
         value,
-        range: { start, end: value.range.end },
+        range: { start: value.range.start, end: value.range.end },
       });
       if (this.check(TokenType.RPAREN)) break;
       if (!this.check(TokenType.COMMA)) break;
