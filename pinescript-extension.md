@@ -45,7 +45,7 @@ This document specifies how to build **PineForge**—a VS Code–compatible **al
 | LSP process, incremental sync | Yes | Shipped |
 | Diagnostics (version + migration + unknown-call vs index) | Full rule set | **Partial** (rules grow over time; bare `if series` check is **on by default**; disable with `pineForge.strictImplicitBoolIf`: false) |
 | Hover + completion | Context-aware, indexed | **Partial** (prefix filter + `pine.json`; not full type context) |
-| Parser / AST | Full grammar + recovery | **Partial** (lexer + tree parser) |
+| Parser / AST | Full grammar + recovery | **Partial** (lexer + tree parser); structural `parseProgram` errors + targeted surface rules (e.g. `then` + `;`) are published as diagnostics — not full TradingView compiler parity |
 | Go-to-definition | Project + libs | **Partial** (indexed symbols → official v6 doc URL) |
 | Find references / rename | Scope-correct | **Partial** (same-file, string/comment-aware heuristic) |
 | Document / workspace symbols | Yes | **Partial** (AST outline when `parseProgram` succeeds) |
@@ -88,7 +88,7 @@ Language server (core)
 
 ### Language server
 
-- Parse source to an AST; run lint rules; publish **diagnostics**.
+- Parse source to an AST; run lint rules; publish **diagnostics** (merged: `parseProgram` recoverable errors, `syntaxSurfaceIssues` heuristics, `runRules` reference checks — capped by `pineForge.maxNumberOfProblems`, structural/surface first).
 - Implement **hover**, **completion**, **definition**, **references**, **rename**, **document symbols**, **signature help**, **formatting**, and **code actions** from the AST + symbol table + reference index (roll out in phases; see [Current maturity](#current-maturity-in-this-repo-rolling)).
 
 ### Reference index

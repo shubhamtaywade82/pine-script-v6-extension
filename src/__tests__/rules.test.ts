@@ -6,7 +6,11 @@ import { defaultPineForgeSettings } from '../settings';
 const builtins = builtinNames();
 
 describe('implicit bool if rule', () => {
-  const base = { ...defaultPineForgeSettings, strictVersionCheck: false };
+  const base = {
+    ...defaultPineForgeSettings,
+    strictVersionCheck: false,
+    strictImplicitBoolIf: true,
+  };
 
   it('when strictImplicitBoolIf is off, does not flag bare if close', () => {
     const src = `//@version=6

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0
+
+- **TradingView style hints:** optional `pineForge.styleTradingViewHints` — Information diagnostics for script-order and `input.*` naming heuristics; see `docs/tradingview-style-guide.md`.
+- **TradingView limitations hints:** optional `pineForge.limitationHints` — rough plot-count upper bound and `request.*` call-site density; see `docs/tradingview-limitations.md`. **`//@version=`** lines are counted before comment-skipping so **version order / depth** hints work.
+- **Diagnostics:** structural **parse errors** from [`src/parser/treeParser.ts`](src/parser/treeParser.ts) are now surfaced in the Problems panel (code `pine-forge/structural-parse`).
+- **Surface syntax:** illegal **multiple statements after `then`** on one line (semicolon-separated) is flagged with `pine-forge/invalid-then-semicolon`, matching the common TradingView error *no viable alternative at character ';'*.
+- **Cap:** `pineForge.maxNumberOfProblems` now limits the merged diagnostic list (structural + surface + reference rules), with structural/surface entries listed first.
+
 ## 0.2.5
 
 - **Default Ollama model:** `pineForge.ollama.model` defaults to **`qwen3.5:4b`** (aligned with `readOllamaExtensionConfig` fallback).

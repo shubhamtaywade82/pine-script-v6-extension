@@ -36,6 +36,14 @@ function readPineForgeSettings(): PineForgeSettings {
       'strictImplicitBoolIf',
       defaultPineForgeSettings.strictImplicitBoolIf,
     ),
+    styleTradingViewHints: c.get<boolean>(
+      'styleTradingViewHints',
+      defaultPineForgeSettings.styleTradingViewHints,
+    ),
+    limitationHints: c.get<boolean>(
+      'limitationHints',
+      defaultPineForgeSettings.limitationHints,
+    ),
   };
 }
 

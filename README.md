@@ -6,7 +6,7 @@
 
 | Feature | Notes |
 |---------|--------|
-| Diagnostics | Version checks, unknown calls vs [`src/references/pine.json`](src/references/pine.json), v6 migration rules (`transp`, `when`, `na`/bool); optional **bare `if` series** check via `pineForge.strictImplicitBoolIf` |
+| Diagnostics | Version checks, unknown calls vs [`src/references/pine.json`](src/references/pine.json), v6 migration rules (`transp`, `when`, `na`/bool); optional **bare `if` series** check via `pineForge.strictImplicitBoolIf`; **structural parse errors** from PineForge’s parser; **surface syntax** rules (e.g. multiple statements after `then` on one line — TradingView: *no viable alternative at ';'*) |
 | Hover | Markdown + TradingView link for indexed symbols |
 | Completions | Prefix filter; **user symbols** (outline) merged with bundled v6 index (users sort first) |
 | Go to definition | For indexed symbols → **official v6 reference URL** (external location) |
@@ -18,12 +18,18 @@
 | Format document | Trim trailing whitespace, tabs → spaces, newline at EOF — **not** a full Pine pretty-printer |
 | Code actions | Insert/set `//@version=6`; starter removal for deprecated `transp` |
 | Ollama (optional) | Explain / suggest fix / refactor / cursor ask; **inline ghost text**; optional **completion list** + **refactor** code action — all via [`ollama`](https://github.com/ollama/ollama-js) in the **extension host only** (never the LSP server) |
+| TradingView style hints (optional) | `pineForge.styleTradingViewHints`: *Information* diagnostics for a few [style-guide](docs/tradingview-style-guide.md) conventions (ordering, `Input` suffix on `input.*`); not a full linter for naming/spacing |
+| TradingView **limits** hints (optional) | `pineForge.limitationHints`: *Information* hints for [platform limits](docs/tradingview-limitations.md) we can only approximate locally (plot-count **upper bound**, many `request.*` call sites) — not runtime or TV-accurate counts |
 
 **Limits (honest)**
 
-- TradingView’s compiler is still **authoritative** for full syntax, types, and runtime errors.
+- TradingView’s compiler is still **authoritative** for full syntax, types, and runtime errors. PineForge does **not** embed TradingView’s grammar and cannot guarantee **bit-for-bit parity** with every compile-time diagnostic. Official language references: [Pine Script® docs](https://www.tradingview.com/pine-script-docs) and [Pine Script® v6 language reference](https://www.tradingview.com/pine-script-reference/v6/).
+- **Cloud limits** (compile time, execution budget, plot counts, `request.*()` uniqueness, IL size, etc.) are enforced only on TradingView. See **[docs/tradingview-limitations.md](docs/tradingview-limitations.md)** for a summary; enable **`pineForge.limitationHints`** for rough editor hints where we can approximate (not a substitute for TV’s runtime).
+- **What we add:** recoverable **structural parse** messages from PineForge’s own lexer/AST pipeline, plus small **surface checks** aligned with common TV rejections (starting with illegal `;` after `then` / `else then` on the same line). Coverage will grow incrementally; it will never be “every possible TV error” without their closed-source compiler.
 - Formatter does **not** re-indent Pine blocks from grammar rules yet.
 - Rename / references do **not** understand full scoping; avoid renaming names that collide with built-ins.
+
+**`pineForge.maxNumberOfProblems`** applies to the **combined** list (structural parse + surface rules + reference-backed rules), ordered with structural/surface issues first so they are less likely to be dropped when the cap is low.
 
 See **[pinescript-extension.md](pinescript-extension.md)** for architecture and deeper roadmap (semantic tokens, arity from reference, **AST indent printer**, etc.).
 
@@ -109,7 +115,9 @@ This repo includes [`.vscode/settings.json`](.vscode/settings.json) with the sam
 | `pineForge.enable` | `true` | Turn diagnostics on/off. |
 | `pineForge.maxNumberOfProblems` | `100` | Cap diagnostics per file. |
 | `pineForge.strictVersionCheck` | `true` | When enabled, warn if `//@version=` is missing; hints for versions other than 6. |
-| `pineForge.strictImplicitBoolIf` | `true` | When `true`, warns on **bare** `if close`-style series-as-bool (same line only; skips comments, comparisons, and `[` tails). Set to `false` if you prefer fewer warnings on legacy scripts. |
+| `pineForge.strictImplicitBoolIf` | `false` | When `true`, warns on **bare** `if close`-style series-as-bool (same line only; skips comments, comparisons, and `[` tails). |
+| `pineForge.styleTradingViewHints` | `false` | *Information* hints for common [TradingView Pine style guide](docs/tradingview-style-guide.md) patterns (ordering, `Input` suffix on `input.*` LHS). Heuristic only. |
+| `pineForge.limitationHints` | `false` | *Information* hints for [TradingView platform limits](docs/tradingview-limitations.md) (plot budget **upper bound**, many `request.*` sites). Cannot measure TV compile/runtime. |
 
 ## Package
 

@@ -3,6 +3,8 @@ import type { Range, Position } from 'vscode-languageserver-types';
 import { offsetInStringOrComment } from '../analysis/skipRegions';
 import type { ParsedDocument } from '../parser/parser';
 import type { PineForgeSettings } from '../settings';
+import { collectLimitationHints } from './limitationHints';
+import { collectTradingViewStyleHints } from './styleTradingViewHints';
 
 export function offsetToPosition(source: string, offset: number): Position {
   const lines = source.slice(0, offset).split('\n');
@@ -155,6 +157,15 @@ export function runRules(
     }
   }
 
-  const max = Math.max(1, settings.maxNumberOfProblems);
-  return issues.slice(0, max);
+  if (settings.styleTradingViewHints) {
+    const styleCap = Math.max(1, Math.min(25, settings.maxNumberOfProblems));
+    issues.push(...collectTradingViewStyleHints(source, styleCap));
+  }
+
+  if (settings.limitationHints) {
+    const limCap = 3;
+    issues.push(...collectLimitationHints(parsed, limCap));
+  }
+
+  return issues;
 }

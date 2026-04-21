@@ -4,6 +4,7 @@ import {
   CompletionItem,
   createConnection,
   Diagnostic,
+  DiagnosticSeverity,
   DocumentHighlight,
   DocumentHighlightKind,
   Hover,
@@ -38,14 +39,17 @@ import { formatPineSource } from './analysis/format';
 import { calleeBeforeOpenParen } from './analysis/signatureHelp';
 import { countNameDeclarations, parseProgramSafe, resolveReferenceRanges } from './analysis/scopeRefs';
 import { wordRangeAtOffset } from './analysis/wordRefs';
+import { parseProgram } from './parser/treeParser';
 import { parseDocument } from './parser/parser';
 import { runRules } from './rules/engine';
+import { syntaxSurfaceIssues } from './rules/syntaxSurface';
 import { builtinNames, pineReferences, referenceSignature, refUrl } from './references/index';
 import {
   defaultPineForgeSettings,
   PINE_FORGE_SETTINGS_NOTIFICATION,
   type PineForgeSettings,
 } from './settings';
+import type { RuleIssue } from './rules/engine';
 
 function flattenDocumentSymbols(syms: DocumentSymbol[]): DocumentSymbol[] {
   const out: DocumentSymbol[] = [];
@@ -110,7 +114,17 @@ function validateDocument(doc: TextDocument): void {
 
   const text = doc.getText();
   const parsed = parseDocument(text);
-  const issues = runRules(parsed, builtins, serverSettings);
+  const { program } = parseProgram(text);
+  const structuralIssues: RuleIssue[] = program.errors.map((e) => ({
+    code: 'pine-forge/structural-parse',
+    message: `PineForge structural parse: ${e.message}`,
+    range: e.range,
+    severity: DiagnosticSeverity.Error,
+  }));
+  const surfaceIssues = syntaxSurfaceIssues(text);
+  const ruleIssues = runRules(parsed, builtins, serverSettings);
+  const maxProblems = Math.max(1, serverSettings.maxNumberOfProblems);
+  const issues = [...structuralIssues, ...surfaceIssues, ...ruleIssues].slice(0, maxProblems);
   const diagnostics: Diagnostic[] = issues.map((issue) => ({
     range: issue.range,
     message: issue.message,
