@@ -36,10 +36,11 @@ import { buildCompletionItems } from './completions/buildCompletions';
 import { collectDocumentSymbols } from './analysis/documentSymbols';
 import { formatPineSource } from './analysis/format';
 import { calleeBeforeOpenParen } from './analysis/signatureHelp';
-import { findIdentifierRanges, wordRangeAtOffset } from './analysis/wordRefs';
+import { countNameDeclarations, parseProgramSafe, resolveReferenceRanges } from './analysis/scopeRefs';
+import { wordRangeAtOffset } from './analysis/wordRefs';
 import { parseDocument } from './parser/parser';
 import { runRules } from './rules/engine';
-import { builtinNames, pineReferences, refUrl } from './references/index';
+import { builtinNames, pineReferences, referenceSignature, refUrl } from './references/index';
 import {
   defaultPineForgeSettings,
   PINE_FORGE_SETTINGS_NOTIFICATION,
@@ -185,7 +186,7 @@ connection.onReferences((params: ReferenceParams): Location[] | null => {
   const offset = doc.offsetAt(params.position);
   const hit = wordRangeAtOffset(text, offset);
   if (!hit) return null;
-  const ranges = findIdentifierRanges(text, hit.word);
+  const ranges = resolveReferenceRanges(text, params.position, hit.word);
   return ranges.map((r) => Location.create(params.textDocument.uri, r));
 });
 
@@ -215,7 +216,7 @@ connection.onDocumentHighlight((params: DocumentHighlightParams): DocumentHighli
   const text = doc.getText();
   const hit = wordRangeAtOffset(text, doc.offsetAt(params.position));
   if (!hit) return null;
-  return findIdentifierRanges(text, hit.word).map((r) => ({
+  return resolveReferenceRanges(text, params.position, hit.word).map((r) => ({
     range: r,
     kind: DocumentHighlightKind.Text,
   }));
@@ -230,9 +231,9 @@ connection.onSignatureHelp((params: SignatureHelpParams): SignatureHelp | null =
   if (!callee) return null;
   const ref = pineReferences[callee];
   if (!ref) return null;
-  const label = `${callee}(…)`;
+  const sigLabel = referenceSignature(callee) ?? `${callee}(…)`;
   const sig: SignatureInformation = {
-    label,
+    label: sigLabel,
     documentation: {
       kind: MarkupKind.Markdown,
       value: `${ref.summary}\n\n[Open v6 reference](${refUrl(ref.path)})`,
@@ -271,6 +272,13 @@ connection.onPrepareRename((params: PrepareRenameParams) => {
   if (builtins.has(hit.word)) {
     return { defaultBehavior: false, message: 'Cannot rename built-in / indexed reference symbols.' };
   }
+  const program = parseProgramSafe(text);
+  if (program && countNameDeclarations(program, hit.word) > 1) {
+    return {
+      defaultBehavior: false,
+      message: `Multiple declarations named '${hit.word}' — rename is disabled to avoid wrong edits.`,
+    };
+  }
   return {
     range: {
       start: doc.positionAt(hit.start),
@@ -288,7 +296,7 @@ connection.onRenameRequest((params: RenameParams): WorkspaceEdit | null => {
   const text = doc.getText();
   const hit = wordRangeAtOffset(text, doc.offsetAt(params.position));
   if (!hit || builtins.has(hit.word)) return null;
-  const ranges = findIdentifierRanges(text, hit.word);
+  const ranges = resolveReferenceRanges(text, params.position, hit.word);
   if (!ranges.length) return null;
   ranges.sort((a, b) => doc.offsetAt(b.start) - doc.offsetAt(a.start));
   const edits: TextEdit[] = ranges.map((r) => TextEdit.replace(r, newName));

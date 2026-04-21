@@ -1,9 +1,17 @@
 import type { PineRefEntry } from './types';
 import raw from './pine.json';
+import overlay from './signatureOverlay.json';
 
 const REF_BASE = 'https://www.tradingview.com/pine-script-reference/v6/';
 
 export const pineReferences: Record<string, PineRefEntry> = raw as Record<string, PineRefEntry>;
+
+const signatureOverlay = overlay as Record<string, { signature: string }>;
+
+/** Curated short signatures (grow over time; see `signatureOverlay.json`). */
+export function referenceSignature(name: string): string | undefined {
+  return signatureOverlay[name]?.signature;
+}
 
 export function refUrl(path: string): string {
   return `${REF_BASE}${path.startsWith('#') ? path : `#${path}`}`;

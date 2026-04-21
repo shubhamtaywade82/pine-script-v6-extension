@@ -7,6 +7,7 @@ export function formatPineSource(text: string, tabSize: number): string {
   const lines = text.split('\n');
   const cleaned = lines.map((line) => line.replace(/\t/g, ' '.repeat(ts)).replace(/\s+$/, ''));
   let out = cleaned.join('\n');
+  out = out.replace(/\n{3,}/g, '\n\n');
   if (!out.endsWith('\n')) out += '\n';
   return out;
 }

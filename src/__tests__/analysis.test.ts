@@ -7,6 +7,10 @@ describe('formatPineSource', () => {
   it('trims trailing whitespace and ensures newline at EOF', () => {
     expect(formatPineSource('a  \nb\t', 4)).toBe('a\nb\n');
   });
+
+  it('collapses excessive blank lines', () => {
+    expect(formatPineSource('a\n\n\n\nb', 4)).toBe('a\n\nb\n');
+  });
 });
 
 describe('offsetInStringOrComment', () => {

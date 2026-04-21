@@ -1,4 +1,21 @@
-import type { Range } from 'vscode-languageserver-types';
+import type { Position, Range } from 'vscode-languageserver-types';
+
+export function positionToOffset(text: string, pos: Position): number {
+  const lines = text.split('\n');
+  let o = 0;
+  for (let i = 0; i < pos.line && i < lines.length; i++) {
+    o += lines[i].length + 1;
+  }
+  const line = lines[pos.line] ?? '';
+  return o + Math.min(pos.character, line.length);
+}
+
+/** LSP range with end treated as exclusive string offset (typical identifier ranges). */
+export function stringOffsetInsideRange(text: string, r: Range, stringOffset: number): boolean {
+  const a = positionToOffset(text, r.start);
+  const b = positionToOffset(text, r.end);
+  return stringOffset >= a && stringOffset < b;
+}
 
 /** Word at offset: identifier / dotted built-in style (`ta.sma`). */
 export function wordRangeAtOffset(

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.2
+
+- **Reference data:** `signatureOverlay.json` merged in `references/index.ts` — curated **signatures** for common APIs; **signature help** and **completion detail** use them when present (expand the overlay over time).
+- **Scope (trust):** **Find references**, **document highlights**, and **rename** use **function-body–limited** ranges when the symbol is a **parameter** of the enclosing UDF (reduces cross-function false matches).
+- **Rename guard:** `prepareRename` blocks when **more than one** `var` / `function` declaration shares the name in the file.
+- **Format:** collapse **3+** consecutive blank lines to **2** after whitespace cleanup.
+- **CI:** workflow runs on **all** branches for `push` and `pull_request`.
+
 ## 0.2.1
 
 - **Trust:** `if close`-style implicit-bool rule is **off by default**; enable with `pineForge.strictImplicitBoolIf`. When on, it only fires for a **bare** identifier on the same line (EOL, `//`, or newline next), skips **strings/comments**, and ignores same-line **comparisons** and **`[`** indexing tails. Severity is **warning** (not error).

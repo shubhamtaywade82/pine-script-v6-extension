@@ -10,10 +10,10 @@
 | Hover | Markdown + TradingView link for indexed symbols |
 | Completions | Prefix filter; **user symbols** (outline) merged with bundled v6 index (users sort first) |
 | Go to definition | For indexed symbols → **official v6 reference URL** (external location) |
-| Find references / highlight | Same-file identifier occurrences; skips strings and `//` / `/*` comments (best-effort) |
+| Find references / highlight | Same-file; skips strings/comments; **UDF parameters** scoped to that function’s range |
 | Outline / document symbols | From structural [`parseProgram`](src/parser/treeParser.ts) AST (`var`, `method` / UDFs, nested blocks) |
 | Workspace symbol | Search open documents by symbol name |
-| Signature help | Summary + doc link for callee before `(` (best-effort when args contain nested `(`) |
+| Signature help | Summary + doc link; **curated signatures** from `signatureOverlay.json` when present |
 | Rename | `prepareRename` + workspace edit for **non-built-in** names; same-file, best-effort |
 | Format document | Trim trailing whitespace, tabs → spaces, newline at EOF — **not** a full Pine pretty-printer |
 | Code actions | Insert/set `//@version=6`; starter removal for deprecated `transp` |
@@ -26,7 +26,13 @@
 
 See **[pinescript-extension.md](pinescript-extension.md)** for architecture and deeper roadmap (semantic tokens, arity from reference, **AST indent printer**, etc.).
 
-**CI:** push/PR to `main` or `master` runs `.github/workflows/ci.yml` (`npm ci`, compile, test).
+**CI:** every `push` and `pull_request` runs `.github/workflows/ci.yml` (`npm ci`, compile, test).
+
+### Publishing checklist
+
+- Add **`images/icon.png`** (128×128) and set `"icon": "images/icon.png"` in `package.json` for the Marketplace.
+- `vsce login` → `npm run package` → `vsce publish` (or attach the VSIX to a GitHub Release).
+- Grow **`src/references/signatureOverlay.json`** (or generated data) for better signatures without bloating `pine.json`.
 
 ## Develop
 

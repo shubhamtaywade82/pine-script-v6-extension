@@ -1,7 +1,7 @@
 import { CompletionItem, CompletionItemKind } from 'vscode-languageserver/node';
 import { MarkupKind, SymbolKind } from 'vscode-languageserver-types';
 import { collectDocumentSymbols } from '../analysis/documentSymbols';
-import { completionLabels, pineReferences, refUrl } from '../references/index';
+import { completionLabels, pineReferences, referenceSignature, refUrl } from '../references/index';
 
 function flattenSymbols(
   syms: ReturnType<typeof collectDocumentSymbols>,
@@ -50,10 +50,12 @@ export function buildCompletionItems(docText: string, prefixLower: string): Comp
     if (seen.has(label)) continue;
     seen.add(label);
     const ref = pineReferences[label];
+    const sig = referenceSignature(label);
+    const detailParts = [ref?.summary, sig].filter(Boolean) as string[];
     items.push({
       label,
       kind: CompletionItemKind.Function,
-      detail: ref?.summary ?? label,
+      detail: detailParts.length ? detailParts.join(' · ') : label,
       documentation: ref
         ? { kind: MarkupKind.Markdown, value: `${ref.summary}\n\n[TradingView v6](${refUrl(ref.path)})` }
         : undefined,
