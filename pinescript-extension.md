@@ -23,7 +23,8 @@ This document specifies how to build **PineForge**—a VS Code–compatible exte
 17. [Learning sequence and official docs](#learning-sequence-and-official-docs)
 18. [Appendix A: Naming and branding alternatives](#appendix-a-naming-and-branding-alternatives)
 19. [Appendix B: Tooling stack](#appendix-b-tooling-stack)
-20. [External references](#external-references-verify-urls-periodically)
+20. [Appendix C: TradingView manuals, reference URLs, and index maintenance](#appendix-c-tradingview-manuals-reference-urls-and-index-maintenance)
+21. [External references](#external-references-verify-urls-periodically)
 
 ---
 
@@ -615,6 +616,61 @@ Toolchain tone: PineKit, PineStack, PineLab, PineSuite.
 
 ---
 
+## Appendix C: TradingView manuals, reference URLs, and index maintenance
+
+### Two manuals (do not confuse them)
+
+| Manual | URL | Use in PineForge |
+|--------|-----|------------------|
+| **Pine Script User Manual** | [https://www.tradingview.com/pine-script-docs](https://www.tradingview.com/pine-script-docs) | Semantics: [execution model](https://www.tradingview.com/pine-script-docs/language/execution-model/), [type system](https://www.tradingview.com/pine-script-docs/language/type-system/), [variable declarations](https://www.tradingview.com/pine-script-docs/language/variable-declarations/), [identifiers](https://www.tradingview.com/pine-script-docs/language/identifiers/), [built-ins overview](https://www.tradingview.com/pine-script-docs/language/built-ins/), [concepts](https://www.tradingview.com/pine-script-docs/concepts/alerts/), [release notes](https://www.tradingview.com/pine-script-docs/release-notes/). Drives **correct** analysis, migration text, and domain rules. |
+| **Pine Script v6 language reference** | [https://www.tradingview.com/pine-script-reference/v6/](https://www.tradingview.com/pine-script-reference/v6/) | **Authoritative** per-symbol API: signatures, parameter **qualified types**, return types, **SEE ALSO**. Drives **hover links**, **completion detail**, and **arity/type** diagnostics. |
+
+TradingView states on the [Built-ins](https://www.tradingview.com/pine-script-docs/language/built-ins/) page that all built-in variables and functions are defined in the v6 reference; each entry documents purpose, signature, RETURNS, ARGUMENTS, and related symbols.
+
+### v6 reference URL scheme (for `pine.json` / generated index)
+
+Use a single base URL and **fragment** anchors (stable pattern used across the manual):
+
+- **Base:** `https://www.tradingview.com/pine-script-reference/v6/`
+- **Functions:** `#fun_<identifier>` — e.g. [indicator](https://www.tradingview.com/pine-script-reference/v6/#fun_indicator), [ta.sma](https://www.tradingview.com/pine-script-reference/v6/#fun_ta.sma), [request.security](https://www.tradingview.com/pine-script-reference/v6/#fun_request.security), [strategy.entry](https://www.tradingview.com/pine-script-reference/v6/#fun_strategy.entry).
+- **Variables / constants as `var_*`:** `#var_<identifier>` — e.g. [close](https://www.tradingview.com/pine-script-reference/v6/#var_close), [na](https://www.tradingview.com/pine-script-reference/v6/#var_na).
+- **Keywords, types, operators:** the reference site uses the same fragment style with prefixes such as `#kw_…`, `#type_…`, `#const_…`, `#op_…` (verify the exact fragment in the browser for each symbol when adding to your index).
+
+**Examples for hover markdown**
+
+- `ta.vwma` → `https://www.tradingview.com/pine-script-reference/v6/#fun_ta.vwma`
+- `close` → `https://www.tradingview.com/pine-script-reference/v6/#var_close`
+
+Encode dots in names as literal dots inside the fragment (e.g. `ta.sma`, `strategy.entry`). For ambiguous tokens (variable vs function), prefer the entry the reference UI uses; store **kind** in your index (`function` | `variable` | `keyword` | …).
+
+### Building the symbol index (machine access reality)
+
+The reference home page is largely **client-rendered** in the browser: a simple HTTP fetch often returns only the shell, **not** the full navigable symbol list. Plan one of:
+
+1. **Curated / generated JSON in-repo** — Start from namespaces listed in [Built-ins](https://www.tradingview.com/pine-script-docs/language/built-ins/) (`ta`, `math`, `request`, `str`, `input`, `color`, `strategy`, …) and grow coverage; ship summaries + URLs you verify in the browser.  
+2. **Headless browser scrape** — Automated extraction of the reference tree with Playwright/Puppeteer; respect [TradingView](https://www.tradingview.com/) terms of service and rate limits; pin a **schema version** and re-run when [release notes](https://www.tradingview.com/pine-script-docs/release-notes/) announce API changes.  
+3. **Hybrid** — Curated core + periodic scrape or manual diff against release notes.
+
+Always bump your index when **release notes** add functions, types, or compiler rules (e.g. new `request.*` APIs, line-wrapping rules).
+
+### Migration (version-gated diagnostics and doc links)
+
+- [Migration guides overview](https://www.tradingview.com/pine-script-docs/migration-guides/overview/) — Lists version-to-version guides and the **Pine converter** (scripts must compile before conversion; rare auto-convert breakage).  
+- [To Pine Script version 6](https://www.tradingview.com/pine-script-docs/migration-guides/to-pine-version-6/) — Primary source for **v5 → v6** rewrite guidance when emitting migration diagnostics or code-action descriptions.
+
+### All-in-one extension: map features to sources
+
+| Feature | User Manual | v6 Reference |
+|---------|---------------|--------------|
+| Grammar / comment / wrap rules | Release notes, primer | — |
+| Execution / series / “repaint” hints | [Execution model](https://www.tradingview.com/pine-script-docs/language/execution-model/) | — |
+| Types / qualifiers for arguments | [Type system](https://www.tradingview.com/pine-script-docs/language/type-system/) | ARGUMENTS / RETURNS per symbol |
+| Script kind / required declaration | [Built-ins](https://www.tradingview.com/pine-script-docs/language/built-ins/), first steps | `#fun_indicator`, `#fun_strategy`, `#fun_library` |
+| Hover / completion URL | — | `#fun_*` / `#var_*` / … |
+| v5 at `//@version=6` | Migration guides | New symbols in v6 reference |
+
+---
+
 ## External references (verify URLs periodically)
 
 ### VS Code and LSP
@@ -627,7 +683,7 @@ Toolchain tone: PineKit, PineStack, PineLab, PineSuite.
 
 ### Official TradingView documentation
 
-Use the site’s **version selector (v6)** when a page offers multiple Pine versions. Re-check URLs when TradingView reorganizes paths; **release notes** are the best signal for language or compiler behavior changes.
+Use the site’s **version selector (v6)** when a page offers multiple Pine versions. Re-check URLs when TradingView reorganizes paths; **release notes** are the best signal for language or compiler behavior changes. For the **two-manual model**, v6 **reference URL fragments**, **migration** links, and how to **maintain the symbol index** (including client-rendered reference pages), see [Appendix C](#appendix-c-tradingview-manuals-reference-urls-and-index-maintenance).
 
 - [Pine Script User Manual (hub)](https://www.tradingview.com/pine-script-docs) — Entry point: Primer, Language, Concepts, Release notes.  
 - [Welcome to Pine Script v6](https://www.tradingview.com/pine-script-docs/welcome/) — What Pine is, platform constraints, link into the primer.  
