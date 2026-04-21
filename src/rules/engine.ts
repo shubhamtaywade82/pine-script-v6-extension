@@ -1,8 +1,15 @@
 import { DiagnosticSeverity } from 'vscode-languageserver/node';
-import type { Range } from 'vscode-languageserver-types';
+import type { Range, Position } from 'vscode-languageserver-types';
 import type { ParsedDocument } from '../parser/parser';
-import type { PineV6Settings } from '../settings';
-import { offsetToPosition } from '../position';
+import type { PineForgeSettings } from '../settings';
+
+export function offsetToPosition(source: string, offset: number): Position {
+  const lines = source.slice(0, offset).split('\n');
+  return {
+    line: lines.length - 1,
+    character: lines[lines.length - 1].length,
+  };
+}
 
 export interface RuleIssue {
   code: string;
@@ -35,7 +42,7 @@ const STRATEGY_FUNCTIONS = new Set([
 export function runRules(
   parsed: ParsedDocument,
   builtins: Set<string>,
-  settings: PineV6Settings,
+  settings: PineForgeSettings,
 ): RuleIssue[] {
   const issues: RuleIssue[] = [];
   const source = parsed.source;

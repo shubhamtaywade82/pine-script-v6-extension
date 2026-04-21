@@ -1,6 +1,6 @@
 # PineForge: Pine Script v6 language tooling for VS Code and Cursor
 
-This document specifies how to build **PineForge**—a VS Code–compatible extension that provides Pine Script **v6** diagnostics, hovers, completions, go-to-definition, and (later) formatting. The design is **Language Server Protocol (LSP)**–first: a thin editor client and a language server that owns parsing, symbols, rules, and LSP handlers. Cursor installs the same extension format as VS Code.
+This document specifies how to build **PineForge**—a VS Code–compatible **all-in-one** Pine Script **v6** development tool: **LSP** (diagnostics, hovers, completions, signature help, definition, references, rename, symbols), **linting** (syntax, scopes, types, migration and domain rules), **formatting** (document / range / on-type), and **corrections** (code actions and quick fixes). The design is **Language Server Protocol (LSP)**–first: a thin editor client and a language server that owns parsing, symbol tables, rules, formatters, and LSP handlers. Cursor installs the same extension format as VS Code.
 
 **Implementation in this repo:** the VS Code extension **`pine-forge`** (product **PineForge**) lives at the repository root (`package.json`, `src/extension.ts`, `src/server.ts`, lexer, rules, …). See [README.md](README.md) to run, test, and package it.
 
@@ -32,9 +32,26 @@ This document specifies how to build **PineForge**—a VS Code–compatible exte
 
 ## Purpose and scope
 
-- **Goal**: TradingView Pine **v6** support with real diagnostics, doc-linked hovers, completion, navigation—not a regex-only highlighter.
+- **Goal**: **All-in-one** TradingView Pine **v6** support in the editor—real diagnostics, doc-linked hovers, intelligent completion, navigation (definition / references / rename), deterministic **formatting**, and **code actions** (quick fixes, safe refactors)—not a regex-only highlighter.
 - **Sources of truth**: Pine v6 **reference** and **migration** materials from TradingView (verify current URLs when implementing).
 - **Compatibility**: Ship a standard VS Code extension; **Cursor** consumes it without custom integration.
+- **Compiler authority**: Until semantic and grammar coverage match TradingView’s compiler, **TradingView remains authoritative** for final compile errors; PineForge focuses on static analysis, editor integration, and user-trusted autofixes that are easy to verify.
+
+### Current maturity in this repo (rolling)
+
+| Area | Target | Repo today |
+|------|--------|------------|
+| Language id, grammar, `language-configuration.json` | Yes | Shipped |
+| LSP process, incremental sync | Yes | Shipped |
+| Diagnostics (version + migration + unknown-call vs index) | Full rule set | **Partial** |
+| Hover + completion | Context-aware, indexed | **Partial** (word match + `pine.json`) |
+| Parser / AST | Full grammar + recovery | **Partial** (lexer + tree parser path) |
+| Symbols, definition, references, rename | Yes | **Not yet** |
+| Formatter (document / range) | Yes | **Not yet** |
+| Code actions / quick fixes | Yes | **Not yet** |
+| Signature help, document symbols, semantic tokens | Yes | **Not yet** |
+
+Ship order follows [Implementation phases](#implementation-phases); expand the parser and symbol table before promising formatter parity or risky autofixes.
 
 ---
 

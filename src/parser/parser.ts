@@ -1,5 +1,12 @@
-import type { Range } from 'vscode-languageserver-types';
-import { offsetToPosition } from '../position';
+import type { Range, Position } from 'vscode-languageserver-types';
+
+export function offsetToPosition(source: string, offset: number): Position {
+  const lines = source.slice(0, offset).split('\n');
+  return {
+    line: lines.length - 1,
+    character: lines[lines.length - 1].length,
+  };
+}
 
 export type AstNode =
   | { kind: 'call'; name: string; range: Range; args: CallArgument[] }
