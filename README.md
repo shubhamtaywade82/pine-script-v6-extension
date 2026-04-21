@@ -1,4 +1,4 @@
-# Pine Script v6 Linter (`pine-v6-linter`)
+# PineForge (`pine-forge`)
 
 LSP-backed VS Code / Cursor extension for **Pine Script v6**: diagnostics, hover docs, completions, and links into TradingView’s [language reference](https://www.tradingview.com/pine-script-reference/v6/).
 
@@ -18,13 +18,13 @@ Open this folder in VS Code, then **Run → Start Debugging** (F5) with **Run Pi
 
 - **Pine Script: Open v6 Reference Manual** — opens the TradingView v6 reference in the browser.
 
-### Settings (`pineV6.*`)
+### Settings (`pineForge.*`)
 
 | Setting | Default | Purpose |
 |---------|---------|---------|
-| `pineV6.enable` | `true` | Turn diagnostics on/off. |
-| `pineV6.maxNumberOfProblems` | `100` | Cap diagnostics per file. |
-| `pineV6.strictVersionCheck` | `true` | When enabled, warn if `//@version=` is missing; hints for versions other than 6. |
+| `pineForge.enable` | `true` | Turn diagnostics on/off. |
+| `pineForge.maxNumberOfProblems` | `100` | Cap diagnostics per file. |
+| `pineForge.strictVersionCheck` | `true` | When enabled, warn if `//@version=` is missing; hints for versions other than 6. |
 
 ## Package
 

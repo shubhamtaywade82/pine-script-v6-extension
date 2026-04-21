@@ -7,31 +7,31 @@ import {
   TransportKind,
 } from 'vscode-languageclient/node';
 import {
-  defaultPineV6Settings,
-  PINE_V6_SETTINGS_NOTIFICATION,
-  type PineV6Settings,
+  defaultPineForgeSettings,
+  PINE_FORGE_SETTINGS_NOTIFICATION,
+  type PineForgeSettings,
 } from './settings';
 
 let client: LanguageClient | undefined;
 
-function readPineV6Settings(): PineV6Settings {
-  const c = vscode.workspace.getConfiguration('pineV6');
+function readPineForgeSettings(): PineForgeSettings {
+  const c = vscode.workspace.getConfiguration('pineForge');
   return {
-    enable: c.get<boolean>('enable', defaultPineV6Settings.enable),
+    enable: c.get<boolean>('enable', defaultPineForgeSettings.enable),
     maxNumberOfProblems: c.get<number>(
       'maxNumberOfProblems',
-      defaultPineV6Settings.maxNumberOfProblems,
+      defaultPineForgeSettings.maxNumberOfProblems,
     ),
     strictVersionCheck: c.get<boolean>(
       'strictVersionCheck',
-      defaultPineV6Settings.strictVersionCheck,
+      defaultPineForgeSettings.strictVersionCheck,
     ),
   };
 }
 
 function pushSettingsToServer(): void {
   if (!client) return;
-  void client.sendNotification(PINE_V6_SETTINGS_NOTIFICATION, readPineV6Settings());
+  void client.sendNotification(PINE_FORGE_SETTINGS_NOTIFICATION, readPineForgeSettings());
 }
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -51,18 +51,18 @@ export function activate(context: vscode.ExtensionContext): void {
     synchronize: {
       fileEvents: vscode.workspace.createFileSystemWatcher('**/*.{pine,pinescript}'),
     },
-    initializationOptions: readPineV6Settings(),
+    initializationOptions: readPineForgeSettings(),
   };
 
   client = new LanguageClient(
-    'pineV6',
-    'Pine Script v6 Linter',
+    'pineForge',
+    'PineForge',
     serverOptions,
     clientOptions,
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('pineV6.openReference', () => {
+    vscode.commands.registerCommand('pineForge.openReference', () => {
       void vscode.env.openExternal(
         vscode.Uri.parse('https://www.tradingview.com/pine-script-reference/v6/'),
       );
@@ -71,7 +71,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((e) => {
-      if (e.affectsConfiguration('pineV6')) {
+      if (e.affectsConfiguration('pineForge')) {
         pushSettingsToServer();
       }
     }),

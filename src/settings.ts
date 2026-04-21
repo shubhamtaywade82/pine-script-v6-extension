@@ -1,12 +1,12 @@
-export const PINE_V6_SETTINGS_NOTIFICATION = 'pineV6/settings';
+export const PINE_FORGE_SETTINGS_NOTIFICATION = 'pineForge/settings';
 
-export interface PineV6Settings {
+export interface PineForgeSettings {
   enable: boolean;
   maxNumberOfProblems: number;
   strictVersionCheck: boolean;
 }
 
-export const defaultPineV6Settings: PineV6Settings = {
+export const defaultPineForgeSettings: PineForgeSettings = {
   enable: true,
   maxNumberOfProblems: 100,
   strictVersionCheck: true,

@@ -2,7 +2,7 @@
 
 This document specifies how to build **PineForge**—a VS Code–compatible extension that provides Pine Script **v6** diagnostics, hovers, completions, go-to-definition, and (later) formatting. The design is **Language Server Protocol (LSP)**–first: a thin editor client and a language server that owns parsing, symbols, rules, and LSP handlers. Cursor installs the same extension format as VS Code.
 
-**Implementation in this repo:** the VS Code extension **`pine-v6-linter`** lives at the repository root (`package.json`, `src/extension.ts`, `src/server.ts`, lexer, rules, …). See [README.md](README.md) to run, test, and package it.
+**Implementation in this repo:** the VS Code extension **`pine-forge`** (product **PineForge**) lives at the repository root (`package.json`, `src/extension.ts`, `src/server.ts`, lexer, rules, …). See [README.md](README.md) to run, test, and package it.
 
 ## Table of contents
 
@@ -91,13 +91,13 @@ Local JSON (or generated DB) mapping built-ins, keywords, functions, types, v6 n
 | Concept | Recommended value | Notes |
 |---------|-------------------|--------|
 | **Product / brand** | PineForge | Marketplace listing and user-facing name. |
-| **npm `name`** | `pineforge` or `@your-publisher/pineforge` | Lowercase; must match publisher rules for Marketplace. |
+| **npm `name`** | `pine-forge` or `@your-publisher/pine-forge` | Kebab-case is common for extension repos; must match publisher rules for Marketplace. |
 | **`displayName`** | `PineForge — Pine Script v6 Language Server, Linter & Formatter` | Shorter variants are fine if constrained by UI. |
 | **`publisher`** | Your Marketplace publisher id | Required for packaging. |
 | **Language id** | `pinescript` | Used in `contributes.languages` and `documentSelector`. |
-| **`LanguageClient` id / name** | e.g. `pineforge` / `PineForge` | Stable string for logging and client identity. |
-| **Diagnostic `source`** | `pineforge` | Consistent across rules for filterable diagnostics. |
-| **This repo’s manifest** | `pine-v6-linter` | [`package.json`](package.json): `LanguageClient` id `pineV6`, diagnostic `source` `pine-v6-linter`, settings `pineV6.*`. |
+| **`LanguageClient` id / name** | e.g. `pineForge` / `PineForge` | Stable string for logging and client identity. |
+| **Diagnostic `source`** | `pine-forge` | Consistent across rules for filterable diagnostics. |
+| **This repo’s manifest** | `pine-forge` | [`package.json`](package.json): `LanguageClient` id `pineForge`, diagnostic `source` `pine-forge`, settings `pineForge.*`. |
 
 ---
 
@@ -175,7 +175,7 @@ Single path from “file opens with color” to “shippable tool.” Merge earl
 
 ```json
 {
-  "name": "pineforge",
+  "name": "pine-forge",
   "displayName": "PineForge — Pine Script v6 Language Server, Linter & Formatter",
   "version": "0.1.0",
   "publisher": "your-publisher",
@@ -281,7 +281,7 @@ export function activate(context: vscode.ExtensionContext) {
     },
   };
 
-  client = new LanguageClient('pineforge', 'PineForge', serverOptions, clientOptions);
+  client = new LanguageClient('pineForge', 'PineForge', serverOptions, clientOptions);
   context.subscriptions.push(client.start());
 }
 
@@ -331,7 +331,7 @@ async function validate(doc: TextDocument) {
     severity: DiagnosticSeverity.Error,
     range: issue.range,
     message: issue.message,
-    source: 'pineforge',
+    source: 'pine-forge',
   }));
 
   connection.sendDiagnostics({ uri: doc.uri, diagnostics });
@@ -556,7 +556,7 @@ No Cursor-specific fork: install the VSIX or marketplace extension in Cursor lik
 
 - [ ] Open a `.pine` / `.pinescript` file in VS Code **and** Cursor; language id and grammar apply.  
 - [ ] Comment toggle, brackets, and autoclose behave per `language-configuration.json`.  
-- [ ] Introduce an invalid / unknown symbol; **diagnostic** appears from `source: pineforge`.  
+- [ ] Introduce an invalid / unknown symbol; **diagnostic** appears from `source: pine-forge`.  
 - [ ] Hover a built-in; markdown shows summary + **official** doc link.  
 - [ ] Completion lists expected symbols with documentation where wired.  
 - [ ] Go-to-definition / find references on a pilot symbol (when implemented).  

@@ -1,13 +1,13 @@
 {
-  "name": "pine-v6-linter",
-  "displayName": "Pine Script v6 Linter",
-  "description": "LSP-backed VS Code extension for Pine Script v6 — diagnostics, hover docs, autocomplete, and go-to-definition",
+  "name": "pine-forge",
+  "displayName": "PineForge — Pine Script v6 Language Server, Linter & Formatter",
+  "description": "PineForge: LSP-backed VS Code extension for Pine Script v6 — diagnostics, hover docs, autocomplete, and go-to-definition",
   "version": "0.1.0",
   "publisher": "shubhamtaywade82",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/shubhamtaywade82/pine-v6-linter"
+    "url": "https://github.com/shubhamtaywade82/pine-forge"
   },
   "engines": {
     "vscode": "^1.85.0"
@@ -53,24 +53,24 @@
     ],
     "commands": [
       {
-        "command": "pineV6.openReference",
+        "command": "pineForge.openReference",
         "title": "Pine Script: Open v6 Reference Manual"
       }
     ],
     "configuration": {
-      "title": "Pine Script v6 Linter",
+      "title": "PineForge",
       "properties": {
-        "pineV6.enable": {
+        "pineForge.enable": {
           "type": "boolean",
           "default": true,
           "description": "Enable/disable Pine Script v6 linting"
         },
-        "pineV6.maxNumberOfProblems": {
+        "pineForge.maxNumberOfProblems": {
           "type": "number",
           "default": 100,
           "description": "Maximum number of problems reported per file"
         },
-        "pineV6.strictVersionCheck": {
+        "pineForge.strictVersionCheck": {
           "type": "boolean",
           "default": true,
           "description": "Require //@version=6 annotation"

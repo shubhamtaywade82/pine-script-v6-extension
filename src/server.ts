@@ -15,9 +15,9 @@ import { parseDocument } from './parser/parser';
 import { runRules } from './rules/engine';
 import { builtinNames, completionLabels, pineReferences, refUrl } from './references/index';
 import {
-  defaultPineV6Settings,
-  PINE_V6_SETTINGS_NOTIFICATION,
-  type PineV6Settings,
+  defaultPineForgeSettings,
+  PINE_FORGE_SETTINGS_NOTIFICATION,
+  type PineForgeSettings,
 } from './settings';
 
 const connection = createConnection(ProposedFeatures.all);
@@ -25,10 +25,10 @@ const documents = new TextDocuments(TextDocument);
 
 const builtins = builtinNames();
 
-let serverSettings: PineV6Settings = { ...defaultPineV6Settings };
+let serverSettings: PineForgeSettings = { ...defaultPineForgeSettings };
 
 connection.onInitialize((params: InitializeParams) => {
-  const init = params.initializationOptions as Partial<PineV6Settings> | undefined;
+  const init = params.initializationOptions as Partial<PineForgeSettings> | undefined;
   if (init) {
     serverSettings = { ...serverSettings, ...init };
   }
@@ -44,7 +44,7 @@ connection.onInitialize((params: InitializeParams) => {
   };
 });
 
-connection.onNotification(PINE_V6_SETTINGS_NOTIFICATION, (partial: Partial<PineV6Settings>) => {
+connection.onNotification(PINE_FORGE_SETTINGS_NOTIFICATION, (partial: Partial<PineForgeSettings>) => {
   serverSettings = { ...serverSettings, ...partial };
   for (const doc of documents.all()) {
     validateDocument(doc);
@@ -78,7 +78,7 @@ function validateDocument(doc: TextDocument): void {
     range: issue.range,
     message: issue.message,
     severity: issue.severity,
-    source: 'pine-v6-linter',
+    source: 'pine-forge',
     code: issue.code,
   }));
   connection.sendDiagnostics({ uri: doc.uri, diagnostics });

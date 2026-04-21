@@ -1,7 +1,7 @@
 import { DiagnosticSeverity } from 'vscode-languageserver/node';
 import type { Range } from 'vscode-languageserver-types';
 import type { ParsedDocument } from '../parser/parser';
-import type { PineV6Settings } from '../settings';
+import type { PineForgeSettings } from '../settings';
 
 export interface RuleIssue {
   code: string;
@@ -34,7 +34,7 @@ const STRATEGY_FUNCTIONS = new Set([
 export function runRules(
   parsed: ParsedDocument,
   builtins: Set<string>,
-  settings: PineV6Settings,
+  settings: PineForgeSettings,
 ): RuleIssue[] {
   const issues: RuleIssue[] = [];
 
@@ -42,7 +42,7 @@ export function runRules(
   if (settings.strictVersionCheck) {
     if (parsed.versionDirective === null) {
       issues.push({
-        code: 'pine-v6/version-missing',
+        code: 'pine-forge/version-missing',
         message:
           'Declare a Pine version with //@version=6 at the top of the script (strict version check is enabled).',
         range: {
@@ -53,7 +53,7 @@ export function runRules(
       });
     } else if (parsed.versionDirective < 6) {
       issues.push({
-        code: 'pine-v6/version-below-6',
+        code: 'pine-forge/version-below-6',
         message: `Pine v6 tooling: found //@version=${parsed.versionDirective}. See migration: https://www.tradingview.com/pine-script-docs/migration-guides/to-pine-version-6/`,
         range: {
           start: { line: 0, character: 0 },
@@ -70,7 +70,7 @@ export function runRules(
       // Unknown call rule
       if (!builtins.has(node.name)) {
         issues.push({
-          code: 'pine-v6/unknown-call',
+          code: 'pine-forge/unknown-call',
           message: `Unknown or unsupported call '${node.name}' for the bundled reference index.`,
           range: node.range,
           severity: DiagnosticSeverity.Warning,
@@ -82,7 +82,7 @@ export function runRules(
         for (const arg of node.args) {
           if (arg.name === 'transp') {
             issues.push({
-              code: 'pine-v6/deprecated-transp',
+              code: 'pine-forge/deprecated-transp',
               message: `The 'transp' parameter is removed in Pine v6. Use 'color.new(color, transp)' instead.`,
               range: arg.range,
               severity: DiagnosticSeverity.Error,
@@ -96,7 +96,7 @@ export function runRules(
         for (const arg of node.args) {
           if (arg.name === 'when') {
             issues.push({
-              code: 'pine-v6/deprecated-when',
+              code: 'pine-forge/deprecated-when',
               message: `The 'when' parameter is removed in Pine v6. Wrap the function call in an 'if' block instead.`,
               range: arg.range,
               severity: DiagnosticSeverity.Error,
@@ -112,7 +112,7 @@ export function runRules(
         const firstArg = node.args[0];
         if (firstArg && (firstArg.value === 'true' || firstArg.value === 'false')) {
           issues.push({
-            code: 'pine-v6/bool-na',
+            code: 'pine-forge/bool-na',
             message: `Booleans can no longer be 'na' in Pine v6. 'na()', 'nz()', and 'fixnan()' no longer accept bool arguments.`,
             range: firstArg.range,
             severity: DiagnosticSeverity.Error,
