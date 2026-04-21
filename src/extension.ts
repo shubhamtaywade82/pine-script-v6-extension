@@ -26,6 +26,10 @@ function readPineForgeSettings(): PineForgeSettings {
       'strictVersionCheck',
       defaultPineForgeSettings.strictVersionCheck,
     ),
+    strictImplicitBoolIf: c.get<boolean>(
+      'strictImplicitBoolIf',
+      defaultPineForgeSettings.strictImplicitBoolIf,
+    ),
   };
 }
 

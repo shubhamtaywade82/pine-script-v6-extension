@@ -6,9 +6,9 @@
 
 | Feature | Notes |
 |---------|--------|
-| Diagnostics | Version checks, unknown calls vs [`src/references/pine.json`](src/references/pine.json), v6 migration rules (`transp`, `when`, `na`/bool, implicit bool in `if`) |
+| Diagnostics | Version checks, unknown calls vs [`src/references/pine.json`](src/references/pine.json), v6 migration rules (`transp`, `when`, `na`/bool); optional **bare `if` series** check via `pineForge.strictImplicitBoolIf` |
 | Hover | Markdown + TradingView link for indexed symbols |
-| Completions | Filtered by prefix at cursor; trigger `.`, `_`, `(` |
+| Completions | Prefix filter; **user symbols** (outline) merged with bundled v6 index (users sort first) |
 | Go to definition | For indexed symbols → **official v6 reference URL** (external location) |
 | Find references / highlight | Same-file identifier occurrences; skips strings and `//` / `/*` comments (best-effort) |
 | Outline / document symbols | From structural [`parseProgram`](src/parser/treeParser.ts) AST (`var`, `method` / UDFs, nested blocks) |
@@ -24,7 +24,9 @@
 - Formatter does **not** re-indent Pine blocks from grammar rules yet.
 - Rename / references do **not** understand full scoping; avoid renaming names that collide with built-ins.
 
-See **[pinescript-extension.md](pinescript-extension.md)** for architecture and deeper roadmap (semantic tokens, arity from reference, AST printer, etc.).
+See **[pinescript-extension.md](pinescript-extension.md)** for architecture and deeper roadmap (semantic tokens, arity from reference, **AST indent printer**, etc.).
+
+**CI:** push/PR to `main` or `master` runs `.github/workflows/ci.yml` (`npm ci`, compile, test).
 
 ## Develop
 
@@ -47,6 +49,7 @@ Open this folder in VS Code, then **Run → Start Debugging** (F5) with **Run Pi
 | `pineForge.enable` | `true` | Turn diagnostics on/off. |
 | `pineForge.maxNumberOfProblems` | `100` | Cap diagnostics per file. |
 | `pineForge.strictVersionCheck` | `true` | When enabled, warn if `//@version=` is missing; hints for versions other than 6. |
+| `pineForge.strictImplicitBoolIf` | `false` | When `true`, warns on **bare** `if close`-style series-as-bool (same line only; skips comments, comparisons, and `[` tails). Off by default to limit false positives. |
 
 ## Package
 

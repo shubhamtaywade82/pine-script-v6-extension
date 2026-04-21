@@ -2,7 +2,6 @@ import {
   CodeAction,
   CodeActionKind,
   CompletionItem,
-  CompletionItemKind,
   createConnection,
   Diagnostic,
   DocumentHighlight,
@@ -33,13 +32,14 @@ import type {
 } from 'vscode-languageserver';
 import type { DocumentSymbol, SymbolInformation } from 'vscode-languageserver-types';
 import { TextDocument } from 'vscode-languageserver-textdocument';
+import { buildCompletionItems } from './completions/buildCompletions';
 import { collectDocumentSymbols } from './analysis/documentSymbols';
 import { formatPineSource } from './analysis/format';
 import { calleeBeforeOpenParen } from './analysis/signatureHelp';
 import { findIdentifierRanges, wordRangeAtOffset } from './analysis/wordRefs';
 import { parseDocument } from './parser/parser';
 import { runRules } from './rules/engine';
-import { builtinNames, completionLabels, pineReferences, refUrl } from './references/index';
+import { builtinNames, pineReferences, refUrl } from './references/index';
 import {
   defaultPineForgeSettings,
   PINE_FORGE_SETTINGS_NOTIFICATION,
@@ -158,20 +158,8 @@ function completionPrefix(doc: TextDocument, pos: { line: number; character: num
 connection.onCompletion((params: CompletionParams): CompletionItem[] => {
   const doc = params.textDocument ? documents.get(params.textDocument.uri) : undefined;
   const prefix = doc ? completionPrefix(doc, params.position).toLowerCase() : '';
-  const labels = completionLabels();
-  const filtered = prefix
-    ? labels.filter((l) => l.toLowerCase().startsWith(prefix) || l.toLowerCase().includes('.' + prefix))
-    : labels;
-  const max = Math.min(filtered.length, serverSettings.maxNumberOfProblems * 20);
-  return filtered.slice(0, max).map((label) => {
-    const ref = pineReferences[label];
-    return {
-      label,
-      kind: CompletionItemKind.Function,
-      detail: ref?.summary,
-      documentation: ref ? `${ref.summary}\n\n${refUrl(ref.path)}` : undefined,
-    };
-  });
+  const text = doc?.getText() ?? '';
+  return buildCompletionItems(text, prefix);
 });
 
 connection.onDefinition((params: DefinitionParams): Location | Location[] | null => {

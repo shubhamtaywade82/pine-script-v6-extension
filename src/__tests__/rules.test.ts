@@ -1,0 +1,50 @@
+import { parseDocument } from '../parser/parser';
+import { builtinNames } from '../references/index';
+import { runRules } from '../rules/engine';
+import { defaultPineForgeSettings } from '../settings';
+
+const builtins = builtinNames();
+
+describe('implicit bool if rule', () => {
+  const base = { ...defaultPineForgeSettings, strictVersionCheck: false };
+
+  it('is off by default (no diagnostics for bare if close)', () => {
+    const src = `//@version=6
+if close
+    na`;
+    const issues = runRules(parseDocument(src), builtins, base);
+    expect(issues.some((i) => i.code === 'pine-forge/implicit-bool-cast')).toBe(false);
+  });
+
+  it('when strictImplicitBoolIf is on, flags bare same-line condition', () => {
+    const src = `//@version=6
+if close
+    na`;
+    const issues = runRules(parseDocument(src), builtins, { ...base, strictImplicitBoolIf: true });
+    expect(issues.some((i) => i.code === 'pine-forge/implicit-bool-cast')).toBe(true);
+  });
+
+  it('does not flag comparisons on the same line', () => {
+    const src = `//@version=6
+if close == 0
+    na`;
+    const issues = runRules(parseDocument(src), builtins, { ...base, strictImplicitBoolIf: true });
+    expect(issues.some((i) => i.code === 'pine-forge/implicit-bool-cast')).toBe(false);
+  });
+
+  it('does not flag matches inside line comments', () => {
+    const src = `//@version=6
+// if close
+plot(close)`;
+    const issues = runRules(parseDocument(src), builtins, { ...base, strictImplicitBoolIf: true });
+    expect(issues.some((i) => i.code === 'pine-forge/implicit-bool-cast')).toBe(false);
+  });
+
+  it('does not flag indexing tail on same line', () => {
+    const src = `//@version=6
+if close[1]
+    na`;
+    const issues = runRules(parseDocument(src), builtins, { ...base, strictImplicitBoolIf: true });
+    expect(issues.some((i) => i.code === 'pine-forge/implicit-bool-cast')).toBe(false);
+  });
+});

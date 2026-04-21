@@ -43,7 +43,7 @@ This document specifies how to build **PineForge**—a VS Code–compatible **al
 |------|--------|------------|
 | Language id, grammar, `language-configuration.json` | Yes | Shipped |
 | LSP process, incremental sync | Yes | Shipped |
-| Diagnostics (version + migration + unknown-call vs index) | Full rule set | **Partial** (rules grow over time) |
+| Diagnostics (version + migration + unknown-call vs index) | Full rule set | **Partial** (rules grow over time; bare `if series` check is **opt-in** via `pineForge.strictImplicitBoolIf`) |
 | Hover + completion | Context-aware, indexed | **Partial** (prefix filter + `pine.json`; not full type context) |
 | Parser / AST | Full grammar + recovery | **Partial** (lexer + tree parser) |
 | Go-to-definition | Project + libs | **Partial** (indexed symbols → official v6 doc URL) |

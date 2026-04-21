@@ -4,10 +4,17 @@ export interface PineForgeSettings {
   enable: boolean;
   maxNumberOfProblems: number;
   strictVersionCheck: boolean;
+  /**
+   * When true, flags bare `if close`-style conditions (series used as bool) only when the
+   * condition is obviously a single identifier on the same line (conservative). Off by default
+   * to avoid noise in complex scripts.
+   */
+  strictImplicitBoolIf: boolean;
 }
 
 export const defaultPineForgeSettings: PineForgeSettings = {
   enable: true,
   maxNumberOfProblems: 100,
   strictVersionCheck: true,
+  strictImplicitBoolIf: false,
 };

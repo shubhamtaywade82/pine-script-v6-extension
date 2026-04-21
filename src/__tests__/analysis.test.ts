@@ -1,10 +1,19 @@
 import { collectDocumentSymbols } from '../analysis/documentSymbols';
 import { formatPineSource } from '../analysis/format';
+import { offsetInStringOrComment } from '../analysis/skipRegions';
 import { findIdentifierRanges } from '../analysis/wordRefs';
 
 describe('formatPineSource', () => {
   it('trims trailing whitespace and ensures newline at EOF', () => {
     expect(formatPineSource('a  \nb\t', 4)).toBe('a\nb\n');
+  });
+});
+
+describe('offsetInStringOrComment', () => {
+  it('detects line comment', () => {
+    const src = '// foo bar';
+    const idx = src.indexOf('foo');
+    expect(offsetInStringOrComment(src, idx)).toBe(true);
   });
 });
 

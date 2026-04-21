@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1
+
+- **Trust:** `if close`-style implicit-bool rule is **off by default**; enable with `pineForge.strictImplicitBoolIf`. When on, it only fires for a **bare** identifier on the same line (EOL, `//`, or newline next), skips **strings/comments**, and ignores same-line **comparisons** and **`[`** indexing tails. Severity is **warning** (not error).
+- **Completions:** user symbols from the document outline are merged with the bundled v6 index (user entries sort first).
+- **CI:** GitHub Action runs `npm ci`, `compile`, and `test` on push/PR to `main`/`master`.
+
 ## 0.2.0
 
 - Language server: **go to definition** for symbols in the bundled v6 reference (opens official TradingView URL).

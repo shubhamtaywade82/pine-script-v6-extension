@@ -1,5 +1,6 @@
 import { DiagnosticSeverity } from 'vscode-languageserver/node';
 import type { Range, Position } from 'vscode-languageserver-types';
+import { offsetInStringOrComment } from '../analysis/skipRegions';
 import type { ParsedDocument } from '../parser/parser';
 import type { PineForgeSettings } from '../settings';
 
@@ -129,23 +130,28 @@ export function runRules(
     }
   }
 
-  // 3. Regex-based check for implicit bool casting in common cases
-  const commonNonBoolVars = ['bar_index', 'volume', 'close', 'open', 'high', 'low', 'time'];
-  for (const varName of commonNonBoolVars) {
-    const ifRegex = new RegExp(`\\bif\\s+(${varName})\\b`, 'g');
-    let match;
-    while ((match = ifRegex.exec(source)) !== null) {
-      const varStart = match.index + match[0].indexOf(match[1]);
-      const varEnd = varStart + match[1].length;
-      issues.push({
-        code: 'pine-forge/implicit-bool-cast',
-        message: `Implicit cast from '${varName}' to bool is not allowed in Pine v6. Use 'bool(${varName})' or an explicit comparison.`,
-        range: {
-          start: offsetToPosition(source, varStart),
-          end: offsetToPosition(source, varEnd),
-        },
-        severity: DiagnosticSeverity.Error,
-      });
+  // 3. Optional: bare `if series_id` on same line (conservative — opt-in for trust)
+  if (settings.strictImplicitBoolIf) {
+    const commonNonBoolVars = ['bar_index', 'volume', 'close', 'open', 'high', 'low', 'time'];
+    for (const varName of commonNonBoolVars) {
+      const ifRegex = new RegExp(`\\bif\\s+(${varName})\\b`, 'g');
+      let match: RegExpExecArray | null;
+      while ((match = ifRegex.exec(source)) !== null) {
+        const varStart = match.index + match[0].indexOf(match[1]);
+        const varEnd = varStart + match[1].length;
+        if (offsetInStringOrComment(source, varStart)) continue;
+        const tail = source.slice(varEnd);
+        if (!/^\s*(?:$|\/\/|\n)/.test(tail)) continue;
+        issues.push({
+          code: 'pine-forge/implicit-bool-cast',
+          message: `Implicit cast from '${varName}' to bool is not allowed in Pine v6. Use an explicit comparison (e.g. \`${varName} != na\`) or \`bool(${varName})\` where appropriate.`,
+          range: {
+            start: offsetToPosition(source, varStart),
+            end: offsetToPosition(source, varEnd),
+          },
+          severity: DiagnosticSeverity.Warning,
+        });
+      }
     }
   }
 

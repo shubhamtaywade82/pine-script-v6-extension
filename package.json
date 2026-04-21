@@ -2,7 +2,7 @@
   "name": "pine-forge",
   "displayName": "PineForge — Pine Script v6 Language Server, Linter & Formatter",
   "description": "PineForge: Pine Script v6 language support — LSP diagnostics, hovers, filtered completions, go-to-reference (TradingView docs), find references, outline, workspace symbols, signature help, rename (user symbols), format document, and quick fixes. TradingView remains authoritative for full compiler parity.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "shubhamtaywade82",
   "license": "MIT",
   "repository": {
@@ -78,6 +78,11 @@
           "type": "boolean",
           "default": true,
           "description": "Require //@version=6 annotation"
+        },
+        "pineForge.strictImplicitBoolIf": {
+          "type": "boolean",
+          "default": false,
+          "description": "When enabled, report bare `if close`-style series-as-bool on the same line only (conservative); skips strings/comments, comparisons, and indexing tails."
         }
       }
     }
