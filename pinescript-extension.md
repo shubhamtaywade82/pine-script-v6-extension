@@ -43,13 +43,16 @@ This document specifies how to build **PineForge**—a VS Code–compatible **al
 |------|--------|------------|
 | Language id, grammar, `language-configuration.json` | Yes | Shipped |
 | LSP process, incremental sync | Yes | Shipped |
-| Diagnostics (version + migration + unknown-call vs index) | Full rule set | **Partial** |
-| Hover + completion | Context-aware, indexed | **Partial** (word match + `pine.json`) |
-| Parser / AST | Full grammar + recovery | **Partial** (lexer + tree parser path) |
-| Symbols, definition, references, rename | Yes | **Not yet** |
-| Formatter (document / range) | Yes | **Not yet** |
-| Code actions / quick fixes | Yes | **Not yet** |
-| Signature help, document symbols, semantic tokens | Yes | **Not yet** |
+| Diagnostics (version + migration + unknown-call vs index) | Full rule set | **Partial** (rules grow over time) |
+| Hover + completion | Context-aware, indexed | **Partial** (prefix filter + `pine.json`; not full type context) |
+| Parser / AST | Full grammar + recovery | **Partial** (lexer + tree parser) |
+| Go-to-definition | Project + libs | **Partial** (indexed symbols → official v6 doc URL) |
+| Find references / rename | Scope-correct | **Partial** (same-file, string/comment-aware heuristic) |
+| Document / workspace symbols | Yes | **Partial** (AST outline when `parseProgram` succeeds) |
+| Formatter (document / range) | AST printer | **Partial** (whitespace cleanup only) |
+| Code actions / quick fixes | Rich set | **Partial** (version + starter `transp` fix) |
+| Signature help | Arity-aware | **Partial** (summary + link; not full arg list) |
+| Semantic tokens | Optional | **Not yet** |
 
 Ship order follows [Implementation phases](#implementation-phases); expand the parser and symbol table before promising formatter parity or risky autofixes.
 

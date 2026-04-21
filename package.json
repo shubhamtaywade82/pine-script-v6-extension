@@ -1,9 +1,8 @@
 {
   "name": "pine-forge",
   "displayName": "PineForge — Pine Script v6 Language Server, Linter & Formatter",
-  "description": "All-in-one Pine Script v6 tooling (preview): LSP diagnostics, hovers, completions; roadmap includes formatting, code actions, go-to-definition, and richer linting. TradingView remains the compile authority until parity.",
-  "version": "0.1.0",
-  "preview": true,
+  "description": "PineForge: Pine Script v6 language support — LSP diagnostics, hovers, filtered completions, go-to-reference (TradingView docs), find references, outline, workspace symbols, signature help, rename (user symbols), format document, and quick fixes. TradingView remains authoritative for full compiler parity.",
+  "version": "0.2.0",
   "publisher": "shubhamtaywade82",
   "license": "MIT",
   "repository": {
@@ -15,7 +14,8 @@
   },
   "categories": [
     "Programming Languages",
-    "Linters"
+    "Linters",
+    "Formatters"
   ],
   "keywords": [
     "pine script",

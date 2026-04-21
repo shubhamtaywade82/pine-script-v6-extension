@@ -51,7 +51,7 @@ export function runRules(
   if (settings.strictVersionCheck) {
     if (parsed.versionDirective === null) {
       issues.push({
-        code: 'pine-v6/version-missing',
+        code: 'pine-forge/version-missing',
         message:
           'Declare a Pine version with //@version=6 at the top of the script (strict version check is enabled).',
         range: {
@@ -62,7 +62,7 @@ export function runRules(
       });
     } else if (parsed.versionDirective < 6) {
       issues.push({
-        code: 'pine-v6/version-below-6',
+        code: 'pine-forge/version-below-6',
         message: `Pine v6 tooling: found //@version=${parsed.versionDirective}. See migration: https://www.tradingview.com/pine-script-docs/migration-guides/to-pine-version-6/`,
         range: {
           start: { line: 0, character: 0 },
@@ -79,7 +79,7 @@ export function runRules(
       // Unknown call rule
       if (!builtins.has(node.name)) {
         issues.push({
-          code: 'pine-v6/unknown-call',
+          code: 'pine-forge/unknown-call',
           message: `Unknown or unsupported call '${node.name}' for the bundled reference index.`,
           range: node.range,
           severity: DiagnosticSeverity.Warning,
@@ -91,7 +91,7 @@ export function runRules(
         for (const arg of node.args) {
           if (arg.name === 'transp') {
             issues.push({
-              code: 'pine-v6/deprecated-transp',
+              code: 'pine-forge/deprecated-transp',
               message: `The 'transp' parameter is removed in Pine v6. Use 'color.new(color, transp)' instead.`,
               range: arg.range,
               severity: DiagnosticSeverity.Error,
@@ -105,7 +105,7 @@ export function runRules(
         for (const arg of node.args) {
           if (arg.name === 'when') {
             issues.push({
-              code: 'pine-v6/deprecated-when',
+              code: 'pine-forge/deprecated-when',
               message: `The 'when' parameter is removed in Pine v6. Wrap the function call in an 'if' block instead.`,
               range: arg.range,
               severity: DiagnosticSeverity.Error,
@@ -119,7 +119,7 @@ export function runRules(
         const firstArg = node.args[0];
         if (firstArg && (firstArg.value === 'true' || firstArg.value === 'false')) {
           issues.push({
-            code: 'pine-v6/bool-na',
+            code: 'pine-forge/bool-na',
             message: `Booleans can no longer be 'na' in Pine v6. 'na()', 'nz()', and 'fixnan()' no longer accept bool arguments.`,
             range: firstArg.range,
             severity: DiagnosticSeverity.Error,
@@ -138,7 +138,7 @@ export function runRules(
       const varStart = match.index + match[0].indexOf(match[1]);
       const varEnd = varStart + match[1].length;
       issues.push({
-        code: 'pine-v6/implicit-bool-cast',
+        code: 'pine-forge/implicit-bool-cast',
         message: `Implicit cast from '${varName}' to bool is not allowed in Pine v6. Use 'bool(${varName})' or an explicit comparison.`,
         range: {
           start: offsetToPosition(source, varStart),

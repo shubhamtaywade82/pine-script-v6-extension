@@ -1,10 +1,30 @@
 # PineForge (`pine-forge`)
 
-**Vision:** An **all-in-one** Pine Script **v6** development tool for VS Code and Cursor — **LSP** (diagnostics, hover, completions, signature help, go-to-definition, find references, rename, document symbols), **linting** (syntax, scopes, types, v6 migration and domain rules), **formatting**, and **corrections** (code actions / quick fixes), all backed by a real parse and symbol model where possible.
+**Vision:** An **all-in-one** Pine Script **v6** development tool for VS Code and Cursor — LSP, linting, formatting, and corrections backed by parsing and the official v6 reference where possible.
 
-**Reality today (0.1.x):** A **preview** on that path — not yet a full replacement for TradingView’s compiler or editor. TradingView remains the authority for final compile errors until grammar and semantics are aligned. What already works: language registration and **syntax highlighting**, LSP boot with **incremental sync**, **diagnostics** (version checks, a few v6 migration rules, unknown calls vs a curated [`src/references/pine.json`](src/references/pine.json)), **hover** and a **global completion list** for indexed symbols, plus a growing **lexer + tree parser** for richer call extraction when parsing succeeds.
+**Shipped in 0.2.x**
 
-See **[pinescript-extension.md](pinescript-extension.md)** for architecture, phased roadmap (formatter → code actions → symbols, etc.), and links to official Pine v6 docs.
+| Feature | Notes |
+|---------|--------|
+| Diagnostics | Version checks, unknown calls vs [`src/references/pine.json`](src/references/pine.json), v6 migration rules (`transp`, `when`, `na`/bool, implicit bool in `if`) |
+| Hover | Markdown + TradingView link for indexed symbols |
+| Completions | Filtered by prefix at cursor; trigger `.`, `_`, `(` |
+| Go to definition | For indexed symbols → **official v6 reference URL** (external location) |
+| Find references / highlight | Same-file identifier occurrences; skips strings and `//` / `/*` comments (best-effort) |
+| Outline / document symbols | From structural [`parseProgram`](src/parser/treeParser.ts) AST (`var`, `method` / UDFs, nested blocks) |
+| Workspace symbol | Search open documents by symbol name |
+| Signature help | Summary + doc link for callee before `(` (best-effort when args contain nested `(`) |
+| Rename | `prepareRename` + workspace edit for **non-built-in** names; same-file, best-effort |
+| Format document | Trim trailing whitespace, tabs → spaces, newline at EOF — **not** a full Pine pretty-printer |
+| Code actions | Insert/set `//@version=6`; starter removal for deprecated `transp` |
+
+**Limits (honest)**
+
+- TradingView’s compiler is still **authoritative** for full syntax, types, and runtime errors.
+- Formatter does **not** re-indent Pine blocks from grammar rules yet.
+- Rename / references do **not** understand full scoping; avoid renaming names that collide with built-ins.
+
+See **[pinescript-extension.md](pinescript-extension.md)** for architecture and deeper roadmap (semantic tokens, arity from reference, AST printer, etc.).
 
 ## Develop
 
@@ -34,16 +54,4 @@ Open this folder in VS Code, then **Run → Start Debugging** (F5) with **Run Pi
 npm run package
 ```
 
-Uses `publisher` from `package.json` (`shubhamtaywade82`). Adjust `repository.url` if the GitHub remote differs.
-
-## Roadmap (high level)
-
-| Next milestones | Notes |
-|-----------------|--------|
-| Symbols + go-to-definition / references | Scope table, declarations vs `pine.json` |
-| Smarter completions | Context, arity hints from reference |
-| Formatter | AST printer → `TextEdit[]`; separate from lint rules |
-| Code actions | Quick fixes mapped from diagnostics |
-| Broader grammar + types | Fewer false positives; v6-aware semantics |
-
-Details: [pinescript-extension.md](pinescript-extension.md) § Implementation phases.
+Uses `publisher` from `package.json` (`shubhamtaywade82`). Adjust `repository.url` if the GitHub remote differs. See [CHANGELOG.md](CHANGELOG.md) for release notes.
