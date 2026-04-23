@@ -1,0 +1,3 @@
+//@version=6
+indicator("alert title e2e", overlay = true)
+alertcondition(true, title = "t" + str.tostring(high), message = "ok")

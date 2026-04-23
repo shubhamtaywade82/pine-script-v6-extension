@@ -25,6 +25,7 @@ import type {
   DefinitionParams,
   DocumentFormattingParams,
   DocumentHighlightParams,
+  DocumentRangeFormattingParams,
   PrepareRenameParams,
   ReferenceParams,
   RenameParams,
@@ -86,6 +87,7 @@ connection.onInitialize((params: InitializeParams) => {
       workspaceSymbolProvider: true,
       documentHighlightProvider: true,
       documentFormattingProvider: true,
+      documentRangeFormattingProvider: true,
       signatureHelpProvider: {
         triggerCharacters: ['(', ','],
       },
@@ -275,6 +277,18 @@ connection.onDocumentFormatting((params: DocumentFormattingParams): TextEdit[] |
   if (next === prev) return [];
   const endPos = doc.positionAt(prev.length);
   return [TextEdit.replace({ start: { line: 0, character: 0 }, end: endPos }, next)];
+});
+
+connection.onDocumentRangeFormatting((params: DocumentRangeFormattingParams): TextEdit[] | null => {
+  const doc = documents.get(params.textDocument.uri);
+  if (!doc) return null;
+  const tabSize = params.options.tabSize ?? 4;
+  const startOff = doc.offsetAt(params.range.start);
+  const endOff = doc.offsetAt(params.range.end);
+  const slice = doc.getText().slice(startOff, endOff);
+  const next = formatPineSource(slice, tabSize);
+  if (next === slice) return [];
+  return [TextEdit.replace(params.range, next)];
 });
 
 connection.onPrepareRename((params: PrepareRenameParams) => {

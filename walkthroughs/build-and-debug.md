@@ -19,3 +19,7 @@ Set breakpoints in `src/server.ts`, then either:
 - Use the compound **Extension + Server (manual attach)** and attach to port **6009**.
 
 LSP client logs: **View → Output → PineForge LSP**.
+
+## Integration tests (`npm run test:e2e`)
+
+From the repo root, **`npm run test:e2e`** launches VS Code (under `.vscode-test/`), opens **`src/test/fixtures/workspace`**, and runs Mocha suites in **`src/test/suite/`** that exercise the real PineForge language server (diagnostics, completions, format, hover, symbols, go-to-definition). On headless Linux, run under **xvfb** (as in CI).

@@ -1,0 +1,4 @@
+//@version=6
+plot(close)
+x = 1  
+y = 2  

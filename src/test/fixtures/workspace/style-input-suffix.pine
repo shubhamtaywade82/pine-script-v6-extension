@@ -1,0 +1,3 @@
+//@version=6
+indicator("style e2e", overlay = true)
+length = input.int(14, "Length")

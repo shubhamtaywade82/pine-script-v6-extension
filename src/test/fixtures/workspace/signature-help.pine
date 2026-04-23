@@ -1,0 +1,3 @@
+//@version=6
+indicator("sig e2e", overlay = true)
+plot(close)

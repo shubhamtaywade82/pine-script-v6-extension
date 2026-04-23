@@ -1,0 +1,3 @@
+//@version=6
+indicator("surface e2e")
+if is_new_day then pdh := day_high; pdl := day_low

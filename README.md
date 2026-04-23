@@ -49,6 +49,7 @@ npm install
 npm run compile
 npm test
 # VS Code integration tests (downloads VS Code once under .vscode-test/; use xvfb on Linux headless)
+# Opens src/test/fixtures/workspace — full LSP + settings e2e: diagnostics (rules above), references/highlights, signature help, rename, QuickFixes, document & range format, completions, hover, definition, workspace & document symbols; all contributed commands registered
 npm run test:e2e
 # Optional: same bundle as Marketplace VSIX (overwrites dist/ with two minified files)
 npm run build:prod

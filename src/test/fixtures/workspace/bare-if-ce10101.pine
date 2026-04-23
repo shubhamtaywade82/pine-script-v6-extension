@@ -1,0 +1,5 @@
+//@version=6
+indicator("tv manual e2e", overlay = true)
+newMonth = ta.change(month)
+if newMonth
+    plot(1)

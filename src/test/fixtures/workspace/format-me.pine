@@ -1,0 +1,5 @@
+//@version=6
+indicator("format e2e")	
+x = 1  
+
+plot(close)

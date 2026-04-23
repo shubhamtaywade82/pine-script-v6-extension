@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.1
+
+- **LSP:** **`documentRangeFormattingProvider`** — range format applies the same whitespace cleanup as full-document format on the selected span (`src/server.ts`).
+- **VS Code e2e (full surface):** `runTest.ts` opens **`src/test/fixtures/workspace`**. Suites **`lsp.e2e.test.ts`** and **`lsp.e2e.rules.test.ts`** exercise **diagnostics** (surface `then`/`;`, unknown call, version-missing / below-6, clean script, TV **CE10101**, **alertcondition** const string, **deprecated transp**), **references**, **document highlights**, **signature help**, **prepareRename** + **rename**, **QuickFix code actions** (version insert/replace, transp removal), **format document** + **format range**, **completions**, **hover**, **definition**, **document / workspace symbols**, and **workspace-scoped settings** toggles (**strictImplicitBoolIf**, **styleTradingViewHints**, **limitationHints**, **`pineForge.enable`** clearing diagnostics). **`extension.test.ts`** asserts every **`contributes.commands`** id is registered. Helpers + reset in **`src/test/suite/testUtils.ts`**. **`src/test/fixtures/workspace/.vscode/`** is **gitignored** (workspace settings written during tests).
+
 ## 0.4.0
 
 - **Production VSIX:** `vscode:prepublish` runs **`npm run build:prod`** — esbuild bundles `src/extension.ts` → `dist/extension.js` and `src/server.ts` → `dist/server.js` (minified, no source maps in package). Host API stays **`external: ['vscode']`** on the extension bundle.
