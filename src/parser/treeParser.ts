@@ -291,7 +291,10 @@ class Parser {
       if (this.isTypeStart()) {
         typeAnnotation = this.parseTypeAnnotation();
       }
-      const fieldName = this.expect(TokenType.IDENT, 'field name');
+      // Field name may be an IDENT or a keyword token (e.g. `label`, `line`)
+      const fieldName = this.isIdentLike()
+        ? this.advance()
+        : this.expect(TokenType.IDENT, 'field name');
       let defaultValue: Expression | null = null;
       if (this.check(TokenType.EQ)) {
         this.advance();
@@ -432,7 +435,22 @@ class Parser {
       const start = this.current().range.start;
       let typeAnnotation: TypeAnnotation | null = null;
       if (this.isTypeStart()) {
+        // Built-in qualified / keyword type
         typeAnnotation = this.parseTypeAnnotation();
+      } else if (
+        this.check(TokenType.IDENT) &&
+        this.peek(1)?.type === TokenType.IDENT
+      ) {
+        // User-defined type (IDENT) followed by param name (IDENT)
+        // e.g. `method foo(MyType self)` or `bar(Point p)`
+        const ta_start = this.current().range.start;
+        const baseTok = this.advance();
+        typeAnnotation = {
+          type: 'TypeAnnotation',
+          qualifier: null,
+          baseType: baseTok.value,
+          range: { start: ta_start, end: this.prevRange().end },
+        };
       }
       const name = this.expect(TokenType.IDENT, 'parameter name');
       let defaultValue: Expression | null = null;
@@ -837,11 +855,18 @@ class Parser {
 
   private parseArgs(): Argument[] {
     const args: Argument[] = [];
+    // Skip leading whitespace / newlines in multi-line calls
+    this.skipArgNewlines();
     while (!this.check(TokenType.RPAREN) && !this.isAtEnd()) {
       let name: string | null = null;
-      if (this.check(TokenType.IDENT) && this.peek(1)?.type === TokenType.EQ) {
+      // Named arg: `ident =` (but not `ident ==`)
+      if (
+        this.check(TokenType.IDENT) &&
+        this.peek(1)?.type === TokenType.EQ &&
+        this.peek(2)?.type !== TokenType.EQ
+      ) {
         name = this.advance().value;
-        this.advance();
+        this.advance(); // consume '='
       }
       const value = this.parseExpression();
       args.push({
@@ -850,11 +875,26 @@ class Parser {
         value,
         range: { start: value.range.start, end: value.range.end },
       });
+      // Skip trailing newlines/indent after each arg
+      this.skipArgNewlines();
       if (this.check(TokenType.RPAREN)) break;
       if (!this.check(TokenType.COMMA)) break;
-      this.advance();
+      this.advance(); // consume ','
+      this.skipArgNewlines(); // skip newlines after comma
     }
     return args;
+  }
+
+  /** Skip newlines, indent, and dedent tokens that appear inside paren argument lists. */
+  private skipArgNewlines(): void {
+    while (
+      !this.isAtEnd() &&
+      (this.check(TokenType.NEWLINE) ||
+        this.check(TokenType.INDENT) ||
+        this.check(TokenType.DEDENT))
+    ) {
+      this.advance();
+    }
   }
 
   private parsePrimary(): Expression {
@@ -932,6 +972,20 @@ class Parser {
       return n !== undefined && TYPE_KEYWORDS.has(n);
     }
     return TYPE_KEYWORDS.has(t);
+  }
+
+  /**
+   * Returns true if the current token can serve as an identifier name:
+   * either a true IDENT token, or a keyword token that Pine allows as a
+   * field / symbol name (e.g. `label`, `line`, `box`, `table`, `color`).
+   */
+  private isIdentLike(): boolean {
+    const t = this.current().type;
+    return (
+      t === TokenType.IDENT ||
+      TYPE_KEYWORDS.has(t) ||
+      QUALIFIERS.has(t)
+    );
   }
 
   private skipNewlines(): void {
