@@ -1,7 +1,7 @@
 //@version=6
 indicator("v6 UDT + Enum + Method E2E", overlay = true)
 
-// ── User-Defined Type with all field types ─────────────────────────────────────
+// ── User-Defined Types ────────────────────────────────────────────────────────
 type Candle
     float open   = 0.0
     float high   = 0.0
@@ -10,9 +10,9 @@ type Candle
     int   volume = 0
 
 type Signal
-    bool  active    = false
-    color sigColor  = color.gray
-    string label    = "none"
+    bool  active   = false
+    color sigColor = color.gray
+    string name    = "none"
 
 // ── Enum ──────────────────────────────────────────────────────────────────────
 enum Trend
@@ -20,50 +20,45 @@ enum Trend
     Bearish
     Neutral
 
-// ── Method on UDT ─────────────────────────────────────────────────────────────
+// ── Methods ───────────────────────────────────────────────────────────────────
 method isGreen(Candle self) =>
     self.close > self.open
 
 method bodySize(Candle self) =>
     math.abs(self.close - self.open)
 
-method range(Candle self) =>
+method candleRange(Candle self) =>
     self.high - self.low
 
-// ── Instantiate, read fields, call methods ────────────────────────────────────
-var Candle currentBar = Candle.new(
-    open  = open,
-    high  = high,
-    low   = low,
-    close = close,
-    volume= int(volume)
-)
+// ── Instantiate and use ───────────────────────────────────────────────────────
+var Candle currentBar = Candle.new()
 
-// Update on each bar
 currentBar.open   := open
 currentBar.high   := high
 currentBar.low    := low
 currentBar.close  := close
 currentBar.volume := int(volume)
 
-bool  isGreenBar  = currentBar.isGreen()
-float body        = currentBar.bodySize()
-float rng         = currentBar.range()
+bool  isGreenBar = currentBar.isGreen()
+float body       = currentBar.bodySize()
+float rng        = currentBar.candleRange()
 
-// ── Trend detection using enum ────────────────────────────────────────────────
-Trend trend = if ta.sma(close, 20) > ta.sma(close, 50)
-    Trend.Bullish
-else if ta.sma(close, 20) < ta.sma(close, 50)
-    Trend.Bearish
-else
-    Trend.Neutral
+// ── Trend detection ───────────────────────────────────────────────────────────
+float fastMa = ta.sma(close, 20)
+float slowMa = ta.sma(close, 50)
 
-Signal sig = Signal.new(
-    active   = isGreenBar,
-    sigColor = trend == Trend.Bullish ? color.green : trend == Trend.Bearish ? color.red : color.gray,
-    label    = trend == Trend.Bullish ? "Bull" : trend == Trend.Bearish ? "Bear" : "Neutral"
-)
+Trend trend = Trend.Neutral
+if fastMa > slowMa
+    trend := Trend.Bullish
+else if fastMa < slowMa
+    trend := Trend.Bearish
 
-plot(body,  title="Body Size")
-plot(rng,   title="Range")
+color trendColor = trend == Trend.Bullish ? color.green : trend == Trend.Bearish ? color.red : color.gray
+
+var Signal sig = Signal.new()
+sig.active   := isGreenBar
+sig.sigColor := trendColor
+
+plot(body, title="Body Size")
+plot(rng,  title="Range")
 bgcolor(sig.active ? color.new(sig.sigColor, 90) : na)
