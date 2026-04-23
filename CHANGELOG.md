@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.0
+
+- **Production VSIX:** `vscode:prepublish` runs **`npm run build:prod`** — esbuild bundles `src/extension.ts` → `dist/extension.js` and `src/server.ts` → `dist/server.js` (minified, no source maps in package). Host API stays **`external: ['vscode']`** on the extension bundle.
+- **Marketplace:** `images/icon.png` (128×128), **`icon`**, **`galleryBanner`**, **`homepage`**, and **`qna`** in `package.json`.
+- **Lean package:** `.vscodeignore` excludes **`scripts/**`** and **`.github/**`** from the VSIX.
+- **CI:** after unit tests and xvfb e2e, **`npm run package`** verifies the prepublish bundle produces a valid VSIX.
+
+## 0.3.3
+
+- **VS Code integration tests:** `@vscode/test-electron` + Mocha (`npm run test:e2e`), following [helloworld-test-sample](https://github.com/microsoft/vscode-extension-samples/tree/main/helloworld-test-sample). `tsconfig` excludes only `src/__tests__/**` so `src/test/**` compiles into `dist/test/`.
+- **Walkthrough:** contributed **`pineforge.welcome`** with steps linking to `walkthroughs/*.md` (Get Started / Welcome).
+- **CI:** Ubuntu job runs e2e under **xvfb** after unit tests.
+- **VSIX:** `dist/test/**` omitted from package via `.vscodeignore`.
+
 ## 0.3.2
 
 - **Extension host (samples-aligned):** dedicated **PineForge LSP** output channel with `revealOutputChannelOn: Error`; language server debug inspect fixed to **port 6009** for **Attach to PineForge Language Server**; launch **autoAttachChildProcesses** + compound **Extension + Server (manual attach)**; `npm: watch` task; `pretest` runs compile; `package.json` **bugs** URL; `.vscodeignore` excludes `.cursor/**`.

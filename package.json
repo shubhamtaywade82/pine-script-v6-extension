@@ -2,9 +2,15 @@
   "name": "pine-forge",
   "displayName": "PineForge — Pine Script v6 Language Server, Linter & Formatter",
   "description": "PineForge: Pine Script v6 language support — LSP diagnostics, hovers, filtered completions, go-to-reference (TradingView docs), find references, outline, workspace symbols, signature help, rename (user symbols), format document, and quick fixes. TradingView remains authoritative for full compiler parity.",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "publisher": "shubhamtaywade82",
   "license": "MIT",
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#2962FF",
+    "theme": "dark"
+  },
+  "homepage": "https://github.com/shubhamtaywade82/pine-forge#readme",
   "repository": {
     "type": "git",
     "url": "https://github.com/shubhamtaywade82/pine-forge"
@@ -12,6 +18,7 @@
   "bugs": {
     "url": "https://github.com/shubhamtaywade82/pine-forge/issues"
   },
+  "qna": "https://github.com/shubhamtaywade82/pine-forge/issues",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -99,6 +106,27 @@
       {
         "command": "pineForge.ollama.clearApiKey",
         "title": "PineForge: Clear Ollama API key"
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "pineforge.welcome",
+        "title": "PineForge",
+        "description": "Build, debug, and edit Pine Script v6 with the PineForge extension.",
+        "steps": [
+          {
+            "id": "pineforge.walkthrough.build",
+            "title": "Compile and launch",
+            "description": "Install dependencies, compile TypeScript, and start the Extension Development Host (F5).",
+            "markdown": "walkthroughs/build-and-debug.md"
+          },
+          {
+            "id": "pineforge.walkthrough.openPine",
+            "title": "Open a .pine file",
+            "description": "Use a sample Pine file and confirm language features are active.",
+            "markdown": "walkthroughs/open-pine-script.md"
+          }
+        ]
       }
     ],
     "menus": {
@@ -231,7 +259,9 @@
     "watch": "tsc -w -p .",
     "pretest": "npm run compile",
     "test": "jest",
-    "vscode:prepublish": "npm run compile",
+    "test:e2e": "npm run compile && node ./dist/test/runTest.js",
+    "build:prod": "node scripts/build-production.mjs",
+    "vscode:prepublish": "npm run build:prod",
     "package": "vsce package"
   },
   "dependencies": {
@@ -242,10 +272,15 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
+    "@types/mocha": "^10.0.10",
     "@types/node": "^20.11.0",
     "@types/vscode": "^1.85.0",
+    "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^3.9.1",
+    "esbuild": "^0.25.12",
+    "glob": "^10.5.0",
     "jest": "^29.7.0",
+    "mocha": "^10.8.2",
     "puppeteer": "^24.42.0",
     "ts-jest": "^29.1.2",
     "typescript": "^5.3.3"

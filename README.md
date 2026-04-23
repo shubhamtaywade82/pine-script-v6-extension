@@ -33,11 +33,12 @@
 
 See **[pinescript-extension.md](pinescript-extension.md)** for architecture and deeper roadmap (semantic tokens, arity from reference, **AST indent printer**, etc.).
 
-**CI:** every `push` and `pull_request` runs `.github/workflows/ci.yml` (`npm ci`, compile, test).
+**CI:** every `push` and `pull_request` runs `.github/workflows/ci.yml` (`npm ci`, compile, unit tests, xvfb e2e, then `npm run package` to validate the production VSIX).
 
 ### Publishing checklist
 
-- Add **`images/icon.png`** (128×128) and set `"icon": "images/icon.png"` in `package.json` for the Marketplace.
+- **`images/icon.png`** (128×128) and **`"icon": "images/icon.png"`** are set for Marketplace listing.
+- **`npm run package`** runs **`vscode:prepublish`** → **`build:prod`** (esbuild bundles `dist/extension.js` + `dist/server.js`; dev workflow still uses **`npm run compile`** + watch).
 - `vsce login` → `npm run package` → `vsce publish` (or attach the VSIX to a GitHub Release).
 - Grow **`src/references/signatureOverlay.json`** (or generated data) for better signatures without bloating `pine.json`.
 
@@ -47,6 +48,10 @@ See **[pinescript-extension.md](pinescript-extension.md)** for architecture and 
 npm install
 npm run compile
 npm test
+# VS Code integration tests (downloads VS Code once under .vscode-test/; use xvfb on Linux headless)
+npm run test:e2e
+# Optional: same bundle as Marketplace VSIX (overwrites dist/ with two minified files)
+npm run build:prod
 ```
 
 Open this folder in VS Code, then **Run → Start Debugging** (F5) with **Run PineForge Extension** (task: `npm: compile`). In the Extension Development Host, open a `.pine` file (e.g. `examples/demo.pine`).

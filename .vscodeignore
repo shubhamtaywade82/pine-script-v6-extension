@@ -2,6 +2,8 @@
 .vscode-test/**
 .cursor/**
 src/**
+scripts/**
+.github/**
 node_modules/**
 .gitignore
 tsconfig.json
@@ -9,3 +11,4 @@ jest.config.js
 **/*.map
 **/__tests__/**
 dist/scraper/**
+dist/test/**
