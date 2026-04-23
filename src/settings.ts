@@ -19,6 +19,12 @@ export interface PineForgeSettings {
    * locally (plot-count upper bound, many `request.*` call sites). See docs/tradingview-limitations.md.
    */
   limitationHints: boolean;
+  /**
+   * When true, emit **Information** hints aligned with the TradingView User Manual *Errors and warnings*
+   * overview (e.g. **CE10101**-style bare `if identifier` on one line). Heuristic only — not a type checker;
+   * see docs/tradingview-errors-overview.md.
+   */
+  tradingViewManualHints: boolean;
 }
 
 export const defaultPineForgeSettings: PineForgeSettings = {
@@ -28,4 +34,5 @@ export const defaultPineForgeSettings: PineForgeSettings = {
   strictImplicitBoolIf: false,
   styleTradingViewHints: false,
   limitationHints: false,
+  tradingViewManualHints: true,
 };

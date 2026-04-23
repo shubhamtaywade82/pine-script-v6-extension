@@ -64,7 +64,7 @@ export function collectLimitationHints(parsed: ParsedDocument, cap: number) {
   if (requestMarkerRange) {
     push(
       'pine-forge/limit-request-density',
-      `Many request.*() call sites (${requestSites}+). TradingView limits **unique** request.*() calls (often 40, or 64 on Ultimate); identical calls can dedupe — library calls count too. PineForge cannot verify uniqueness — see docs/tradingview-limitations.md.`,
+      `Many request.*() call sites (${requestSites}+). TradingView limits **unique** request.*() calls (often 40, or 64 on Ultimate); identical calls can dedupe — library calls count too. Heavy requests can also contribute to **RE10139** (*Memory limits exceeded*). PineForge cannot verify uniqueness — see docs/tradingview-limitations.md and docs/tradingview-errors-overview.md.`,
       requestMarkerRange,
     );
   }

@@ -10,6 +10,7 @@ describe('implicit bool if rule', () => {
     ...defaultPineForgeSettings,
     strictVersionCheck: false,
     strictImplicitBoolIf: true,
+    tradingViewManualHints: false,
   };
 
   it('when strictImplicitBoolIf is off, does not flag bare if close', () => {

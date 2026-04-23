@@ -1,10 +1,17 @@
 # Changelog
 
+## 0.3.1
+
+- **TradingView manual hints:** new setting `pineForge.tradingViewManualHints` (default **on**) emits **Information** diagnostic `pine-forge/TV-CE10101` for bare `if <identifier>` on one line, aligned with TV **CE10101** (*condition must be bool*). Overlap with `pineForge.strictImplicitBoolIf` on OHLC/`bar_index`/… is suppressed when that rule is on.
+- **Docs:** [docs/tradingview-errors-overview.md](docs/tradingview-errors-overview.md) maps CE10101 / CW10003 / RE10139 / RE10143 to PineForge coverage.
+- **Limitation hints:** `request.*` density message now mentions **RE10139** as possible context.
+
 ## 0.3.0
 
 - **TradingView style hints:** optional `pineForge.styleTradingViewHints` — Information diagnostics for script-order and `input.*` naming heuristics; see `docs/tradingview-style-guide.md`.
 - **TradingView limitations hints:** optional `pineForge.limitationHints` — rough plot-count upper bound and `request.*` call-site density; see `docs/tradingview-limitations.md`. **`//@version=`** lines are counted before comment-skipping so **version order / depth** hints work.
 - **Diagnostics:** structural **parse errors** from [`src/parser/treeParser.ts`](src/parser/treeParser.ts) are now surfaced in the Problems panel (code `pine-forge/structural-parse`).
+- **`alertcondition` const strings (CE10123):** `title` and `message` must be **const string** (not `series string` from `+` with non-literals, etc.). Diagnostics `pine-forge/alertcondition-title-not-const` and `pine-forge/alertcondition-message-not-const`.
 - **Surface syntax:** illegal **multiple statements after `then`** on one line (semicolon-separated) is flagged with `pine-forge/invalid-then-semicolon`, matching the common TradingView error *no viable alternative at character ';'*.
 - **Cap:** `pineForge.maxNumberOfProblems` now limits the merged diagnostic list (structural + surface + reference rules), with structural/surface entries listed first.
 

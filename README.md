@@ -6,7 +6,7 @@
 
 | Feature | Notes |
 |---------|--------|
-| Diagnostics | Version checks, unknown calls vs [`src/references/pine.json`](src/references/pine.json), v6 migration rules (`transp`, `when`, `na`/bool); optional **bare `if` series** check via `pineForge.strictImplicitBoolIf`; **structural parse errors** from PineForge’s parser; **surface syntax** rules (e.g. multiple statements after `then` on one line — TradingView: *no viable alternative at ';'*) |
+| Diagnostics | Version checks, unknown calls vs [`src/references/pine.json`](src/references/pine.json), v6 migration rules (`transp`, `when`, `na`/bool); **`alertcondition`** `title` / `message` must be **const string** (TradingView **CE10123**); optional **bare `if` series** via `pineForge.strictImplicitBoolIf`; **TV manual hints** (`pineForge.tradingViewManualHints`, e.g. **CE10101** bare `if ident`) — [docs/tradingview-errors-overview.md](docs/tradingview-errors-overview.md); **structural parse errors**; **surface syntax** (illegal `then` + `;`) |
 | Hover | Markdown + TradingView link for indexed symbols |
 | Completions | Prefix filter; **user symbols** (outline) merged with bundled v6 index (users sort first) |
 | Go to definition | For indexed symbols → **official v6 reference URL** (external location) |
@@ -118,6 +118,7 @@ This repo includes [`.vscode/settings.json`](.vscode/settings.json) with the sam
 | `pineForge.strictImplicitBoolIf` | `false` | When `true`, warns on **bare** `if close`-style series-as-bool (same line only; skips comments, comparisons, and `[` tails). |
 | `pineForge.styleTradingViewHints` | `false` | *Information* hints for common [TradingView Pine style guide](docs/tradingview-style-guide.md) patterns (ordering, `Input` suffix on `input.*` LHS). Heuristic only. |
 | `pineForge.limitationHints` | `false` | *Information* hints for [TradingView platform limits](docs/tradingview-limitations.md) (plot budget **upper bound**, many `request.*` sites). Cannot measure TV compile/runtime. |
+| `pineForge.tradingViewManualHints` | `true` | *Information* hints aligned with the TV User Manual *Errors and warnings* overview (e.g. **CE10101**-style bare `if identifier`). Heuristic — [mapping](docs/tradingview-errors-overview.md). |
 
 ## Package
 

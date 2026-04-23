@@ -3,8 +3,10 @@ import type { Range, Position } from 'vscode-languageserver-types';
 import { offsetInStringOrComment } from '../analysis/skipRegions';
 import type { ParsedDocument } from '../parser/parser';
 import type { PineForgeSettings } from '../settings';
+import { alertconditionConstStringIssues } from './alertconditionConstString';
 import { collectLimitationHints } from './limitationHints';
 import { collectTradingViewStyleHints } from './styleTradingViewHints';
+import { tradingViewUserManualIssues } from './tvUserManualHints';
 
 export function offsetToPosition(source: string, offset: number): Position {
   const lines = source.slice(0, offset).split('\n');
@@ -129,6 +131,10 @@ export function runRules(
           });
         }
       }
+
+      if (node.name === 'alertcondition') {
+        issues.push(...alertconditionConstStringIssues(node));
+      }
     }
   }
 
@@ -165,6 +171,17 @@ export function runRules(
   if (settings.limitationHints) {
     const limCap = 3;
     issues.push(...collectLimitationHints(parsed, limCap));
+  }
+
+  if (settings.tradingViewManualHints) {
+    const tvCap = Math.max(1, Math.min(25, settings.maxNumberOfProblems));
+    issues.push(
+      ...tradingViewUserManualIssues(source, {
+        enabled: true,
+        strictImplicitBoolIf: settings.strictImplicitBoolIf,
+        cap: tvCap,
+      }),
+    );
   }
 
   return issues;

@@ -44,6 +44,10 @@ function readPineForgeSettings(): PineForgeSettings {
       'limitationHints',
       defaultPineForgeSettings.limitationHints,
     ),
+    tradingViewManualHints: c.get<boolean>(
+      'tradingViewManualHints',
+      defaultPineForgeSettings.tradingViewManualHints,
+    ),
   };
 }
 

@@ -47,6 +47,7 @@ PineForge does **not** count IL tokens or request payload size.
 
 ## Other (TradingView)
 
+- **`alertcondition` (CE10123):** `title` and `message` must be **const string** — not expressions that become **series string** (for example `"text" + str.tostring(close)`). PineForge flags non-const-looking `title` / `message` arguments locally (`pine-forge/alertcondition-*-not-const`).
 - **History reference** `[]`: often **5,000** bars (some builtins **10,000**); `max_bars_back` can adjust.
 - **Bars forward** with `xloc.bar_index`: **500** max.
 - **Strategy** backtest orders: **9,000** (Deep backtesting much higher).

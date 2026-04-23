@@ -88,7 +88,7 @@ Language server (core)
 
 ### Language server
 
-- Parse source to an AST; run lint rules; publish **diagnostics** (merged: `parseProgram` recoverable errors, `syntaxSurfaceIssues` heuristics, `runRules` reference checks — capped by `pineForge.maxNumberOfProblems`, structural/surface first).
+- Parse source to an AST; run lint rules; publish **diagnostics** (merged: `parseProgram` recoverable errors, `syntaxSurfaceIssues` heuristics, `runRules` reference checks — includes optional **TV manual** hints e.g. CE10101-style bare `if` per `pineForge.tradingViewManualHints` — capped by `pineForge.maxNumberOfProblems`, structural/surface first).
 - Implement **hover**, **completion**, **definition**, **references**, **rename**, **document symbols**, **signature help**, **formatting**, and **code actions** from the AST + symbol table + reference index (roll out in phases; see [Current maturity](#current-maturity-in-this-repo-rolling)).
 
 ### Reference index
