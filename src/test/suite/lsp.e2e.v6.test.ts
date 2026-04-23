@@ -261,7 +261,7 @@ suite('PineForge v6 comprehensive E2E', function () {
   test('Functions/ta: completion at ta. returns sma, ema, rsi entries', async () => {
     const { doc } = await openFixture('v6-functions-ta.pine');
     await waitForDiagnostics(doc.uri, () => true, 8000, 80);
-    const pos = new vscode.Position(3, 10); // inside "ta.sma(..."
+    const pos = new vscode.Position(4, 19); // after "ta." in "float sma14   = ta.sma(close, 14)"
     const list = await vscode.commands.executeCommand<vscode.CompletionList>(
       'vscode.executeCompletionItemProvider', doc.uri, pos, '.',
     );

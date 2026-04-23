@@ -21,9 +21,8 @@ var box    myBox    = na
 var table  myTable  = na
 
 // ── Collections ───────────────────────────────────────────────────────────────
-var array<float>  arrF  = array.new<float>(0)
-var matrix<int>   matI  = matrix.new<int>(3, 3, 0)
-var map<string, float> mapSF = map.new<string, float>()
+var array<float>  arrF  = array.new_float(0)
+var matrix<int>   matI  = matrix.new_int(3, 3, 0)
 
 // ── User-defined type ─────────────────────────────────────────────────────────
 type Point

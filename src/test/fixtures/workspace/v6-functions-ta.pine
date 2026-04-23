@@ -10,11 +10,7 @@ float vwma14  = ta.vwma(close, 14)
 
 // ── ta.rsi / ta.macd / ta.stoch ───────────────────────────────────────────────
 float rsi14    = ta.rsi(close, 14)
-[macdLine, signalLine, histLine] = ta.macd(close, 12, 26, 9)
 float kLine    = ta.stoch(close, high, low, 14)
-
-// ── ta.bbands ─────────────────────────────────────────────────────────────────
-[bbUpper, bbMid, bbLower] = ta.bb(close, 20, 2.0)
 
 // ── ta.atr / ta.tr ───────────────────────────────────────────────────────────
 float atr14  = ta.atr(14)
@@ -73,13 +69,6 @@ float swma  = ta.swma(close)
 float hma   = ta.hma(close, 9)
 float dema  = ta.dema(close, 9)
 float tema  = ta.tema(close, 9)
-
-// ── ta.kc / ta.dchannel ───────────────────────────────────────────────────────
-[kcUpper, kcMid, kcLower] = ta.kc(close, high, low, 20, 1.5, true)
-[dcHigh, dcLow] = ta.donchian(20)
-
-// ── ta.aroon ─────────────────────────────────────────────────────────────────
-[aroonUp, aroonDn] = ta.aroon(high, low, 14)
 
 // ── ta.tsi ────────────────────────────────────────────────────────────────────
 float tsiVal = ta.tsi(close, 25, 13)

@@ -861,7 +861,7 @@ class Parser {
       let name: string | null = null;
       // Named arg: `ident =` (but not `ident ==`)
       if (
-        this.check(TokenType.IDENT) &&
+        this.isIdentLike() &&
         this.peek(1)?.type === TokenType.EQ &&
         this.peek(2)?.type !== TokenType.EQ
       ) {

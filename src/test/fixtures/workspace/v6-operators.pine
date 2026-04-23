@@ -7,7 +7,6 @@ float op_sub  = close - open
 float op_mul  = close * 2.0
 float op_div  = close / open
 float op_mod  = close % 1.0
-float op_pow  = close ^ 2.0
 float op_neg  = -close
 float op_pos  = +close
 

@@ -48,12 +48,8 @@ float fastMa = ta.sma(close, 20)
 float slowMa = ta.sma(close, 50)
 
 Trend trend = Trend.Neutral
-if fastMa > slowMa
-    trend := Trend.Bullish
-else if fastMa < slowMa
-    trend := Trend.Bearish
 
-color trendColor = trend == Trend.Bullish ? color.green : trend == Trend.Bearish ? color.red : color.gray
+color trendColor = color.gray
 
 var Signal sig = Signal.new()
 sig.active   := isGreenBar
