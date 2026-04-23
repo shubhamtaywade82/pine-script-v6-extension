@@ -31,6 +31,10 @@ export interface ParseError {
 export type Statement =
   | VarDecl
   | FunctionDecl
+  | TypeDecl
+  | EnumDecl
+  | ExportDecl
+  | ImportDecl
   | Assignment
   | IfStmt
   | ForStmt
@@ -233,4 +237,42 @@ export interface LambdaExpr extends ASTNode {
   type: 'LambdaExpr';
   params: Param[];
   body: Statement[] | Expression;
+}
+
+export interface TypeDecl extends ASTNode {
+  type: 'TypeDecl';
+  name: string;
+  nameRange: Range;
+  fields: TypeField[];
+}
+
+export interface TypeField extends ASTNode {
+  type: 'TypeField';
+  name: string;
+  typeAnnotation: TypeAnnotation | null;
+  defaultValue: Expression | null;
+}
+
+export interface EnumDecl extends ASTNode {
+  type: 'EnumDecl';
+  name: string;
+  nameRange: Range;
+  members: EnumMember[];
+}
+
+export interface EnumMember extends ASTNode {
+  type: 'EnumMember';
+  name: string;
+  value: Expression | null;
+}
+
+export interface ExportDecl extends ASTNode {
+  type: 'ExportDecl';
+  declaration: Statement;
+}
+
+export interface ImportDecl extends ASTNode {
+  type: 'ImportDecl';
+  path: string;
+  alias: string | null;
 }

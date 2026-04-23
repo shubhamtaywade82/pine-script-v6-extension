@@ -33,6 +33,12 @@ import type {
   MemberExpr,
   TupleExpr,
   Range,
+  TypeDecl,
+  EnumDecl,
+  ExportDecl,
+  ImportDecl,
+  TypeField,
+  EnumMember,
 } from '../ast';
 
 export interface ParseResult {
@@ -145,9 +151,17 @@ class Parser {
       this.consumeNewline();
       return null;
     }
-    if (cur.type === TokenType.KW_IMPORT || cur.type === TokenType.KW_EXPORT) {
-      this.syncToNewline();
-      return null;
+    if (cur.type === TokenType.KW_EXPORT) {
+      return this.parseExportDecl(depth);
+    }
+    if (cur.type === TokenType.KW_IMPORT) {
+      return this.parseImportDecl(depth);
+    }
+    if (cur.type === TokenType.KW_TYPE) {
+      return this.parseTypeDecl(depth);
+    }
+    if (cur.type === TokenType.KW_ENUM) {
+      return this.parseEnumDecl(depth);
     }
 
     if (cur.type === TokenType.KW_METHOD) return this.parseFunctionDecl(depth, true);
@@ -258,6 +272,124 @@ class Parser {
       type: 'TypeAnnotation',
       qualifier,
       baseType,
+      range: { start, end: this.prevRange().end },
+    };
+  }
+
+  private parseTypeDecl(depth: number): TypeDecl {
+    const start = this.current().range.start;
+    this.expect(TokenType.KW_TYPE, 'type');
+    const nameToken = this.expect(TokenType.IDENT, 'type name');
+    this.consumeNewline();
+    this.expect(TokenType.INDENT, 'indented block after type declaration');
+    const fields: TypeField[] = [];
+    while (!this.check(TokenType.DEDENT) && !this.isAtEnd()) {
+      this.skipNewlines();
+      if (this.check(TokenType.DEDENT) || this.isAtEnd()) break;
+      const fieldStart = this.current().range.start;
+      let typeAnnotation: TypeAnnotation | null = null;
+      if (this.isTypeStart()) {
+        typeAnnotation = this.parseTypeAnnotation();
+      }
+      const fieldName = this.expect(TokenType.IDENT, 'field name');
+      let defaultValue: Expression | null = null;
+      if (this.check(TokenType.EQ)) {
+        this.advance();
+        defaultValue = this.parseExpression();
+      }
+      this.consumeNewline();
+      fields.push({
+        type: 'TypeField',
+        name: fieldName.value,
+        typeAnnotation,
+        defaultValue,
+        range: { start: fieldStart, end: this.prevRange().end },
+      });
+    }
+    if (this.check(TokenType.DEDENT)) this.advance();
+    return {
+      type: 'TypeDecl',
+      name: nameToken.value,
+      nameRange: nameToken.range,
+      fields,
+      range: { start, end: this.prevRange().end },
+    };
+  }
+
+  private parseEnumDecl(depth: number): EnumDecl {
+    const start = this.current().range.start;
+    this.expect(TokenType.KW_ENUM, 'enum');
+    const nameToken = this.expect(TokenType.IDENT, 'enum name');
+    this.consumeNewline();
+    this.expect(TokenType.INDENT, 'indented block after enum declaration');
+    const members: EnumMember[] = [];
+    while (!this.check(TokenType.DEDENT) && !this.isAtEnd()) {
+      this.skipNewlines();
+      if (this.check(TokenType.DEDENT) || this.isAtEnd()) break;
+      const memberStart = this.current().range.start;
+      const memberName = this.expect(TokenType.IDENT, 'enum member');
+      let value: Expression | null = null;
+      if (this.check(TokenType.EQ)) {
+        this.advance();
+        value = this.parseExpression();
+      }
+      this.consumeNewline();
+      members.push({
+        type: 'EnumMember',
+        name: memberName.value,
+        value,
+        range: { start: memberStart, end: this.prevRange().end },
+      });
+    }
+    if (this.check(TokenType.DEDENT)) this.advance();
+    return {
+      type: 'EnumDecl',
+      name: nameToken.value,
+      nameRange: nameToken.range,
+      members,
+      range: { start, end: this.prevRange().end },
+    };
+  }
+
+  private parseExportDecl(depth: number): ExportDecl {
+    const start = this.current().range.start;
+    this.expect(TokenType.KW_EXPORT, 'export');
+    const decl = this.parseStatement(depth);
+    if (!decl) {
+      throw new Error("Expected declaration after export");
+    }
+    return {
+      type: 'ExportDecl',
+      declaration: decl,
+      range: { start, end: this.prevRange().end },
+    };
+  }
+
+  private parseImportDecl(depth: number): ImportDecl {
+    const start = this.current().range.start;
+    this.expect(TokenType.KW_IMPORT, 'import');
+    
+    // Path can be multiple idents separated by slashes, let's just collect until 'as' or newline
+    let path = '';
+    while (!this.isAtEnd() && !this.check(TokenType.NEWLINE) && !this.check(TokenType.IDENT) && this.current().value !== 'as') {
+      path += this.advance().value;
+    }
+    // Also if it's an IDENT but not 'as', it's part of the path
+    while (!this.isAtEnd() && !this.check(TokenType.NEWLINE) && this.current().value !== 'as') {
+      path += this.advance().value;
+    }
+    
+    let alias: string | null = null;
+    if (this.current().value === 'as') {
+      this.advance(); // consume 'as'
+      alias = this.expect(TokenType.IDENT, 'alias').value;
+    }
+    this.consumeNewline();
+    
+    return {
+      type: 'ImportDecl',
+      path: path.trim(),
+      alias,
       range: { start, end: this.prevRange().end },
     };
   }

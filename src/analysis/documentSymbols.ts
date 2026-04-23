@@ -37,6 +37,47 @@ function walkStatement(stmt: Statement, bucket: DocumentSymbol[]): void {
       });
       return;
     }
+    case 'TypeDecl': {
+      const children: DocumentSymbol[] = [];
+      for (const f of stmt.fields) {
+        children.push({
+          name: f.name,
+          kind: SymbolKind.Field,
+          range: astRangeToLsp(f.range),
+          selectionRange: astRangeToLsp(f.range),
+        });
+      }
+      bucket.push({
+        name: stmt.name,
+        kind: SymbolKind.Struct,
+        range: astRangeToLsp(stmt.range),
+        selectionRange: astRangeToLsp(stmt.nameRange),
+        children: children.length ? children : undefined,
+      });
+      return;
+    }
+    case 'EnumDecl': {
+      const children: DocumentSymbol[] = [];
+      for (const m of stmt.members) {
+        children.push({
+          name: m.name,
+          kind: SymbolKind.EnumMember,
+          range: astRangeToLsp(m.range),
+          selectionRange: astRangeToLsp(m.range),
+        });
+      }
+      bucket.push({
+        name: stmt.name,
+        kind: SymbolKind.Enum,
+        range: astRangeToLsp(stmt.range),
+        selectionRange: astRangeToLsp(stmt.nameRange),
+        children: children.length ? children : undefined,
+      });
+      return;
+    }
+    case 'ExportDecl':
+      walkStatement(stmt.declaration, bucket);
+      return;
     case 'IfStmt':
       walkStatements(stmt.consequent, bucket);
       if (stmt.alternate) {
