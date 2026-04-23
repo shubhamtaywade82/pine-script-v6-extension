@@ -1,0 +1,62 @@
+//@version=6
+indicator("v6 Functions - input/plot/drawing E2E", overlay = true)
+
+// ── input.* ───────────────────────────────────────────────────────────────────
+int    inpInt    = input.int(14, title="Length", minval=1, maxval=200)
+float  inpFloat  = input.float(0.5, title="Factor", minval=0.01, maxval=10.0, step=0.01)
+bool   inpBool   = input.bool(true, title="Show MA")
+string inpStr    = input.string("SMA", title="Type", options=["SMA","EMA","RMA"])
+color  inpColor  = input.color(color.blue, title="Line Color")
+int    inpTf     = input.timeframe("D", title="Timeframe")
+string inpSym    = input.symbol("BTCUSDT", title="Symbol")
+int    inpSess   = input.session("0930-1600", title="Session")
+int    inpSrc    = input.source(close, title="Source")
+// int inpTime = input.time(timestamp("2024-01-01"), title="From Date")  // skipped: constant required
+
+// ── plot / plotshape / plotchar / plotarrow ───────────────────────────────────
+float ma = ta.sma(close, inpInt)
+plot(ma, title="MA", color=inpColor, linewidth=2, style=plot.style_line)
+plot(close, title="Close", color=color.gray, display=display.none)
+
+plotshape(ta.crossover(close, ma), title="Cross Up", style=shape.triangleup,
+    location=location.belowbar, color=color.green, size=size.small)
+
+plotchar(ta.crossunder(close, ma), title="Cross Dn",
+    char="▼", location=location.abovebar, color=color.red)
+
+plotarrow(close - open, title="Direction",
+    colorup=color.green, colordown=color.red)
+
+// ── fill ──────────────────────────────────────────────────────────────────────
+p1 = plot(high, color=color.green, display=display.none)
+p2 = plot(low,  color=color.red,   display=display.none)
+fill(p1, p2, color=color.new(color.blue, 90))
+
+// ── bgcolor / barcolor ────────────────────────────────────────────────────────
+bgcolor(close > open ? color.new(color.green, 90) : na)
+barcolor(close > open ? color.green : color.red)
+
+// ── hline ─────────────────────────────────────────────────────────────────────
+hline(0.0, title="Zero", color=color.gray, linestyle=hline.style_dotted)
+
+// ── label.* ───────────────────────────────────────────────────────────────────
+if barstate.islast
+    var label lbl = label.new(bar_index, high,
+        text="Last Bar", style=label.style_label_down,
+        color=color.blue, textcolor=color.white)
+
+// ── line.* ────────────────────────────────────────────────────────────────────
+if barstate.islast
+    var line ln = line.new(bar_index - 10, low[10], bar_index, low,
+        color=color.red, width=2)
+
+// ── box.* ─────────────────────────────────────────────────────────────────────
+if barstate.islast
+    var box bx = box.new(bar_index - 5, high[5], bar_index, low[5],
+        border_color=color.orange, bgcolor=color.new(color.orange, 80))
+
+// ── table.* ───────────────────────────────────────────────────────────────────
+if barstate.islast
+    var table tbl = table.new(position.top_right, 2, 2, border_color=color.gray)
+    table.cell(tbl, 0, 0, "Label", text_color=color.white, bgcolor=color.blue)
+    table.cell(tbl, 0, 1, str.tostring(close, "#.##"), text_color=color.white)

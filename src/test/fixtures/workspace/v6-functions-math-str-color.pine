@@ -1,0 +1,60 @@
+//@version=6
+indicator("v6 Functions - math/str/color E2E", overlay = true)
+
+// ── math.* ───────────────────────────────────────────────────────────────────
+float m_abs   = math.abs(-1.5)
+float m_sqrt  = math.sqrt(4.0)
+float m_log   = math.log(math.e)
+float m_log10 = math.log10(100.0)
+float m_exp   = math.exp(1.0)
+float m_pow   = math.pow(2.0, 10.0)
+float m_ceil  = math.ceil(1.2)
+float m_floor = math.floor(1.9)
+float m_round = math.round(1.5)
+float m_max   = math.max(3.0, 5.0)
+float m_min   = math.min(3.0, 5.0)
+float m_sign  = math.sign(-99.0)
+float m_avg   = math.avg(1.0, 2.0, 3.0)
+float m_sum   = math.sum(close, 10)
+float m_pi    = math.pi
+float m_e     = math.e
+float m_phi   = math.phi
+float m_sin   = math.sin(math.pi / 2.0)
+float m_cos   = math.cos(0.0)
+float m_tan   = math.tan(0.0)
+float m_asin  = math.asin(1.0)
+float m_acos  = math.acos(1.0)
+float m_atan  = math.atan(1.0)
+float m_torad = math.toradians(180.0)
+float m_todeg = math.todegrees(math.pi)
+float m_rand  = math.random(0.0, 100.0)
+
+// ── str.* ─────────────────────────────────────────────────────────────────────
+string s_frm   = str.format("{0} = {1,number,#.##}", "close", close)
+string s_tost  = str.tostring(close, "#.##")
+float  s_toflt = str.tonumber("3.14")
+int    s_len   = str.length("hello")
+string s_upper = str.upper("hello")
+string s_lower = str.lower("HELLO")
+string s_sub   = str.substring("hello world", 0, 5)
+string s_rplc  = str.replace("hello world", "world", "pine")
+string s_rplca = str.replace_all("aaaa", "a", "b")
+bool   s_strt  = str.startswith("hello", "he")
+bool   s_ends  = str.endswith("hello", "lo")
+bool   s_cont  = str.contains("hello world", "world")
+int    s_pos   = str.pos("hello world", "world")
+string s_split = str.split("a,b,c", ",").get(0)
+string s_match = str.match("pine6", "\\d+")
+
+// ── color.* functions ─────────────────────────────────────────────────────────
+color c_new    = color.new(color.red, 50)
+int   c_r      = color.r(color.red)
+int   c_g      = color.g(color.green)
+int   c_b      = color.b(color.blue)
+int   c_t      = color.t(color.new(color.red, 80))
+color c_rgb    = color.rgb(255, 128, 0)
+color c_from   = color.from_gradient(close, 0.0, 100.0, color.red, color.green)
+
+plot(m_sqrt,  title="sqrt")
+plot(m_avg,   title="avg")
+bgcolor(c_new)

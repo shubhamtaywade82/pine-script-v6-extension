@@ -1,0 +1,6 @@
+//@version=6
+indicator("v6 Migration Guards E2E", overlay = true)
+
+// ── DEPRECATED: transp= parameter (should trigger pine-forge/deprecated-transp) ──
+// This fixture intentionally uses a deprecated argument to verify the diagnostic fires.
+plot(close, transp=50)

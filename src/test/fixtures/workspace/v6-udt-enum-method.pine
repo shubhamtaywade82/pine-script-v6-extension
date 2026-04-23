@@ -1,0 +1,69 @@
+//@version=6
+indicator("v6 UDT + Enum + Method E2E", overlay = true)
+
+// ── User-Defined Type with all field types ─────────────────────────────────────
+type Candle
+    float open   = 0.0
+    float high   = 0.0
+    float low    = 0.0
+    float close  = 0.0
+    int   volume = 0
+
+type Signal
+    bool  active    = false
+    color sigColor  = color.gray
+    string label    = "none"
+
+// ── Enum ──────────────────────────────────────────────────────────────────────
+enum Trend
+    Bullish
+    Bearish
+    Neutral
+
+// ── Method on UDT ─────────────────────────────────────────────────────────────
+method isGreen(Candle self) =>
+    self.close > self.open
+
+method bodySize(Candle self) =>
+    math.abs(self.close - self.open)
+
+method range(Candle self) =>
+    self.high - self.low
+
+// ── Instantiate, read fields, call methods ────────────────────────────────────
+var Candle currentBar = Candle.new(
+    open  = open,
+    high  = high,
+    low   = low,
+    close = close,
+    volume= int(volume)
+)
+
+// Update on each bar
+currentBar.open   := open
+currentBar.high   := high
+currentBar.low    := low
+currentBar.close  := close
+currentBar.volume := int(volume)
+
+bool  isGreenBar  = currentBar.isGreen()
+float body        = currentBar.bodySize()
+float rng         = currentBar.range()
+
+// ── Trend detection using enum ────────────────────────────────────────────────
+Trend trend = if ta.sma(close, 20) > ta.sma(close, 50)
+    Trend.Bullish
+else if ta.sma(close, 20) < ta.sma(close, 50)
+    Trend.Bearish
+else
+    Trend.Neutral
+
+Signal sig = Signal.new(
+    active   = isGreenBar,
+    sigColor = trend == Trend.Bullish ? color.green : trend == Trend.Bearish ? color.red : color.gray,
+    label    = trend == Trend.Bullish ? "Bull" : trend == Trend.Bearish ? "Bear" : "Neutral"
+)
+
+plot(body,  title="Body Size")
+plot(rng,   title="Range")
+bgcolor(sig.active ? color.new(sig.sigColor, 90) : na)

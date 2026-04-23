@@ -1,0 +1,89 @@
+//@version=6
+indicator("v6 Functions - ta namespace", overlay = true)
+
+// ── ta.sma / ema / rma / wma / vwma ──────────────────────────────────────────
+float sma14   = ta.sma(close, 14)
+float ema14   = ta.ema(close, 14)
+float rma14   = ta.rma(close, 14)
+float wma14   = ta.wma(close, 14)
+float vwma14  = ta.vwma(close, 14)
+
+// ── ta.rsi / ta.macd / ta.stoch ───────────────────────────────────────────────
+float rsi14    = ta.rsi(close, 14)
+[macdLine, signalLine, histLine] = ta.macd(close, 12, 26, 9)
+float kLine    = ta.stoch(close, high, low, 14)
+
+// ── ta.bbands ─────────────────────────────────────────────────────────────────
+[bbUpper, bbMid, bbLower] = ta.bb(close, 20, 2.0)
+
+// ── ta.atr / ta.tr ───────────────────────────────────────────────────────────
+float atr14  = ta.atr(14)
+float trv    = ta.tr(true)
+
+// ── ta.highest / ta.lowest / ta.highestbars / ta.lowestbars ──────────────────
+float hi20  = ta.highest(high, 20)
+float lo20  = ta.lowest(low, 20)
+int hBars   = ta.highestbars(high, 20)
+int lBars   = ta.lowestbars(low, 20)
+
+// ── ta.crossover / ta.crossunder / ta.cross ───────────────────────────────────
+bool xOver  = ta.crossover(sma14, ema14)
+bool xUnder = ta.crossunder(sma14, ema14)
+bool xAny   = ta.cross(sma14, ema14)
+
+// ── ta.valuewhen / ta.barssince / ta.cum / ta.change ──────────────────────────
+float vw      = ta.valuewhen(xOver, close, 0)
+int   bSince  = ta.barssince(xOver)
+float cumVol  = ta.cum(volume)
+float chg1    = ta.change(close, 1)
+
+// ── ta.correlation / ta.covariance / ta.stdev / ta.variance ──────────────────
+float corr  = ta.correlation(close, volume, 20)
+float cov   = ta.covariance(close, volume, 20)
+float std   = ta.stdev(close, 20)
+float vari  = ta.variance(close, 20)
+
+// ── ta.percentrank / ta.percentile_nearest_rank ───────────────────────────────
+float prank = ta.percentrank(close, 20)
+float pct90 = ta.percentile_nearest_rank(close, 20, 90)
+
+// ── ta.cci / ta.cmo / ta.mfi ─────────────────────────────────────────────────
+float cci14 = ta.cci(close, 14)
+float cmo14 = ta.cmo(close, 14)
+float mfi14 = ta.mfi(close, 14)
+
+// ── ta.obv / ta.vwap ─────────────────────────────────────────────────────────
+float obvVal  = ta.obv
+float vwapVal = ta.vwap
+
+// ── ta.linreg / ta.dev ───────────────────────────────────────────────────────
+float lr = ta.linreg(close, 14, 0)
+float dv = ta.dev(close, 14)
+
+// ── ta.pivothigh / ta.pivotlow ────────────────────────────────────────────────
+float phigh = ta.pivothigh(high, 5, 5)
+float plow  = ta.pivotlow(low, 5, 5)
+
+// ── ta.sar ────────────────────────────────────────────────────────────────────
+float sarVal = ta.sar(0.02, 0.02, 0.2)
+
+// ── ta.alma / ta.swma / ta.hma / ta.dema / ta.tema ───────────────────────────
+float alma  = ta.alma(close, 9, 0.85, 6.0)
+float swma  = ta.swma(close)
+float hma   = ta.hma(close, 9)
+float dema  = ta.dema(close, 9)
+float tema  = ta.tema(close, 9)
+
+// ── ta.kc / ta.dchannel ───────────────────────────────────────────────────────
+[kcUpper, kcMid, kcLower] = ta.kc(close, high, low, 20, 1.5, true)
+[dcHigh, dcLow] = ta.donchian(20)
+
+// ── ta.aroon ─────────────────────────────────────────────────────────────────
+[aroonUp, aroonDn] = ta.aroon(high, low, 14)
+
+// ── ta.tsi ────────────────────────────────────────────────────────────────────
+float tsiVal = ta.tsi(close, 25, 13)
+
+plot(sma14, title="SMA 14")
+plot(ema14, title="EMA 14")
+plot(rsi14, title="RSI 14")

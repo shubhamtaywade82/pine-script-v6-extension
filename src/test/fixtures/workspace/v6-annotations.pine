@@ -1,0 +1,28 @@
+//@version=6
+// @description This library demonstrates v6 annotations
+// @version=6
+
+indicator("v6 Annotations E2E", overlay = true)
+
+// ── @version ──────────────────────────────────────────────────────────────────
+// Already set at the top as //@version=6
+
+// ── Compiler directive for max_bars_back ─────────────────────────────────────
+// @max_bars_back(close, 500)
+
+// ── Field annotations in UDT ─────────────────────────────────────────────────
+// @param and @returns used in function docs (Pine v6 annotation style)
+
+// Function with doc comment annotations
+// @function Calculates exponential average with decay
+// @param src The source series
+// @param decay Decay factor (0..1)
+// @returns Smoothed value
+expAvg(float src, float decay) =>
+    var float state = na
+    state := na(state) ? src : decay * state + (1.0 - decay) * src
+    state
+
+float ea = expAvg(close, 0.9)
+
+plot(ea, title="expAvg")

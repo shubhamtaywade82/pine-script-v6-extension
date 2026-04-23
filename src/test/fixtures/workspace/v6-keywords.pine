@@ -1,0 +1,89 @@
+//@version=6
+indicator("v6 Keywords E2E", overlay = true)
+
+// ── if / else if / else ───────────────────────────────────────────────────────
+float kw_if_result = if close > open
+    1.0
+else if close == open
+    0.0
+else
+    -1.0
+
+// ── for...to...by ─────────────────────────────────────────────────────────────
+var float kw_for_sum = 0.0
+for i = 0 to 9 by 1
+    kw_for_sum += i
+
+// ── while ─────────────────────────────────────────────────────────────────────
+var int kw_while_count = 0
+while kw_while_count < 5
+    kw_while_count += 1
+
+// ── switch ────────────────────────────────────────────────────────────────────
+float kw_switch_result = switch dayofweek
+    dayofweek.monday    => 1.0
+    dayofweek.friday    => 5.0
+    => 0.0
+
+// ── break / continue inside for ───────────────────────────────────────────────
+var int kw_break_val = 0
+for j = 0 to 20
+    if j == 5
+        break
+    kw_break_val := j
+
+var float kw_continue_sum = 0.0
+for k = 0 to 9
+    if k == 3
+        continue
+    kw_continue_sum += k
+
+// ── var / varip ───────────────────────────────────────────────────────────────
+var float kw_var_acc = 0.0
+kw_var_acc += close
+
+varip int kw_varip_rt = 0
+kw_varip_rt += 1
+
+// ── type (UDT) ────────────────────────────────────────────────────────────────
+type KwRect
+    float left  = 0.0
+    float right = 1.0
+
+// ── enum ──────────────────────────────────────────────────────────────────────
+enum KwState
+    Active
+    Paused
+    Stopped
+
+// ── method ────────────────────────────────────────────────────────────────────
+type Vec2
+    float x = 0.0
+    float y = 0.0
+
+method magnitude(Vec2 self) =>
+    math.sqrt(self.x * self.x + self.y * self.y)
+
+// ── User-defined function with return ─────────────────────────────────────────
+clamp(float val, float lo, float hi) =>
+    if val < lo
+        lo
+    else if val > hi
+        hi
+    else
+        val
+
+// ── na / true / false / not / and / or ───────────────────────────────────────
+bool kw_na_check   = na(close)
+bool kw_true_bool  = true
+bool kw_false_bool = false
+bool kw_not_bool   = not kw_true_bool
+bool kw_and_bool   = kw_true_bool and not kw_false_bool
+bool kw_or_bool    = kw_false_bool or kw_true_bool
+
+// ── import (library usage syntax check - no actual lib) ──────────────────────
+// import username/LibraryName/1 as lib   // commented: no real lib available in tests
+
+plot(kw_if_result, title="kw_if")
+plot(kw_for_sum,   title="kw_for")
+plot(kw_switch_result, title="kw_switch")

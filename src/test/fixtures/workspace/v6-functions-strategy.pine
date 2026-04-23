@@ -1,0 +1,49 @@
+//@version=6
+strategy("v6 Functions - strategy E2E", overlay = true,
+    default_qty_type=strategy.percent_of_equity, default_qty_value=10.0,
+    commission_type=strategy.commission.percent, commission_value=0.1)
+
+// ── Inputs ────────────────────────────────────────────────────────────────────
+int lenInput  = input.int(14, "Length")
+float ma      = ta.sma(close, lenInput)
+bool goLong   = ta.crossover(close, ma)
+bool goShort  = ta.crossunder(close, ma)
+
+// ── strategy.entry ───────────────────────────────────────────────────────────
+if goLong
+    strategy.entry("Long", strategy.long)
+
+if goShort
+    strategy.entry("Short", strategy.short)
+
+// ── strategy.close / strategy.close_all ──────────────────────────────────────
+if goShort
+    strategy.close("Long")
+
+// ── strategy.exit ─────────────────────────────────────────────────────────────
+strategy.exit("Long Exit", from_entry="Long",
+    stop=low[1], limit=high[1], trail_points=10.0)
+
+// ── strategy.order ────────────────────────────────────────────────────────────
+if goLong
+    strategy.order("ManualLong", strategy.long, qty=1.0)
+
+// ── strategy.cancel ───────────────────────────────────────────────────────────
+strategy.cancel("ManualLong")
+
+// ── strategy.risk.* ───────────────────────────────────────────────────────────
+strategy.risk.max_drawdown(10.0, strategy.percent_of_equity)
+strategy.risk.max_cons_loss_days(3)
+
+// ── strategy.* properties ────────────────────────────────────────────────────
+float equity   = strategy.equity
+float pnl      = strategy.netprofit
+float maxdd    = strategy.max_drawdown
+float openpnl  = strategy.openprofit
+int   openpos  = strategy.opentrades
+int   closedpos= strategy.closedtrades
+bool  inPos    = strategy.position_size != 0.0
+
+plot(ma, title="MA")
+plotshape(goLong, style=shape.arrowup, location=location.belowbar, color=color.green)
+plotshape(goShort, style=shape.arrowdown, location=location.abovebar, color=color.red)
