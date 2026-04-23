@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import {
   LanguageClient,
   LanguageClientOptions,
+  RevealOutputChannelOn,
   ServerOptions,
   TransportKind,
 } from 'vscode-languageclient/node';
@@ -64,30 +65,28 @@ export function activate(context: vscode.ExtensionContext): void {
     debug: {
       module: serverModule,
       transport: TransportKind.ipc,
-      // Port 0 = free port (avoids EADDRINUSE when 6009 is still held by a previous debug session).
-      options: { execArgv: ['--nolazy', '--inspect=127.0.0.1:0'] },
+      // Fixed port matches `.vscode/launch.json` → "Attach to PineForge Language Server". If EADDRINUSE,
+      // end the previous Extension Host session or pick another port in both places.
+      options: { execArgv: ['--nolazy', '--inspect=127.0.0.1:6009'] },
     },
-  };
-
-  const clientOptions: LanguageClientOptions = {
-    documentSelector: [{ scheme: 'file', language: 'pinescript' }],
-    synchronize: {
-      fileEvents: vscode.workspace.createFileSystemWatcher('**/*.{pine,pinescript}'),
-    },
-    initializationOptions: readPineForgeSettings(),
   };
 
   // One LanguageClient per extension host. Do not construct a second client if `activate` runs
   // again before `deactivate` cleared `client` (rare, but avoids two LSP child processes).
   // `client.start()` is safe to call repeatedly: concurrent starts share the same promise.
   if (!client) {
-    client = new LanguageClient(
-      'pineForge',
-      'PineForge',
-      serverOptions,
-      clientOptions,
-    );
-    context.subscriptions.push(client);
+    const lspOutput = vscode.window.createOutputChannel('PineForge LSP');
+    const clientOptions: LanguageClientOptions = {
+      documentSelector: [{ scheme: 'file', language: 'pinescript' }],
+      outputChannel: lspOutput,
+      revealOutputChannelOn: RevealOutputChannelOn.Error,
+      synchronize: {
+        fileEvents: vscode.workspace.createFileSystemWatcher('**/*.{pine,pinescript}'),
+      },
+      initializationOptions: readPineForgeSettings(),
+    };
+    client = new LanguageClient('pineForge', 'PineForge', serverOptions, clientOptions);
+    context.subscriptions.push(client, lspOutput);
   }
 
   const aiOutput = vscode.window.createOutputChannel('PineForge AI');

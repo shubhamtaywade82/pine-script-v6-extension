@@ -7,7 +7,25 @@
       "request": "launch",
       "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
       "outFiles": ["${workspaceFolder}/dist/**/*.js"],
-      "preLaunchTask": "npm: compile"
+      "preLaunchTask": "npm: compile",
+      "autoAttachChildProcesses": true,
+      "sourceMaps": true
+    },
+    {
+      "name": "Attach to PineForge Language Server",
+      "type": "node",
+      "request": "attach",
+      "port": 6009,
+      "restart": true,
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Extension + Server (manual attach)",
+      "configurations": ["Run PineForge Extension", "Attach to PineForge Language Server"],
+      "stopAll": true
     }
   ]
 }

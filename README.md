@@ -51,7 +51,13 @@ npm test
 
 Open this folder in VS Code, then **Run → Start Debugging** (F5) with **Run PineForge Extension** (task: `npm: compile`). In the Extension Development Host, open a `.pine` file (e.g. `examples/demo.pine`).
 
-If you see **`Starting inspector on … failed: address already in use`**, an old Node inspector is still bound (often from a prior F5). The dev server uses **`--inspect=127.0.0.1:0`** so each run picks a **free** port; reload the window or stop other debug sessions. To free a stuck port manually: `ss -ltnp | grep 6009` (or `lsof -i :6009`) then stop that process.
+For day-to-day edits, run **`npm: watch`** (background TypeScript watch) from **Tasks: Run Task** so `dist/` stays current while you F5.
+
+**Debug the language server:** Launch config **`autoAttachChildProcesses`** (see [VS Code Extension API](https://code.visualstudio.com/api)) lets the debugger step into the LSP child process when breakpoints are set in `src/server.ts`. Alternatively, start **Extension + Server (manual attach)** (compound): the server listens on **`127.0.0.1:6009`** in debug mode; if **`Starting inspector … address already in use`**, stop the Extension Host or change the port in `src/extension.ts` (`serverOptions.debug.options`) and `.vscode/launch.json` together.
+
+**Reference samples:** Microsoft’s **[vscode-extension-samples](https://github.com/microsoft/vscode-extension-samples)** repo and the **[Language Server Extension Guide](https://code.visualstudio.com/api/language-extensions/language-server-extension-guide)** mirror patterns used here (client + server, `preLaunchTask`, packaging). PineForge does not vendor that repo; compare when adding new LSP capabilities.
+
+**LSP log channel:** **View → Output → PineForge LSP** shows client/server traffic; it is revealed automatically on **Error** severity (`revealOutputChannelOn`).
 
 **Language server lifecycle:** PineForge uses **`vscode-languageclient`** with **IPC** — each extension host starts **one** child process (`dist/server.js`) for that window. The client does not probe the machine for “an existing PineForge server” to attach to; that would mean a **socket-based** server you start yourself and optional `TransportKind.socket`, which is a different deployment model. On `deactivate`, the client is stopped and the module clears its reference so a later activation can construct a fresh client.
 

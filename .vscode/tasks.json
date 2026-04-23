@@ -10,6 +10,14 @@
         "kind": "build",
         "isDefault": true
       }
+    },
+    {
+      "label": "npm: watch",
+      "type": "npm",
+      "script": "watch",
+      "problemMatcher": "$tsc-watch",
+      "isBackground": true,
+      "group": "build"
     }
   ]
 }

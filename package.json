@@ -2,12 +2,15 @@
   "name": "pine-forge",
   "displayName": "PineForge — Pine Script v6 Language Server, Linter & Formatter",
   "description": "PineForge: Pine Script v6 language support — LSP diagnostics, hovers, filtered completions, go-to-reference (TradingView docs), find references, outline, workspace symbols, signature help, rename (user symbols), format document, and quick fixes. TradingView remains authoritative for full compiler parity.",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "publisher": "shubhamtaywade82",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/shubhamtaywade82/pine-forge"
+  },
+  "bugs": {
+    "url": "https://github.com/shubhamtaywade82/pine-forge/issues"
   },
   "engines": {
     "vscode": "^1.85.0"
@@ -226,6 +229,7 @@
     "compile": "tsc -p .",
     "scrape": "node dist/scraper/index.js",
     "watch": "tsc -w -p .",
+    "pretest": "npm run compile",
     "test": "jest",
     "vscode:prepublish": "npm run compile",
     "package": "vsce package"

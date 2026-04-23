@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.2
+
+- **Extension host (samples-aligned):** dedicated **PineForge LSP** output channel with `revealOutputChannelOn: Error`; language server debug inspect fixed to **port 6009** for **Attach to PineForge Language Server**; launch **autoAttachChildProcesses** + compound **Extension + Server (manual attach)**; `npm: watch` task; `pretest` runs compile; `package.json` **bugs** URL; `.vscodeignore` excludes `.cursor/**`.
+
 ## 0.3.1
 
 - **TradingView manual hints:** new setting `pineForge.tradingViewManualHints` (default **on**) emits **Information** diagnostic `pine-forge/TV-CE10101` for bare `if <identifier>` on one line, aligned with TV **CE10101** (*condition must be bool*). Overlap with `pineForge.strictImplicitBoolIf` on OHLC/`bar_index`/… is suppressed when that rule is on.
