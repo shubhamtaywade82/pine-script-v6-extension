@@ -314,6 +314,23 @@ suite('PineForge v6 comprehensive E2E', function () {
     }
   });
 
+  test('Functions/math-str-color: hover on math.round shows Syntax and Returns like TV', async () => {
+    const { doc } = await openFixture('v6-functions-math-str-color.pine');
+    await sleep(1000);
+    const idx = doc.getText().indexOf('math.round');
+    assert.ok(idx >= 0);
+    const pos = doc.positionAt(idx + 5);
+    const hovers = await vscode.commands.executeCommand<vscode.Hover[]>(
+      'vscode.executeHoverProvider', doc.uri, pos,
+    );
+    assert.ok(hovers && hovers.length > 0);
+    const md = hovers![0]!.contents.map((c) => (typeof c === 'string' ? c : c.value)).join('\n');
+    assert.ok(/built-in function/i.test(md), md.slice(0, 300));
+    assert.ok(/\*\*Syntax\*\*/i.test(md), md.slice(0, 600));
+    assert.ok(/\*\*Returns\*\*/i.test(md), md.slice(0, 600));
+    assert.ok(/math\.round\s*\(/i.test(md), md.slice(0, 600));
+  });
+
   // ── Functions: collections (array/matrix/map) ────────────────────────────
   test('Functions/collections: v6-functions-collections.pine opens with no structural errors', async () => {
     await assertCleanFixture('v6-functions-collections.pine');

@@ -10,6 +10,8 @@ export interface SignatureOverlayEntry {
   signature?: string;
   /** Markdown: parameter semantics, types, caveats. Shown in hovers when set. */
   documentation?: string;
+  /** Shown after the kind, e.g. "+4 overloads" (TradingView-style header). */
+  overloadHint?: string;
 }
 
 const signatureOverlay = overlay as Record<string, SignatureOverlayEntry>;
@@ -23,6 +25,11 @@ export function referenceSignature(name: string): string | undefined {
 export function referenceDocumentation(name: string): string | undefined {
   const d = signatureOverlay[name]?.documentation;
   return d && d.trim() ? d.trim() : undefined;
+}
+
+export function referenceOverloadHint(name: string): string | undefined {
+  const h = signatureOverlay[name]?.overloadHint;
+  return h && h.trim() ? h.trim() : undefined;
 }
 
 export function refUrl(path: string): string {

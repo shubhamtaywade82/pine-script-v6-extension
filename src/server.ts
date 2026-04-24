@@ -47,6 +47,7 @@ import {
   builtinNames,
   pineReferences,
   referenceDocumentation,
+  referenceOverloadHint,
   referenceSignature,
   refUrl,
 } from './references/index';
@@ -149,17 +150,27 @@ documents.onDidOpen((e: { document: TextDocument }) => {
   validateDocument(e.document);
 });
 
+function hoverKindLabel(kind: string): string {
+  return kind === 'function' ? 'built-in function' : kind;
+}
+
+/** TradingView Pine editor–style hover: header, prose, **Syntax** block, then manual link. */
 function pineBuiltinHoverMarkdown(word: string, ref: { kind: string; summary: string; path: string }): string {
   const url = refUrl(ref.path);
   const sig = referenceSignature(word);
   const docMd = referenceDocumentation(word);
+  const overload = referenceOverloadHint(word);
   const lines: string[] = [];
-  lines.push(`**${word}** (${ref.kind})`);
+
+  const head = overload
+    ? `**${word}** (${hoverKindLabel(ref.kind)}) ${overload}`
+    : `**${word}** (${hoverKindLabel(ref.kind)})`;
+  lines.push(head, '', docMd ?? ref.summary);
+
   if (sig) {
-    lines.push('', '```pine', sig, '```');
+    lines.push('', '**Syntax**', '', '```pine', sig, '```');
   }
-  lines.push('');
-  lines.push(docMd ?? ref.summary);
+
   lines.push('', `[TradingView reference](${url})`);
   return lines.join('\n');
 }
