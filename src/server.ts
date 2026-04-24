@@ -41,10 +41,15 @@ import { calleeBeforeOpenParen } from './analysis/signatureHelp';
 import { countNameDeclarations, parseProgramSafe, resolveReferenceRanges } from './analysis/scopeRefs';
 import { wordRangeAtOffset } from './analysis/wordRefs';
 import { parseProgram } from './parser/treeParser';
-import { parseDocument } from './parser/parser';
-import { runRules } from './rules/engine';
+import { runAnalysisFromProgram } from './rules/engine';
 import { syntaxSurfaceIssues } from './rules/syntaxSurface';
-import { builtinNames, pineReferences, referenceSignature, refUrl } from './references/index';
+import {
+  builtinNames,
+  pineReferences,
+  referenceDocumentation,
+  referenceSignature,
+  refUrl,
+} from './references/index';
 import {
   defaultPineForgeSettings,
   PINE_FORGE_SETTINGS_NOTIFICATION,
@@ -115,7 +120,6 @@ function validateDocument(doc: TextDocument): void {
   }
 
   const text = doc.getText();
-  const parsed = parseDocument(text);
   const { program } = parseProgram(text);
   const structuralIssues: RuleIssue[] = program.errors.map((e) => ({
     code: 'pine-forge/structural-parse',
@@ -124,7 +128,7 @@ function validateDocument(doc: TextDocument): void {
     severity: DiagnosticSeverity.Error,
   }));
   const surfaceIssues = syntaxSurfaceIssues(text);
-  const ruleIssues = runRules(parsed, builtins, serverSettings);
+  const ruleIssues = runAnalysisFromProgram(text, program, builtins, serverSettings);
   const maxProblems = Math.max(1, serverSettings.maxNumberOfProblems);
   const issues = [...structuralIssues, ...surfaceIssues, ...ruleIssues].slice(0, maxProblems);
   const diagnostics: Diagnostic[] = issues.map((issue) => ({
@@ -145,6 +149,21 @@ documents.onDidOpen((e: { document: TextDocument }) => {
   validateDocument(e.document);
 });
 
+function pineBuiltinHoverMarkdown(word: string, ref: { kind: string; summary: string; path: string }): string {
+  const url = refUrl(ref.path);
+  const sig = referenceSignature(word);
+  const docMd = referenceDocumentation(word);
+  const lines: string[] = [];
+  lines.push(`**${word}** (${ref.kind})`);
+  if (sig) {
+    lines.push('', '```pine', sig, '```');
+  }
+  lines.push('');
+  lines.push(docMd ?? ref.summary);
+  lines.push('', `[TradingView reference](${url})`);
+  return lines.join('\n');
+}
+
 connection.onHover((params): Hover | null => {
   const doc = documents.get(params.textDocument.uri);
   if (!doc) return null;
@@ -154,11 +173,10 @@ connection.onHover((params): Hover | null => {
   if (!hit) return null;
   const ref = pineReferences[hit.word];
   if (!ref) return null;
-  const url = refUrl(ref.path);
   return {
     contents: {
       kind: MarkupKind.Markdown,
-      value: `**${hit.word}** (${ref.kind})\n\n${ref.summary}\n\n[TradingView reference](${url})`,
+      value: pineBuiltinHoverMarkdown(hit.word, ref),
     },
   };
 });
@@ -248,11 +266,12 @@ connection.onSignatureHelp((params: SignatureHelpParams): SignatureHelp | null =
   const ref = pineReferences[callee];
   if (!ref) return null;
   const sigLabel = referenceSignature(callee) ?? `${callee}(…)`;
+  const docBody = referenceDocumentation(callee) ?? ref.summary;
   const sig: SignatureInformation = {
     label: sigLabel,
     documentation: {
       kind: MarkupKind.Markdown,
-      value: `${ref.summary}\n\n[Open v6 reference](${refUrl(ref.path)})`,
+      value: `${docBody}\n\n[Open v6 reference](${refUrl(ref.path)})`,
     },
     parameters: [
       {

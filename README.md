@@ -7,7 +7,7 @@
 | Feature | Notes |
 |---------|--------|
 | Diagnostics | Version checks, unknown calls vs [`src/references/pine.json`](src/references/pine.json), v6 migration rules (`transp`, `when`, `na`/bool); **`alertcondition`** `title` / `message` must be **const string** (TradingView **CE10123**); optional **bare `if` series** via `pineForge.strictImplicitBoolIf`; **TV manual hints** (`pineForge.tradingViewManualHints`, e.g. **CE10101** bare `if ident`) — [docs/tradingview-errors-overview.md](docs/tradingview-errors-overview.md); **structural parse errors**; **surface syntax** (illegal `then` + `;`) |
-| Hover | Markdown + TradingView link for indexed symbols |
+| Hover | Markdown: curated **signature** + optional **inline docs** from [`signatureOverlay.json`](src/references/signatureOverlay.json) (where present), else one-line summary from the v6 index + **TradingView** link |
 | Completions | Prefix filter; **user symbols** (outline) merged with bundled v6 index (users sort first) |
 | Go to definition | For indexed symbols → **official v6 reference URL** (external location) |
 | Find references / highlight | Same-file; skips strings/comments; **UDF parameters** scoped to that function’s range |

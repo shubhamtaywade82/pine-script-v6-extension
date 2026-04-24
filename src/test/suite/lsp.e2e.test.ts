@@ -314,4 +314,23 @@ suite('PineForge LSP (integration)', function () {
       ds.some((d) => diagnosticCode(d) === 'pine-forge/alertcondition-title-not-const'),
     );
   });
+
+  test('alertcondition: hover shows signature table and const-string / CE10123 notes', async () => {
+    const { doc } = await openFixture('alertcondition-bad.pine');
+    await sleep(1200);
+    const idx = doc.getText().indexOf('alertcondition');
+    assert.ok(idx >= 0);
+    const pos = doc.positionAt(idx + 2);
+    const hovers = await vscode.commands.executeCommand<vscode.Hover[]>(
+      'vscode.executeHoverProvider',
+      doc.uri,
+      pos,
+    );
+    assert.ok(hovers && hovers.length > 0);
+    const md = hovers![0]!.contents.map((c) => (typeof c === 'string' ? c : c.value)).join('\n');
+    assert.ok(/alertcondition\s*\(/i.test(md), md.slice(0, 500));
+    assert.ok(/const string/i.test(md), md.slice(0, 800));
+    assert.ok(/CE10123/i.test(md), md.slice(0, 800));
+    assert.ok(/TradingView reference/i.test(md), md.slice(0, 800));
+  });
 });

@@ -858,6 +858,7 @@ class Parser {
     // Skip leading whitespace / newlines in multi-line calls
     this.skipArgNewlines();
     while (!this.check(TokenType.RPAREN) && !this.isAtEnd()) {
+      const argStart = this.current().range.start;
       let name: string | null = null;
       // Named arg: `ident =` (but not `ident ==`)
       if (
@@ -873,7 +874,7 @@ class Parser {
         type: 'Argument',
         name,
         value,
-        range: { start: value.range.start, end: value.range.end },
+        range: { start: argStart, end: value.range.end },
       });
       // Skip trailing newlines/indent after each arg
       this.skipArgNewlines();

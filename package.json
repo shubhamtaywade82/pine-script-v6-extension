@@ -191,6 +191,16 @@
           "default": true,
           "description": "Information-level hints tied to the TradingView User Manual *Errors and warnings* overview (e.g. CE10101-style bare `if identifier`). Heuristic only — see docs/tradingview-errors-overview.md."
         },
+        "pineForge.semanticTypeHints": {
+          "type": "boolean",
+          "default": true,
+          "description": "Reserved for extra type-aware Information hints from the inference pass. Core AST checks (e.g. bool/`na`) always apply."
+        },
+        "pineForge.repaintHints": {
+          "type": "boolean",
+          "default": false,
+          "description": "When true, warn on static repaint / future-data patterns (e.g. request.security with lookahead_on, negative history on OHLC-like series)."
+        },
         "pineForge.ollama.enabled": {
           "type": "boolean",
           "default": true,

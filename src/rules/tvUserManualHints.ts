@@ -1,7 +1,7 @@
 import { DiagnosticSeverity } from 'vscode-languageserver/node';
 import type { Position, Range } from 'vscode-languageserver-types';
 import { offsetInStringOrComment } from '../analysis/skipRegions';
-import type { RuleIssue } from './engine';
+import type { RuleIssue } from './issueTypes';
 
 function offsetToPosition(source: string, offset: number): Position {
   const lines = source.slice(0, offset).split('\n');

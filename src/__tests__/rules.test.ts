@@ -1,7 +1,7 @@
-import { parseDocument } from '../parser/parser';
 import { builtinNames } from '../references/index';
 import { runRules } from '../rules/engine';
 import { defaultPineForgeSettings } from '../settings';
+import { parsedDocFromSource as parsedDoc } from './parseHelpers';
 
 const builtins = builtinNames();
 
@@ -17,7 +17,7 @@ describe('implicit bool if rule', () => {
     const src = `//@version=6
 if close
     na`;
-    const issues = runRules(parseDocument(src), builtins, { ...base, strictImplicitBoolIf: false });
+    const issues = runRules(parsedDoc(src), builtins, { ...base, strictImplicitBoolIf: false });
     expect(issues.some((i) => i.code === 'pine-forge/implicit-bool-cast')).toBe(false);
   });
 
@@ -25,7 +25,7 @@ if close
     const src = `//@version=6
 if close
     na`;
-    const issues = runRules(parseDocument(src), builtins, base);
+    const issues = runRules(parsedDoc(src), builtins, base);
     expect(issues.some((i) => i.code === 'pine-forge/implicit-bool-cast')).toBe(true);
   });
 
@@ -33,7 +33,7 @@ if close
     const src = `//@version=6
 if close == 0
     na`;
-    const issues = runRules(parseDocument(src), builtins, base);
+    const issues = runRules(parsedDoc(src), builtins, base);
     expect(issues.some((i) => i.code === 'pine-forge/implicit-bool-cast')).toBe(false);
   });
 
@@ -41,7 +41,7 @@ if close == 0
     const src = `//@version=6
 // if close
 plot(close)`;
-    const issues = runRules(parseDocument(src), builtins, base);
+    const issues = runRules(parsedDoc(src), builtins, base);
     expect(issues.some((i) => i.code === 'pine-forge/implicit-bool-cast')).toBe(false);
   });
 
@@ -49,7 +49,7 @@ plot(close)`;
     const src = `//@version=6
 if close[1]
     na`;
-    const issues = runRules(parseDocument(src), builtins, base);
+    const issues = runRules(parsedDoc(src), builtins, base);
     expect(issues.some((i) => i.code === 'pine-forge/implicit-bool-cast')).toBe(false);
   });
 });

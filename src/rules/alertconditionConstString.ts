@@ -1,6 +1,6 @@
 import { DiagnosticSeverity } from 'vscode-languageserver/node';
 import type { AstNode, CallArgument } from '../parser/parser';
-import type { RuleIssue } from './engine';
+import type { RuleIssue } from './issueTypes';
 
 function pickArg(args: CallArgument[], paramName: string, positionalIndex: number): CallArgument | undefined {
   const named = args.find((a) => a.name === paramName);

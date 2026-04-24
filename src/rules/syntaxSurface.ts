@@ -1,6 +1,6 @@
 import { DiagnosticSeverity } from 'vscode-languageserver/node';
 import type { Range } from 'vscode-languageserver-types';
-import type { RuleIssue } from './engine';
+import type { RuleIssue } from './issueTypes';
 
 type Scan = 'code' | 'string';
 

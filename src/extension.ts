@@ -49,6 +49,11 @@ function readPineForgeSettings(): PineForgeSettings {
       'tradingViewManualHints',
       defaultPineForgeSettings.tradingViewManualHints,
     ),
+    semanticTypeHints: c.get<boolean>(
+      'semanticTypeHints',
+      defaultPineForgeSettings.semanticTypeHints,
+    ),
+    repaintHints: c.get<boolean>('repaintHints', defaultPineForgeSettings.repaintHints),
   };
 }
 

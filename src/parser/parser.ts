@@ -47,6 +47,10 @@ const NOT_CALLS = new Set([
   'by',
 ]);
 
+/**
+ * Legacy text scan for calls (used in tests and drift checks). Prefer
+ * {@link buildParsedDocumentFromProgram} + {@link parseProgram} for analysis.
+ */
 export function parseDocument(source: string): ParsedDocument {
   const nodes: AstNode[] = [];
   let versionDirective: number | null = null;

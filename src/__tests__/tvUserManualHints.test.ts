@@ -1,8 +1,8 @@
-import { parseDocument } from '../parser/parser';
 import { builtinNames } from '../references/index';
 import { runRules } from '../rules/engine';
 import { tradingViewUserManualIssues } from '../rules/tvUserManualHints';
 import { defaultPineForgeSettings } from '../settings';
+import { parsedDocFromSource } from './parseHelpers';
 
 const builtins = builtinNames();
 
@@ -59,7 +59,7 @@ describe('runRules with tradingViewManualHints', () => {
 indicator("x")
 if pivotHigh
     1`;
-    const issues = runRules(parseDocument(src), builtins, base);
+    const issues = runRules(parsedDocFromSource(src), builtins, base);
     expect(issues.some((i) => i.code === 'pine-forge/TV-CE10101')).toBe(true);
   });
 });

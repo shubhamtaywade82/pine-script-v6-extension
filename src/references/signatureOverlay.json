@@ -37,5 +37,9 @@
   "str.tostring": { "signature": "str.tostring(value, format?) → string" },
   "array.new": { "signature": "array.new(type, size?, …) → array" },
   "matrix.new": { "signature": "matrix.new(rows, cols, …) → matrix" },
-  "map.new": { "signature": "map.new(type, type, …) → map" }
+  "map.new": { "signature": "map.new(type, type, …) → map" },
+  "alertcondition": {
+    "signature": "alertcondition(condition, title, message, freq?) → void",
+    "documentation": "Registers a **chart alert condition** (the user still creates the alert from the TradingView UI).\n\n| Parameter | Notes |\n|-----------|--------|\n| **condition** | `series bool` — when `true`, the condition is satisfied for that bar (subject to alert frequency). |\n| **title** | **const string** — must be known at compile time (not `series string`). Concatenating only **string literals** is OK; mixing in `str.tostring(...)`, series values, or other expressions is rejected (**CE10123**). |\n| **message** | **const string** — same rules as `title`. |\n| **freq** | Optional frequency / alert options string (see TradingView reference for allowed values). |\n\nOfficial wording: *const string* is required where TradingView expects compile-time string arguments."
+  }
 }

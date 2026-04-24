@@ -1,8 +1,8 @@
-import { parseDocument } from '../parser/parser';
 import { builtinNames } from '../references/index';
 import { runRules } from '../rules/engine';
 import { collectTradingViewStyleHints } from '../rules/styleTradingViewHints';
 import { defaultPineForgeSettings } from '../settings';
+import { parsedDocFromSource } from './parseHelpers';
 
 const builtins = builtinNames();
 
@@ -46,7 +46,7 @@ describe('runRules with styleTradingViewHints', () => {
     const src = `//@version=6
 indicator("x", overlay = true)
 length = input.int(14, "Length")`;
-    const issues = runRules(parseDocument(src), builtins, base);
+    const issues = runRules(parsedDocFromSource(src), builtins, base);
     expect(issues.some((i) => i.code.startsWith('pine-forge/style-'))).toBe(false);
   });
 
@@ -54,7 +54,7 @@ length = input.int(14, "Length")`;
     const src = `//@version=6
 indicator("x", overlay = true)
 length = input.int(14, "Length")`;
-    const issues = runRules(parseDocument(src), builtins, { ...base, styleTradingViewHints: true });
+    const issues = runRules(parsedDocFromSource(src), builtins, { ...base, styleTradingViewHints: true });
     expect(issues.some((i) => i.code === 'pine-forge/style-input-suffix')).toBe(true);
   });
 });

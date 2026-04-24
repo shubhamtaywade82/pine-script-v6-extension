@@ -25,6 +25,16 @@ export interface PineForgeSettings {
    * see docs/tradingview-errors-overview.md.
    */
   tradingViewManualHints: boolean;
+  /**
+   * Reserved for additional series/scalar and type-aware hints built on the inference pass.
+   * Core AST rules (e.g. bool/`na`) always run regardless of this flag.
+   */
+  semanticTypeHints: boolean;
+  /**
+   * When true, emit repaint / future-data **warnings** from static analysis (`request.security` lookahead,
+   * negative history on OHLC-like series). Off by default to limit noise.
+   */
+  repaintHints: boolean;
 }
 
 export const defaultPineForgeSettings: PineForgeSettings = {
@@ -35,4 +45,6 @@ export const defaultPineForgeSettings: PineForgeSettings = {
   styleTradingViewHints: false,
   limitationHints: false,
   tradingViewManualHints: true,
+  semanticTypeHints: true,
+  repaintHints: false,
 };

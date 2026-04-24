@@ -1,8 +1,8 @@
-import { parseDocument } from '../parser/parser';
 import { builtinNames } from '../references/index';
 import { runRules } from '../rules/engine';
 import { collectLimitationHints } from '../rules/limitationHints';
 import { defaultPineForgeSettings } from '../settings';
+import { parsedDocFromSource } from './parseHelpers';
 
 const builtins = builtinNames();
 
@@ -13,7 +13,7 @@ describe('collectLimitationHints', () => {
       lines.push(`plotcandle(open, high, low, close, color = close > open ? color.green : color.red)`);
     }
     const src = `${lines.join('\n')}\n`;
-    const parsed = parseDocument(src);
+    const parsed = parsedDocFromSource(src);
     const hints = collectLimitationHints(parsed, 3);
     expect(hints.some((h) => h.code === 'pine-forge/limit-plot-budget-est')).toBe(true);
   });
@@ -24,7 +24,7 @@ describe('collectLimitationHints', () => {
       lines.push(`x${i} = request.security(syminfo.tickerid, "${i}", close)`);
     }
     const src = `${lines.join('\n')}\n`;
-    const parsed = parseDocument(src);
+    const parsed = parsedDocFromSource(src);
     const hints = collectLimitationHints(parsed, 3);
     expect(hints.some((h) => h.code === 'pine-forge/limit-request-density')).toBe(true);
   });
@@ -41,7 +41,7 @@ describe('runRules with limitationHints', () => {
     const src = `//@version=6
 indicator("x", overlay = true)
 plot(close)`;
-    const issues = runRules(parseDocument(src), builtins, base);
+    const issues = runRules(parsedDocFromSource(src), builtins, base);
     expect(issues.some((i) => i.code.startsWith('pine-forge/limit-'))).toBe(false);
   });
 });

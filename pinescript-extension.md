@@ -447,30 +447,14 @@ Verify anchors and paths against current TradingView documentation.
 
 **Per-symbol behavior**
 
-- Hover markdown with summary + link
+- Hover markdown: optional curated **signature** + **documentation** from `signatureOverlay.json`, else short `pine.json` summary, plus TradingView link
 - Completion `documentation` / `detail`
 - Definition/reference for known symbols where the symbol table supports it
 - Optional code action: open official doc URL
 
-**Hover** (pattern—improve `getWordAt` for Pine identifiers):
+**Hover** (implemented in `src/server.ts` — improve `wordRangeAtOffset` for Pine identifiers):
 
-```typescript
-connection.onHover((params) => {
-  const doc = documents.get(params.textDocument.uri);
-  if (!doc) return null;
-
-  const word = getWordAt(doc, params.position);
-  const ref = index[word];
-  if (!ref) return null;
-
-  return {
-    contents: {
-      kind: 'markdown',
-      value: `**${word}**\n\n${ref.summary}\n\n[Docs](${ref.url})`,
-    },
-  };
-});
-```
+- Resolve `word` → `pineReferences[word]`; build Markdown from `referenceSignature` / `referenceDocumentation` (`signatureOverlay.json`) when present, else `ref.summary`, then `[TradingView reference](refUrl(ref.path))`.
 
 **Completion** (seed list until indexer drives it):
 

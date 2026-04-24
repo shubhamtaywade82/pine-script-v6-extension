@@ -1,8 +1,13 @@
 import { DiagnosticSeverity } from 'vscode-languageserver/node';
 import type { Range, Position } from 'vscode-languageserver-types';
 import { offsetInStringOrComment } from '../analysis/skipRegions';
+import type { Program } from '../ast';
 import type { ParsedDocument } from '../parser/parser';
+import { buildParsedDocumentFromProgram } from '../parser/parsedDocumentFromProgram';
+import { collectRepaintDiagnostics } from '../semantics/repaintDiagnostics';
+import { collectSemanticIssues } from '../semantics/semanticDiagnostics';
 import type { PineForgeSettings } from '../settings';
+import type { RuleIssue } from './issueTypes';
 import { alertconditionConstStringIssues } from './alertconditionConstString';
 import { collectLimitationHints } from './limitationHints';
 import { collectTradingViewStyleHints } from './styleTradingViewHints';
@@ -16,12 +21,7 @@ export function offsetToPosition(source: string, offset: number): Position {
   };
 }
 
-export interface RuleIssue {
-  code: string;
-  message: string;
-  range: Range;
-  severity: typeof DiagnosticSeverity.Error | typeof DiagnosticSeverity.Warning | typeof DiagnosticSeverity.Information;
-}
+export type { RuleIssue } from './issueTypes';
 
 const DEPRECATED_TRANSP = new Set([
   'plot',
@@ -119,19 +119,6 @@ export function runRules(
         }
       }
 
-      // v6 Migration: na() on bool
-      if (node.name === 'na' || node.name === 'nz' || node.name === 'fixnan') {
-        const firstArg = node.args[0];
-        if (firstArg && (firstArg.value === 'true' || firstArg.value === 'false')) {
-          issues.push({
-            code: 'pine-forge/bool-na',
-            message: `Booleans can no longer be 'na' in Pine v6. 'na()', 'nz()', and 'fixnan()' no longer accept bool arguments.`,
-            range: firstArg.range,
-            severity: DiagnosticSeverity.Error,
-          });
-        }
-      }
-
       if (node.name === 'alertcondition') {
         issues.push(...alertconditionConstStringIssues(node));
       }
@@ -185,4 +172,18 @@ export function runRules(
   }
 
   return issues;
+}
+
+/** Single entry: structural AST drives `ParsedDocument` for rules plus semantic/repaint passes. */
+export function runAnalysisFromProgram(
+  source: string,
+  program: Program,
+  builtins: Set<string>,
+  settings: PineForgeSettings,
+): RuleIssue[] {
+  const parsed = buildParsedDocumentFromProgram(source, program);
+  const rules = runRules(parsed, builtins, settings);
+  const semantic = collectSemanticIssues(program, settings);
+  const repaint = settings.repaintHints ? collectRepaintDiagnostics(source, program) : [];
+  return [...rules, ...semantic, ...repaint];
 }
