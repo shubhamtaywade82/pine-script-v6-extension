@@ -46,8 +46,13 @@ import { syntaxSurfaceIssues } from './rules/syntaxSurface';
 import {
   builtinNames,
   pineReferences,
+  referenceDescription,
   referenceDocumentation,
+  referenceExample,
   referenceOverloadHint,
+  referenceParams,
+  referenceRemarks,
+  referenceReturns,
   referenceSignature,
   refUrl,
 } from './references/index';
@@ -154,21 +159,59 @@ function hoverKindLabel(kind: string): string {
   return kind === 'function' ? 'built-in function' : kind;
 }
 
-/** TradingView Pine editor–style hover: header, prose, **Syntax** block, then manual link. */
+/** TradingView Pine editor–style hover: header, description, syntax, args table, returns, example, remarks, link. */
 function pineBuiltinHoverMarkdown(word: string, ref: { kind: string; summary: string; path: string }): string {
   const url = refUrl(ref.path);
-  const sig = referenceSignature(word);
-  const docMd = referenceDocumentation(word);
   const overload = referenceOverloadHint(word);
   const lines: string[] = [];
 
+  // Header
   const head = overload
-    ? `**${word}** (${hoverKindLabel(ref.kind)}) ${overload}`
+    ? `**${word}** (${hoverKindLabel(ref.kind)}) — ${overload}`
     : `**${word}** (${hoverKindLabel(ref.kind)})`;
-  lines.push(head, '', docMd ?? ref.summary);
+  lines.push(head, '');
 
-  if (sig) {
-    lines.push('', '**Syntax**', '', '```pine', sig, '```');
+  // Description / prose — overlay documentation takes precedence, then scraped description, then summary
+  const manualDoc = referenceDocumentation(word);
+  const scrapedDesc = referenceDescription(word);
+  const prose = manualDoc ?? scrapedDesc ?? ref.summary;
+  lines.push(prose);
+
+  // Syntax — overlay signature or all scraped overloads
+  const overlaySig = (() => { const s = referenceSignature(word); return s && !pineReferences[word]?.syntax?.includes(s) ? s : undefined; })();
+  const syntaxLines = pineReferences[word]?.syntax;
+  if (overlaySig) {
+    lines.push('', '**Syntax**', '', '```pine', overlaySig, '```');
+  } else if (syntaxLines && syntaxLines.length > 0) {
+    lines.push('', '**Syntax**', '', '```pine', ...syntaxLines, '```');
+  } else {
+    const sig = referenceSignature(word);
+    if (sig) lines.push('', '**Syntax**', '', '```pine', sig, '```');
+  }
+
+  // Arguments table — only when we have scraped or overlay params AND no manual documentation override
+  if (!manualDoc) {
+    const params = referenceParams(word);
+    if (params && params.length > 0) {
+      lines.push('', '**Arguments**', '', '| Name | Type | Description |', '|------|------|-------------|');
+      for (const p of params) {
+        const namePart = p.optional ? `\`${p.name}\` *(optional)*` : `\`${p.name}\``;
+        const typePart = p.type ? `\`${p.type}\`` : '—';
+        lines.push(`| ${namePart} | ${typePart} | ${p.description} |`);
+      }
+    }
+
+    // Returns
+    const ret = referenceReturns(word);
+    if (ret) lines.push('', '**Returns**', '', ret);
+
+    // Example
+    const ex = referenceExample(word);
+    if (ex) lines.push('', '**Example**', '', '```pine', ex, '```');
+
+    // Remarks
+    const rem = referenceRemarks(word);
+    if (rem) lines.push('', '**Remarks**', '', rem);
   }
 
   lines.push('', `[TradingView reference](${url})`);
