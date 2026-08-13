@@ -178,11 +178,11 @@
     "submenus": [
       {
         "id": "pine.mysubmenuNonPineFile",
-        "label": " Pine Script v5"
+        "label": " Pine Script v6"
       },
       {
         "id": "pine.mysubmenu2",
-        "label": " Pine Script v5"
+        "label": " Pine Script v6"
       }
     ],
     "commands": [
