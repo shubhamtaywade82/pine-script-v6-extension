@@ -113,14 +113,14 @@ is_new_day = ta.change(time("D")) != 0
 // ════════════════════════════════════════════════════════════
 [htf_ema_f, htf_ema_s, htf_close, htf_high50, htf_low50, htf_ph, htf_pl] = request.security(
      syminfo.tickerid, htf_tf,
-     [ta.ema(close, htf_ema_fast),
-      ta.ema(close, htf_ema_slow),
-      close,
-      ta.highest(high, htf_pd_len),
-      ta.lowest(low, htf_pd_len),
-      ta.pivothigh(high, htf_swing, htf_swing),
-      ta.pivotlow(low, htf_swing, htf_swing)],
-     lookahead = barmerge.lookahead_off)
+     [ta.ema(close, htf_ema_fast)[1],
+      ta.ema(close, htf_ema_slow)[1],
+      close[1],
+      ta.highest(high, htf_pd_len)[1],
+      ta.lowest(low, htf_pd_len)[1],
+      ta.pivothigh(high, htf_swing, htf_swing)[1],
+      ta.pivotlow(low, htf_swing, htf_swing)[1]],
+     lookahead = barmerge.lookahead_on)
 
 var float htf_last_ph = na
 var float htf_last_pl = na
@@ -198,12 +198,12 @@ if show_4h_zones and not na(htf_high50) and not na(htf_low50) and barstate.islas
 // ════════════════════════════════════════════════════════════
 [h1_ema_f, h1_ema_s, h1_close, h1_ph, h1_pl] = request.security(
      syminfo.tickerid, setup_tf,
-     [ta.ema(close, htf_ema_fast),
-      ta.ema(close, htf_ema_slow),
-      close,
-      ta.pivothigh(high, setup_swing, setup_swing),
-      ta.pivotlow(low, setup_swing, setup_swing)],
-     lookahead = barmerge.lookahead_off)
+     [ta.ema(close, htf_ema_fast)[1],
+      ta.ema(close, htf_ema_slow)[1],
+      close[1],
+      ta.pivothigh(high, setup_swing, setup_swing)[1],
+      ta.pivotlow(low, setup_swing, setup_swing)[1]],
+     lookahead = barmerge.lookahead_on)
 
 var float h1_last_ph  = na
 var float h1_last_pl  = na
@@ -231,22 +231,22 @@ h1_ok_long  = h1_bias ==  1 and h1_ema_trend ==  1
 h1_ok_short = h1_bias == -1 and h1_ema_trend == -1
 
 // ════════════════════════════════════════════════════════════
-// ░░  LAYER C — 15m ENTRY ZONE (Fixed Indexing)
+// ░░  LAYER C — 15m ENTRY ZONE (Non-Repainting Confirmed Data)
 // ════════════════════════════════════════════════════════════
-// Fetch current 15m + prior 15m bar in ONE call to fix the [1] repainting issue
+// Fetch confirmed 15m bar [1] + prior 15m bar [2] with lookahead_on to eliminate repainting
 [m15_open, m15_high, m15_low, m15_close, m15_swing_hi, m15_swing_lo, prior_m15_open, prior_m15_high, prior_m15_low, prior_m15_close, prior_m15_swing_hi, prior_m15_swing_lo] = request.security(
      syminfo.tickerid, entry_tf,
-     [open, high, low, close, ta.highest(high, entry_liq_lb), ta.lowest(low, entry_liq_lb),
-      open[1], high[1], low[1], close[1], ta.highest(high, entry_liq_lb)[1], ta.lowest(low, entry_liq_lb)[1]],
-     lookahead = barmerge.lookahead_off)
+     [open[1], high[1], low[1], close[1], ta.highest(high, entry_liq_lb)[1], ta.lowest(low, entry_liq_lb)[1],
+      open[2], high[2], low[2], close[2], ta.highest(high, entry_liq_lb)[2], ta.lowest(low, entry_liq_lb)[2]],
+     lookahead = barmerge.lookahead_on)
 
-m15_bull_ob_active = prior_m15_open > prior_m15_close and                    // prior 15m bar bearish
-                     m15_close > prior_m15_high and                          // current 15m broke above
+m15_bull_ob_active = prior_m15_open > prior_m15_close and                    // prior 15m bar [2] bearish
+                     m15_close > prior_m15_high and                          // confirmed 15m bar [1] broke above
                      (prior_m15_open - prior_m15_close) / math.max(prior_m15_high - prior_m15_low, 0.001) >= 0.3 and
                      math.abs(close - (prior_m15_high + prior_m15_low) / 2) / close * 100 <= entry_ob_pct
 
-m15_bear_ob_active = prior_m15_open < prior_m15_close and
-                     m15_close < prior_m15_low and
+m15_bear_ob_active = prior_m15_open < prior_m15_close and                    // prior 15m bar [2] bullish
+                     m15_close < prior_m15_low and                           // confirmed 15m bar [1] broke below
                      (prior_m15_close - prior_m15_open) / math.max(prior_m15_high - prior_m15_low, 0.001) >= 0.3 and
                      math.abs(close - (prior_m15_high + prior_m15_low) / 2) / close * 100 <= entry_ob_pct
 
@@ -583,8 +583,8 @@ if not na(tl_pl)
     tl_pl2_bar := tl_pl1_bar
     tl_pl1 := tl_pl
     tl_pl1_bar := bar_index - tl_pivot_len
-tl_bear_slope = not na(tl_ph1) and not na(tl_ph2) and tl_ph1_bar != tl_ph2_bar ? (tl_ph1 - tl_ph2) / (tl_ph1_bar - tl_ph2_bar) : na
-tl_bull_slope = not na(tl_pl1) and not na(tl_pl2) and tl_pl1_bar != tl_pl2_bar ? (tl_pl1 - tl_pl2) / (tl_pl1_bar - tl_pl2_bar) : na
+tl_bear_slope = not na(tl_ph1) and not na(tl_ph2) and tl_ph1_bar != tl_ph2_bar and tl_ph1_bar != -999 and tl_ph2_bar != -999 ? (tl_ph1 - tl_ph2) / (tl_ph1_bar - tl_ph2_bar) : na
+tl_bull_slope = not na(tl_pl1) and not na(tl_pl2) and tl_pl1_bar != tl_pl2_bar and tl_pl1_bar != -999 and tl_pl2_bar != -999 ? (tl_pl1 - tl_pl2) / (tl_pl1_bar - tl_pl2_bar) : na
 tl_bear_val   = not na(tl_bear_slope) ? tl_ph1 + tl_bear_slope * (bar_index - tl_ph1_bar) : na
 tl_bull_val   = not na(tl_bull_slope) ? tl_pl1 + tl_bull_slope * (bar_index - tl_pl1_bar) : na
 tl_bear_break = not na(tl_bear_val) and close > tl_bear_val and close[1] <= tl_bear_val[1]
@@ -611,8 +611,9 @@ if tl_bull_break
     tl_bull_broken := true
     tl_bull_retested := false
     tl_bull_break_bar := bar_index
-tl_bear_retest = tl_bear_broken and not tl_bear_retested and not na(tl_bear_val) and (bar_index - tl_bear_break_bar) > 1 and math.abs(close - tl_bear_val)/close*100 <= tl_retest_pct and close > tl_bear_val
-tl_bull_retest = tl_bull_broken and not tl_bull_retested and not na(tl_bull_val) and (bar_index - tl_bull_break_bar) > 1 and math.abs(close - tl_bull_val)/close*100 <= tl_retest_pct and close < tl_bull_val
+tl_retest_dist = atr14 * 0.5
+tl_bear_retest = tl_bear_broken and not tl_bear_retested and not na(tl_bear_val) and (bar_index - tl_bear_break_bar) > 1 and math.abs(close - tl_bear_val) <= tl_retest_dist and close > tl_bear_val
+tl_bull_retest = tl_bull_broken and not tl_bull_retested and not na(tl_bull_val) and (bar_index - tl_bull_break_bar) > 1 and math.abs(close - tl_bull_val) <= tl_retest_dist and close < tl_bull_val
 if tl_bear_retest
     tl_bear_retested := true
 if tl_bull_retest
@@ -706,7 +707,7 @@ vp_high = ta.highest(high, vp_bars)
 vp_low = ta.lowest(low, vp_bars)
 var float poc = na
 var float vah = na
-var float val_line = na
+var float vp_val_calc = na
 
 // FIX: Only run heavy loops on confirmed bars to save resources
 if barstate.isconfirmed and bar_index >= vp_bars
@@ -728,32 +729,32 @@ if barstate.isconfirmed and bar_index >= vp_bars
     float _vr = _wv > 0 ? _ws2/_wv - _wm*_wm : 0.0
     float _sg = _vr > 0 ? math.sqrt(_vr) : atr14
     vah := _wm + _sg
-    val_line := _wm - _sg
+    vp_val_calc := _wm - _sg
 
 near_poc = not na(poc) and math.abs(close-poc)/close*100 <= poc_zone_pct
 near_vah = not na(vah) and math.abs(close-vah)/close*100 <= poc_zone_pct
-near_val = not na(val_line) and math.abs(close-val_line)/close*100 <= poc_zone_pct
+near_val = not na(vp_val_calc) and math.abs(close-vp_val_calc)/close*100 <= poc_zone_pct
 vp_bull_conf = near_poc or near_val
 vp_bear_conf = near_poc or near_vah
 var line  poc_line = na
 var line  vah_line = na
-var line  val_line2 = na
+var line  vp_val_line = na
 var label poc_lbl  = na
 var label vah_lbl  = na
 var label val_lbl  = na
 if show_vp and not na(poc) and barstate.islast
     line.delete(poc_line)
     line.delete(vah_line)
-    line.delete(val_line2)
+    line.delete(vp_val_line)
     label.delete(poc_lbl)
     label.delete(vah_lbl)
     label.delete(val_lbl)
-    poc_line  := line.new(bar_index-vp_bars, poc,      bar_index, poc,      color=color.new(color.yellow,20), width=2, style=line.style_solid)
-    vah_line  := line.new(bar_index-vp_bars, vah,      bar_index, vah,      color=color.new(bear_col,40), width=1, style=line.style_dashed)
-    val_line2 := line.new(bar_index-vp_bars, val_line, bar_index, val_line, color=color.new(bull_col,40), width=1, style=line.style_dashed)
-    poc_lbl := label.new(bar_index, poc,      "POC", style=label.style_label_left, color=color(na), textcolor=color.new(color.yellow,0), size=size.tiny)
-    vah_lbl := label.new(bar_index, vah,      "VAH", style=label.style_label_left, color=color(na), textcolor=color.new(bear_col,20),   size=size.tiny)
-    val_lbl := label.new(bar_index, val_line, "VAL", style=label.style_label_left, color=color(na), textcolor=color.new(bull_col,20),   size=size.tiny)
+    poc_line    := line.new(bar_index-vp_bars, poc,         bar_index, poc,         color=color.new(color.yellow,20), width=2, style=line.style_solid)
+    vah_line    := line.new(bar_index-vp_bars, vah,         bar_index, vah,         color=color.new(bear_col,40), width=1, style=line.style_dashed)
+    vp_val_line := line.new(bar_index-vp_bars, vp_val_calc, bar_index, vp_val_calc, color=color.new(bull_col,40), width=1, style=line.style_dashed)
+    poc_lbl     := label.new(bar_index, poc,         "POC", style=label.style_label_left, color=color(na), textcolor=color.new(color.yellow,0), size=size.tiny)
+    vah_lbl     := label.new(bar_index, vah,         "VAH", style=label.style_label_left, color=color(na), textcolor=color.new(bear_col,20),   size=size.tiny)
+    val_lbl     := label.new(bar_index, vp_val_calc, "VAL", style=label.style_label_left, color=color(na), textcolor=color.new(bull_col,20),   size=size.tiny)
 
 // ════════════════════════════════════════════════════════════
 // ░░  4-LAYER SIGNAL ENGINE
