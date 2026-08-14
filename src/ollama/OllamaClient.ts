@@ -72,15 +72,30 @@ export class OllamaClient {
     }
   }
 
-  private async fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs = 1500): Promise<Response> {
-    const controller = new AbortController()
-    const timer = setTimeout(() => controller.abort(), timeoutMs)
+  private async fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs = 4000): Promise<Response> {
+    const tryFetch = async (targetUrl: string): Promise<Response> => {
+      const controller = new AbortController()
+      const timer = setTimeout(() => controller.abort(), timeoutMs)
+      try {
+        const response = await fetch(targetUrl, { ...options, signal: controller.signal })
+        clearTimeout(timer)
+        return response
+      } catch (err) {
+        clearTimeout(timer)
+        throw err
+      }
+    }
+
     try {
-      const response = await fetch(url, { ...options, signal: controller.signal })
-      clearTimeout(timer)
-      return response
+      return await tryFetch(url)
     } catch (err) {
-      clearTimeout(timer)
+      if (url.includes('localhost')) {
+        const fallbackUrl = url.replace('localhost', '127.0.0.1')
+        return await tryFetch(fallbackUrl)
+      } else if (url.includes('127.0.0.1')) {
+        const fallbackUrl = url.replace('127.0.0.1', 'localhost')
+        return await tryFetch(fallbackUrl)
+      }
       throw err
     }
   }

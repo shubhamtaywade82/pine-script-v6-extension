@@ -196,7 +196,7 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
           connected = await agent.healthCheck()
           if (connected) {
             models = (await agent.getClient().getModels()).filter(m => !m.includes('embed'))
-            if (models.length > 0 && (!configuredModel || configuredModel === 'qwen2.5-coder:7b')) {
+            if (models.length > 0 && !models.includes(configuredModel)) {
               configuredModel = models.includes('minimax-m3:cloud') ? 'minimax-m3:cloud' : models[0]
             }
           }

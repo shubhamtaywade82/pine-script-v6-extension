@@ -69,7 +69,7 @@ export class PineAgentController {
     const config = vscode.workspace.getConfiguration('pineForge')
     this.agent = new PineAgent(this.knowledgeEngine, {
       ollamaHost: config.get<string>('ollama.host', 'http://localhost:11434'),
-      model: config.get<string>('ollama.model', 'qwen2.5-coder:7b'),
+      model: config.get<string>('ollama.model', 'minimax-m3:cloud'),
       temperature: config.get<number>('ollama.temperature', 0),
       maxIterations: config.get<number>('agent.maxIterations', 12),
       autoRepair: config.get<boolean>('agent.autoRepair', true),
