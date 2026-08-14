@@ -1,12 +1,47 @@
 ```
-# Documentation build artifacts
-docs/*.html
-docs/classes/
-docs/modules.html
-docs/assets/
+# Dependencies
+node_modules/
+.jest/
+.nyc_output/
+coverage/
+.npm/
+.yarn/
 
-# Build artifacts
+# Build outputs
 dist/
 build/
-target/
+.out/
+.bundle/
+
+# TypeScript
+*.tsbuildinfo
+*.js.map
+*.d.ts
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
 ```
