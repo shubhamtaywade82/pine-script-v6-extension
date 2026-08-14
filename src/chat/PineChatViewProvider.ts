@@ -218,6 +218,69 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
     await this.processPrompt(promptText, true)
   }
 
+  private isFullScript(code: string): boolean {
+    const trimmed = code.trim()
+    return (
+      trimmed.startsWith('//@version') ||
+      trimmed.includes('//@version=') ||
+      /^indicator\s*\(/m.test(trimmed) ||
+      /^strategy\s*\(/m.test(trimmed) ||
+      /^library\s*\(/m.test(trimmed)
+    )
+  }
+
+  private findSnippetTargetRange(doc: vscode.TextDocument, snippet: string): vscode.Range | undefined {
+    const docText = doc.getText()
+    const docLines = docText.split(/\r?\n/)
+    const snippetLines = snippet.trim().split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0)
+    if (snippetLines.length === 0 || docLines.length === 0) { return undefined }
+
+    // 1. Exact substring match
+    const exactIdx = docText.indexOf(snippet.trim())
+    if (exactIdx >= 0) {
+      return new vscode.Range(doc.positionAt(exactIdx), doc.positionAt(exactIdx + snippet.trim().length))
+    }
+
+    // 2. Sliding window token-similarity matcher
+    const snipLen = snippetLines.length
+    let bestStart = -1
+    let bestEnd = -1
+    let bestScore = 0
+
+    // Extract significant keywords/tokens from snippet (ignore pure symbols)
+    const snipTokens = snippet.split(/[\s(),.:=]+/).filter(t => t.length > 2)
+
+    for (let i = 0; i < docLines.length; i++) {
+      // Test window sizes around the snippet length
+      const minW = Math.max(1, snipLen - 2)
+      const maxW = Math.min(docLines.length - i, snipLen + 3)
+      for (let w = minW; w <= maxW; w++) {
+        const windowText = docLines.slice(i, i + w).join('\n')
+        let matched = 0
+        for (const tok of snipTokens) {
+          if (windowText.includes(tok)) {
+            matched++
+          }
+        }
+        const score = snipTokens.length > 0 ? matched / snipTokens.length : 0
+        if (score > bestScore && score >= 0.5) {
+          bestScore = score
+          bestStart = i
+          bestEnd = i + w - 1
+        }
+      }
+    }
+
+    if (bestStart >= 0 && bestEnd >= bestStart) {
+      return new vscode.Range(
+        new vscode.Position(bestStart, 0),
+        new vscode.Position(bestEnd, docLines[bestEnd].length),
+      )
+    }
+
+    return undefined
+  }
+
   private async applyCodeToEditor(code: string, mode: 'replace' | 'insert'): Promise<void> {
     const editor = this.getActivePineEditor()
     if (!editor) {
@@ -226,21 +289,36 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
       return
     }
 
+    const isFull = this.isFullScript(code)
+    let appliedMessage = 'PineForge: Applied code to editor.'
+
     await editor.edit(editBuilder => {
       if (mode === 'insert') {
         editBuilder.insert(editor.selection.active, code)
+        appliedMessage = 'PineForge: Inserted snippet at cursor.'
       } else if (!editor.selection.isEmpty) {
         editBuilder.replace(editor.selection, code)
-      } else {
+        appliedMessage = 'PineForge: Replaced selection.'
+      } else if (isFull) {
         const fullRange = new vscode.Range(
           editor.document.positionAt(0),
           editor.document.positionAt(editor.document.getText().length),
         )
         editBuilder.replace(fullRange, code)
+        appliedMessage = 'PineForge: Replaced entire script.'
+      } else {
+        const targetRange = this.findSnippetTargetRange(editor.document, code)
+        if (targetRange) {
+          editBuilder.replace(targetRange, code)
+          appliedMessage = `PineForge: Replaced lines ${targetRange.start.line + 1}–${targetRange.end.line + 1}.`
+        } else {
+          editBuilder.insert(editor.selection.active, code)
+          appliedMessage = 'PineForge: Inserted snippet at cursor (select lines first to replace a specific section).'
+        }
       }
     })
 
-    vscode.window.showInformationMessage('PineForge: Applied code to editor.')
+    vscode.window.showInformationMessage(appliedMessage)
   }
 
   private async postStatus(): Promise<void> {
