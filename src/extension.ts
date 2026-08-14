@@ -5,6 +5,7 @@ import { PineResponseFlow } from './PineFormatResponse'
 import { PineTypify } from './index'
 import { PineLint } from './PineLint'
 import { checkForNewVersionAndShowChangelog } from './newVersionPopUp'
+import { PineAgentController } from './agent/PineAgentController'
 import * as vscode from 'vscode'
 
 export function deactivate() {
@@ -44,6 +45,9 @@ export async function activate(context: vscode.ExtensionContext) {
   VSCode.setContext(context)
   Class.setContext(context)
   PineLint.initialLint()
+
+  // Initialize PineForge AI Agent Controller
+  PineAgentController.getInstance().initialize(context)
 
   // Push subscriptions to context
   context.subscriptions.push(

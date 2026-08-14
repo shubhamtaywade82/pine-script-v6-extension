@@ -100,7 +100,7 @@ export class PineKnowledgeEngine {
         const symbols = this.lexicalIndex.get(key) ?? []
         for (const symbol of symbols) {
           const ref = this.query(symbol)
-          if (ref) results.add(ref)
+          if (ref) {results.add(ref)}
         }
       }
     }
@@ -118,7 +118,7 @@ export class PineKnowledgeEngine {
         doc.summary?.toLowerCase().includes(queryLower)
       ) {
         const ref = this.toReference(doc, 'function')
-        if (ref) results.add(ref)
+        if (ref) {results.add(ref)}
       }
     }
 
@@ -137,9 +137,9 @@ export class PineKnowledgeEngine {
    */
   getSignature(symbol: string): string | undefined {
     const ref = this.query(symbol)
-    if (!ref) return undefined
+    if (!ref) {return undefined}
 
-    if (ref.signature) return ref.signature
+    if (ref.signature) {return ref.signature}
 
     // Build signature from parameters
     const params = ref.parameters?.map(p => {
@@ -156,12 +156,12 @@ export class PineKnowledgeEngine {
    */
   getRelated(symbol: string): PineReference[] {
     const node = this.referenceGraph.get(symbol)
-    if (!node) return []
+    if (!node) {return []}
 
     const related: PineReference[] = []
     for (const childName of node.children) {
       const ref = this.query(childName)
-      if (ref) related.push(ref)
+      if (ref) {related.push(ref)}
     }
 
     return related
@@ -172,7 +172,7 @@ export class PineKnowledgeEngine {
    */
   getExamples(symbol: string): string[] {
     const ref = this.query(symbol)
-    if (!ref) return []
+    if (!ref) {return []}
 
     // TODO: Extract examples from documentation
     return []
@@ -191,7 +191,7 @@ export class PineKnowledgeEngine {
 
     for (const doc of allDocs) {
       const name = doc.name
-      if (!name) continue
+      if (!name) {continue}
 
       // Index by lowercase
       const lower = name.toLowerCase()
@@ -248,7 +248,7 @@ export class PineKnowledgeEngine {
 
     for (const symbol of allSymbols) {
       const ref = this.query(symbol)
-      if (!ref) continue
+      if (!ref) {continue}
 
       const node: PineReferenceNode = {
         reference: ref,
@@ -272,7 +272,7 @@ export class PineKnowledgeEngine {
    * Convert doc object to PineReference
    */
   private toReference(doc: any, type: PineReference['type']): PineReference | undefined {
-    if (!doc?.name) return undefined
+    if (!doc?.name) {return undefined}
 
     return {
       name: doc.name,

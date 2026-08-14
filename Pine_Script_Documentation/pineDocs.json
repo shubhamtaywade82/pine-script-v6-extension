@@ -4591,6 +4591,12 @@
                 "order.ascending",
                 "order.descending"
               ]
+            },
+            {
+              "name": "sort_field",
+              "type": "const int | const string",
+              "info": "Field index or name used to sort/search collections of user-defined types (UDTs).",
+              "required": false
             }
           ],
           "syntax": "array.sort(id, order) → void",
@@ -4655,6 +4661,12 @@
                 "order.ascending",
                 "order.descending"
               ]
+            },
+            {
+              "name": "sort_field",
+              "type": "const int | const string",
+              "info": "Field index or name used to sort/search collections of user-defined types (UDTs).",
+              "required": false
             }
           ],
           "syntax": "matrix.sort(id, column, order) → void",
@@ -4697,6 +4709,12 @@
                 "order.ascending",
                 "order.descending"
               ]
+            },
+            {
+              "name": "sort_field",
+              "type": "const int | const string",
+              "info": "Field index or name used to sort/search collections of user-defined types (UDTs).",
+              "required": false
             }
           ],
           "syntax": "array.sort_indices(id, order) → array<int>",
@@ -4955,6 +4973,12 @@
                 "const float"
               ],
               "possibleValues": null
+            },
+            {
+              "name": "sort_field",
+              "type": "const int | const string",
+              "info": "Field index or name used to sort/search collections of user-defined types (UDTs).",
+              "required": false
             }
           ],
           "syntax": "array.binary_search(id, val) → series int",
@@ -5006,6 +5030,12 @@
                 "const float"
               ],
               "possibleValues": null
+            },
+            {
+              "name": "sort_field",
+              "type": "const int | const string",
+              "info": "Field index or name used to sort/search collections of user-defined types (UDTs).",
+              "required": false
             }
           ],
           "syntax": "array.binary_search_leftmost(id, val) → series int",
@@ -5066,6 +5096,12 @@
                 "const float"
               ],
               "possibleValues": null
+            },
+            {
+              "name": "sort_field",
+              "type": "const int | const string",
+              "info": "Field index or name used to sort/search collections of user-defined types (UDTs).",
+              "required": false
             }
           ],
           "syntax": "array.binary_search_rightmost(id, val) → series int",
@@ -28188,6 +28224,13 @@
                 "true",
                 "false"
               ]
+            },
+            {
+              "name": "calc_on_every_history_tick",
+              "type": "const bool",
+              "info": "Enables strategy calculations on every available historical tick.",
+              "required": false,
+              "default": "false"
             }
           ],
           "syntax": "strategy(title, shorttitle, overlay, format, precision, scale, pyramiding, calc_on_order_fills, calc_on_every_tick, max_bars_back, backtest_fill_limits_assumption, default_qty_type, default_qty_value, initial_capital, currency, slippage, commission_type, commission_value, process_orders_on_close, close_entries_rule, margin_long, margin_short, explicit_plot_zorder, max_lines_count, max_labels_count, max_boxes_count, calc_bars_count, risk_free_rate, use_bar_magnifier, fill_orders_on_standard_ohlc, max_polylines_count, dynamic_requests, behind_chart) → void",
@@ -35558,6 +35601,12 @@
                 "order.ascending",
                 "order.descending"
               ]
+            },
+            {
+              "name": "sort_field",
+              "type": "const int | const string",
+              "info": "Field index or name used to sort/search collections of user-defined types (UDTs).",
+              "required": false
             }
           ],
           "syntax": "array.sort(id, order) → void",
@@ -35606,6 +35655,12 @@
                 "order.ascending",
                 "order.descending"
               ]
+            },
+            {
+              "name": "sort_field",
+              "type": "const int | const string",
+              "info": "Field index or name used to sort/search collections of user-defined types (UDTs).",
+              "required": false
             }
           ],
           "syntax": "array.sort_indices(id, order) → array<int>",
@@ -35884,6 +35939,12 @@
                 "const float"
               ],
               "possibleValues": null
+            },
+            {
+              "name": "sort_field",
+              "type": "const int | const string",
+              "info": "Field index or name used to sort/search collections of user-defined types (UDTs).",
+              "required": false
             }
           ],
           "syntax": "array.binary_search(id, val) → series int",
@@ -35939,6 +36000,12 @@
                 "const float"
               ],
               "possibleValues": null
+            },
+            {
+              "name": "sort_field",
+              "type": "const int | const string",
+              "info": "Field index or name used to sort/search collections of user-defined types (UDTs).",
+              "required": false
             }
           ],
           "syntax": "array.binary_search_leftmost(id, val) → series int",
@@ -36003,6 +36070,12 @@
                 "const float"
               ],
               "possibleValues": null
+            },
+            {
+              "name": "sort_field",
+              "type": "const int | const string",
+              "info": "Field index or name used to sort/search collections of user-defined types (UDTs).",
+              "required": false
             }
           ],
           "syntax": "array.binary_search_rightmost(id, val) → series int",
@@ -40638,6 +40711,12 @@
                 "order.ascending",
                 "order.descending"
               ]
+            },
+            {
+              "name": "sort_field",
+              "type": "const int | const string",
+              "info": "Field index or name used to sort/search collections of user-defined types (UDTs).",
+              "required": false
             }
           ],
           "syntax": "matrix.sort(id, column, order) → void",

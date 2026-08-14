@@ -93,10 +93,10 @@ export class PineAgent {
     },
     onProgress?: (progress: AgentProgress) => void,
   ): Promise<{
-    success: boolean
-    response: string
-    state: AgentState
-  }> {
+      success: boolean
+      response: string
+      state: AgentState
+    }> {
     // Build context
     const builtContext = this.buildContext(context)
 
@@ -217,6 +217,13 @@ export class PineAgent {
    * Check health
    */
   async healthCheck(): Promise<boolean> {
-    return await this.client.healthCheck()
+    return this.client.healthCheck()
+  }
+
+  /**
+   * Get Ollama client instance
+   */
+  getClient(): OllamaClient {
+    return this.client
   }
 }

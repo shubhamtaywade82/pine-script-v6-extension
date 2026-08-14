@@ -7,7 +7,6 @@
 
 import * as vscode from 'vscode'
 import * as path from 'path'
-import * as micromatch from 'micromatch'
 
 export interface ProtectedPathsConfig {
   /** General protected paths (git, node_modules, etc.) */
@@ -27,20 +26,20 @@ export const DEFAULT_PROTECTED_PATHS: ProtectedPathsConfig = {
     '**/node_modules/**',
     '**/.env*',
     '**/.DS_Store',
-    '**/Thumbs.db'
+    '**/Thumbs.db',
   ],
   pineProtected: [
     '**/pineDocs.json',
     '**/pineReferenceManifest.json',
     '**/Pine_Script_Documentation/**',
-    '**/conformance/**'
+    '**/conformance/**',
   ],
   readOnly: [
     '**/*.test.ts',
     '**/*.spec.ts',
     '**/test/**',
-    '**/tests/**'
-  ]
+    '**/tests/**',
+  ],
 }
 
 export enum ProtectionLevel {
@@ -54,7 +53,7 @@ export enum ProtectionLevel {
   CONFIRM = 'confirm',
   
   /** File cannot be modified by agent */
-  BLOCKED = 'blocked'
+  BLOCKED = 'blocked',
 }
 
 export interface ProtectionResult {
@@ -69,12 +68,12 @@ export class WorkspaceGuard {
   
   constructor(
     workspaceRoot: string,
-    config: Partial<ProtectedPathsConfig> = {}
+    config: Partial<ProtectedPathsConfig> = {},
   ) {
     this.workspaceRoot = workspaceRoot
     this.config = {
       ...DEFAULT_PROTECTED_PATHS,
-      ...config
+      ...config,
     }
   }
   
@@ -91,7 +90,7 @@ export class WorkspaceGuard {
       return {
         level: ProtectionLevel.BLOCKED,
         reason: 'Path is in protected list',
-        path: relativePath
+        path: relativePath,
       }
     }
     
@@ -100,7 +99,7 @@ export class WorkspaceGuard {
       return {
         level: ProtectionLevel.BLOCKED,
         reason: 'Path is a Pine Script reference file (protected)',
-        path: relativePath
+        path: relativePath,
       }
     }
     
@@ -109,7 +108,7 @@ export class WorkspaceGuard {
       return {
         level: ProtectionLevel.READ_ONLY,
         reason: 'Path is in read-only list',
-        path: relativePath
+        path: relativePath,
       }
     }
     
@@ -126,19 +125,19 @@ export class WorkspaceGuard {
       case ProtectionLevel.BLOCKED:
         return {
           allowed: false,
-          reason: `Cannot modify protected file: ${result.path}`
+          reason: `Cannot modify protected file: ${result.path}`,
         }
       
       case ProtectionLevel.READ_ONLY:
         return {
           allowed: false,
-          reason: `Cannot modify read-only file: ${result.path}`
+          reason: `Cannot modify read-only file: ${result.path}`,
         }
       
       case ProtectionLevel.CONFIRM:
         return {
           allowed: true,
-          reason: 'Modification requires user confirmation'
+          reason: 'Modification requires user confirmation',
         }
       
       default:
@@ -156,7 +155,7 @@ export class WorkspaceGuard {
     if (result.level === ProtectionLevel.BLOCKED) {
       return {
         allowed: false,
-        reason: `Cannot access protected file: ${result.path}`
+        reason: `Cannot access protected file: ${result.path}`,
       }
     }
     
@@ -196,7 +195,7 @@ export class WorkspaceGuard {
     
     return {
       valid: errors.length === 0,
-      errors
+      errors,
     }
   }
   
@@ -206,7 +205,7 @@ export class WorkspaceGuard {
   getProtectedPaths(): string[] {
     return [
       ...this.config.protected,
-      ...this.config.pineProtected
+      ...this.config.pineProtected,
     ]
   }
   
@@ -223,7 +222,7 @@ export class WorkspaceGuard {
   updateConfig(config: Partial<ProtectedPathsConfig>): void {
     this.config = {
       ...this.config,
-      ...config
+      ...config,
     }
   }
   
@@ -231,7 +230,7 @@ export class WorkspaceGuard {
    * Load configuration from file
    */
   static async loadFromConfig(
-    workspaceRoot: string
+    workspaceRoot: string,
   ): Promise<WorkspaceGuard> {
     const configPath = path.join(workspaceRoot, '.pineforge', 'protected-paths.json')
     
@@ -251,9 +250,18 @@ export class WorkspaceGuard {
    * Check if path matches any pattern
    */
   private isMatch(filePath: string, patterns: string[]): boolean {
-    return micromatch.isMatch(filePath, patterns, {
-      dot: true,
-      nocase: process.platform === 'win32'
+    const normalized = filePath.replace(/\\/g, '/')
+    return patterns.some(pattern => {
+      const p = pattern.replace(/\\/g, '/')
+      if (p === normalized || normalized.includes(p.replace(/\*/g, ''))) {
+        return true
+      }
+      const regexStr = p
+        .replace(/\./g, '\\.')
+        .replace(/\*\*/g, '.*')
+        .replace(/(?<!\.)\*/g, '[^/]*')
+      const regex = new RegExp(`^${regexStr}$`, process.platform === 'win32' ? 'i' : undefined)
+      return regex.test(normalized)
     })
   }
 }
@@ -285,7 +293,7 @@ export class WorkspaceGuardVSCode {
           // Prevent save
           throw new Error(canModify.reason)
         }
-      })
+      }),
     )
     
     // Warn on agent file operations
@@ -296,12 +304,13 @@ export class WorkspaceGuardVSCode {
         
         if (result.level === ProtectionLevel.BLOCKED) {
           vscode.window.showErrorMessage(
-            `Attempted modification of protected file: ${filePath}`
+            `Attempted modification of protected file: ${filePath}`,
           )
         }
-      })
+      }),
     )
     
+    context.subscriptions.push(...disposables)
     return disposables
   }
   
@@ -311,7 +320,7 @@ export class WorkspaceGuardVSCode {
   createStatusBarItem(): vscode.StatusBarItem {
     const item = vscode.window.createStatusBarItem(
       vscode.StatusBarAlignment.Right,
-      100
+      100,
     )
     item.command = 'pineforge.showProtectionStatus'
     item.tooltip = 'PineForge: Protected Paths Active'

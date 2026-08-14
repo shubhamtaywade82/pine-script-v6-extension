@@ -35,7 +35,7 @@ export const DEFAULT_STATUS: PineForgeStatus = {
   ollamaConnected: false,
   pineDocsLoaded: false,
   analyzerReady: false,
-  agentState: 'idle'
+  agentState: 'idle',
 }
 
 export class PineForgeStatusBar {
@@ -46,7 +46,7 @@ export class PineForgeStatusBar {
   constructor() {
     this.statusBarItem = vscode.window.createStatusBarItem(
       vscode.StatusBarAlignment.Right,
-      100
+      100,
     )
     this.statusBarItem.command = 'pineforge.showStatusDetails'
     this.updateDisplay()
@@ -92,7 +92,7 @@ export class PineForgeStatusBar {
   updateAgentState(
     state: PineForgeStatus['agentState'],
     workflow?: string,
-    step?: string
+    step?: string,
   ): void {
     this.status.agentState = state
     this.status.currentWorkflow = workflow
@@ -163,7 +163,7 @@ export class PineForgeStatusBar {
       '',
       '### External',
       `TradingView: ${this.status.tradingViewReachable === true ? '✓ Reachable' : this.status.tradingViewReachable === false ? '✗ Unreachable' : '? Unknown'}`,
-      `Chart: ${this.status.chartConnected === true ? '✓ Connected' : this.status.chartConnected === false ? '✗ Disconnected' : '? Unknown'}`
+      `Chart: ${this.status.chartConnected === true ? '✓ Connected' : this.status.chartConnected === false ? '✗ Disconnected' : '? Unknown'}`,
     ]
     
     return lines.filter(l => l !== '').join('\n')
@@ -179,8 +179,8 @@ export class PineForgeStatusBar {
       vscode.ViewColumn.Beside,
       {
         enableScripts: true,
-        retainContextWhenHidden: true
-      }
+        retainContextWhenHidden: true,
+      },
     )
     
     const details = this.getStatusDetails()
@@ -268,7 +268,7 @@ export class PineForgeStatusBar {
       validating: '⟳ Validating...',
       repairing: '⟳ Repairing...',
       applying: '⟳ Applying...',
-      error: '✗ Error'
+      error: '✗ Error',
     }
     
     return icons[state] || state

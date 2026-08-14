@@ -134,7 +134,6 @@ export class PineValidateTool extends PineTool {
         const parts = symbol.split('.')
         if (parts.length >= 2) {
           const namespace = parts[0]
-          const method = parts.slice(1).join('.')
           const nsRef = this.knowledgeEngine.query(namespace)
           if (!nsRef) {
             unknownSymbols.push(symbol)
@@ -155,7 +154,7 @@ export class PineValidateTool extends PineTool {
 
     if (result.summary.valid) {
       lines.push('✅ **Validation PASSED**\n')
-      lines.push(`- Errors: 0`)
+      lines.push('- Errors: 0')
       lines.push(`- Warnings: ${result.summary.warningCount}\n`)
     } else {
       lines.push('❌ **Validation FAILED**\n')

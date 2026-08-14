@@ -6,7 +6,7 @@
 
 import { PineTool, PineToolDefinition, PineToolResult } from './PineTool'
 import * as vscode from 'vscode'
-import { WorkspaceGuard, ProtectionLevel } from '../hooks/WorkspaceGuard'
+import { WorkspaceGuard } from '../hooks/WorkspaceGuard'
 
 export interface PatchOperation {
   /** Path to the file to patch */
@@ -42,31 +42,31 @@ export class PinePatchTool extends PineTool {
       properties: {
         filePath: {
           type: 'string',
-          description: 'Path to the Pine Script file to patch'
+          description: 'Path to the Pine Script file to patch',
         },
         originalCode: {
           type: 'string',
-          description: 'Original code segment being replaced (for verification)'
+          description: 'Original code segment being replaced (for verification)',
         },
         patchedCode: {
           type: 'string',
-          description: 'New code to apply'
+          description: 'New code to apply',
         },
         startLine: {
           type: 'number',
-          description: 'Starting line number for targeted replacement (1-indexed)'
+          description: 'Starting line number for targeted replacement (1-indexed)',
         },
         endLine: {
           type: 'number',
-          description: 'Ending line number for targeted replacement (1-indexed)'
+          description: 'Ending line number for targeted replacement (1-indexed)',
         },
         showDiff: {
           type: 'boolean',
-          description: 'Whether to show the diff preview before applying'
-        }
+          description: 'Whether to show the diff preview before applying',
+        },
       },
-      required: ['filePath', 'patchedCode']
-    }
+      required: ['filePath', 'patchedCode'],
+    },
   }
 
   private workspaceGuard?: WorkspaceGuard
@@ -86,14 +86,14 @@ export class PinePatchTool extends PineTool {
     if (!filePath || typeof filePath !== 'string') {
       return {
         success: false,
-        content: 'Error: filePath is required and must be a string'
+        content: 'Error: filePath is required and must be a string',
       }
     }
 
     if (!patchedCode || typeof patchedCode !== 'string') {
       return {
         success: false,
-        content: 'Error: patchedCode is required and must be a string'
+        content: 'Error: patchedCode is required and must be a string',
       }
     }
 
@@ -105,7 +105,7 @@ export class PinePatchTool extends PineTool {
           return {
             success: false,
             content: `Cannot patch protected file: ${canModify.reason}`,
-            requiresConfirmation: false
+            requiresConfirmation: false,
           }
         }
       }
@@ -115,7 +115,7 @@ export class PinePatchTool extends PineTool {
       if (!document) {
         return {
           success: false,
-          content: `File not found: ${filePath}`
+          content: `File not found: ${filePath}`,
         }
       }
 
@@ -126,7 +126,7 @@ export class PinePatchTool extends PineTool {
           return {
             success: false,
             content: 'Verification failed: Original code not found in file. The file may have been modified since the patch was generated.',
-            requiresConfirmation: false
+            requiresConfirmation: false,
           }
         }
       }
@@ -144,7 +144,7 @@ export class PinePatchTool extends PineTool {
       } else {
         // Full file replacement
         const fullRange = document.validateRange(
-          new vscode.Range(0, 0, document.lineCount, 0)
+          new vscode.Range(0, 0, document.lineCount, 0),
         )
         edit.replace(document.uri, fullRange, patchedCode)
       }
@@ -156,7 +156,7 @@ export class PinePatchTool extends PineTool {
           success: true,
           content: `Patch Preview:\n\n${diffPreview}\n\nTo apply this patch, call pine_patch again without showDiff or with showDiff=false`,
           requiresConfirmation: true,
-          metadata: { preview: true }
+          metadata: { preview: true },
         }
       }
 
@@ -166,7 +166,7 @@ export class PinePatchTool extends PineTool {
       if (!applied) {
         return {
           success: false,
-          content: 'Failed to apply patch. The workspace edit was rejected.'
+          content: 'Failed to apply patch. The workspace edit was rejected.',
         }
       }
 
@@ -178,14 +178,14 @@ export class PinePatchTool extends PineTool {
         content: `Successfully applied patch to ${filePath}`,
         metadata: {
           filePath,
-          linesModified: endLine ? endLine - (startLine ?? 1) : document.lineCount
-        }
+          linesModified: endLine ? endLine - (startLine ?? 1) : document.lineCount,
+        },
       }
 
     } catch (error: any) {
       return {
         success: false,
-        content: `Patch error: ${error.message}`
+        content: `Patch error: ${error.message}`,
       }
     }
   }
@@ -196,7 +196,7 @@ export class PinePatchTool extends PineTool {
   private async getDocument(filePath: string): Promise<vscode.TextDocument | null> {
     // Try to find open document first
     const openDoc = vscode.workspace.textDocuments.find(
-      doc => doc.uri.fsPath === filePath || doc.uri.toString() === filePath
+      doc => doc.uri.fsPath === filePath || doc.uri.toString() === filePath,
     )
     
     if (openDoc) {
@@ -219,7 +219,7 @@ export class PinePatchTool extends PineTool {
     document: vscode.TextDocument,
     patchedCode: string,
     startLine?: number,
-    endLine?: number
+    endLine?: number,
   ): Promise<string> {
     const originalContent = document.getText()
     const lines = originalContent.split('\n')

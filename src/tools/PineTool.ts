@@ -11,6 +11,7 @@ export interface PineToolDefinition {
       type: string
       description?: string
       required?: boolean
+      enum?: string[]
     }>
     required?: string[]
   }

@@ -78,7 +78,7 @@ export class PineRequest {
       }
       // If the response is defined, return the JSON from the response
       if (response !== undefined) {
-        return await response.json()
+        return response.json()
       }
       // Explicitly return null if no response
       return null

@@ -2,8 +2,6 @@
  * OllamaClient - HTTP client for Ollama API with streaming and tool calling support
  */
 
-import fetch from 'node-fetch'
-
 export interface OllamaMessage {
   role: 'system' | 'user' | 'assistant' | 'tool'
   content: string
@@ -92,7 +90,7 @@ export class OllamaClient {
   async getModels(): Promise<string[]> {
     try {
       const response = await fetch(`${this.config.host}/api/tags`)
-      const data = await response.json()
+      const data = (await response.json()) as { models?: Array<{ name: string }> }
       return data.models?.map((m: any) => m.name) ?? []
     } catch {
       return []
@@ -147,7 +145,7 @@ export class OllamaClient {
 
     while (true) {
       const { done, value } = await reader.read()
-      if (done) break
+      if (done) {break}
 
       const chunk = decoder.decode(value)
       const lines = chunk.split('\n').filter(line => line.trim())
@@ -155,7 +153,7 @@ export class OllamaClient {
       for (const line of lines) {
         if (line.startsWith('data: ')) {
           const data = line.slice(6)
-          if (data === '[DONE]') continue
+          if (data === '[DONE]') {continue}
 
           try {
             const parsed: OllamaStreamChunk = JSON.parse(data)

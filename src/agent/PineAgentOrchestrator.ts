@@ -16,7 +16,6 @@ import {
   getNextStep,
   isWorkflowComplete,
 } from './PineWorkflow'
-import { PineTool } from '../tools/PineTool'
 
 export interface OrchestratorConfig {
   autoAdvance?: boolean
@@ -53,7 +52,7 @@ export class PineAgentOrchestrator {
   constructor(
     agent: PineAgent,
     knowledgeEngine: PineKnowledgeEngine,
-    config: OrchestratorConfig = {}
+    config: OrchestratorConfig = {},
   ) {
     this.agent = agent
     this.knowledgeEngine = knowledgeEngine
@@ -76,7 +75,7 @@ export class PineAgentOrchestrator {
       selection?: string
       diagnostics?: string
     },
-    onProgress?: (progress: WorkflowProgress) => void
+    onProgress?: (progress: WorkflowProgress) => void,
   ): Promise<WorkflowResult> {
     const workflow = getWorkflow(workflowType)
     if (!workflow) {
@@ -85,7 +84,7 @@ export class PineAgentOrchestrator {
         workflowType,
         completedSteps: [],
         finalResult: `Unknown workflow: ${workflowType}`,
-        errors: [`Workflow "${workflowType}" not found`]
+        errors: [`Workflow "${workflowType}" not found`],
       }
     }
 
@@ -99,7 +98,7 @@ export class PineAgentOrchestrator {
       currentStep: this.currentStep!,
       totalSteps: workflow.steps.length,
       completedSteps: 0,
-      message: `Starting ${workflowType} workflow`
+      message: `Starting ${workflowType} workflow`,
     })
 
     // Execute workflow steps
@@ -109,7 +108,7 @@ export class PineAgentOrchestrator {
           this.currentStep,
           userRequest,
           context,
-          onProgress
+          onProgress,
         )
 
         if (!stepResult.success) {
@@ -120,7 +119,7 @@ export class PineAgentOrchestrator {
               workflowType,
               completedSteps: [...this.completedSteps],
               finalResult: `Workflow stopped at step "${this.currentStep}": ${stepResult.error}`,
-              errors: [stepResult.error || 'Unknown error']
+              errors: [stepResult.error || 'Unknown error'],
             }
           }
 
@@ -141,7 +140,7 @@ export class PineAgentOrchestrator {
             workflowType,
             completedSteps: [...this.completedSteps],
             finalResult: stepResult.result || 'Workflow completed successfully',
-            errors: []
+            errors: [],
           }
         }
 
@@ -157,7 +156,7 @@ export class PineAgentOrchestrator {
           currentStep: this.currentStep,
           totalSteps: workflow.steps.length,
           completedSteps: this.completedSteps.length,
-          message: `Moving to step: ${this.currentStep}`
+          message: `Moving to step: ${this.currentStep}`,
         })
 
       } catch (error: any) {
@@ -166,7 +165,7 @@ export class PineAgentOrchestrator {
           workflowType,
           completedSteps: [...this.completedSteps],
           finalResult: `Workflow failed: ${error.message}`,
-          errors: [error.message]
+          errors: [error.message],
         }
       }
     }
@@ -176,7 +175,7 @@ export class PineAgentOrchestrator {
       workflowType,
       completedSteps: [...this.completedSteps],
       finalResult: 'Workflow completed',
-      errors: []
+      errors: [],
     }
   }
 
@@ -192,7 +191,7 @@ export class PineAgentOrchestrator {
       selection?: string
       diagnostics?: string
     },
-    onProgress?: (progress: WorkflowProgress) => void
+    onProgress?: (progress: WorkflowProgress) => void,
   ): Promise<{ success: boolean; result?: string; error?: string }> {
     if (!this.currentWorkflow) {
       return { success: false, error: 'No active workflow' }
@@ -203,20 +202,18 @@ export class PineAgentOrchestrator {
       currentStep: step,
       totalSteps: this.currentWorkflow.steps.length,
       completedSteps: this.completedSteps.length,
-      message: `Executing step: ${step}`
+      message: `Executing step: ${step}`,
     })
 
     // Build step-specific prompt
     const stepPrompt = this.buildStepPrompt(step, userRequest, context)
-
-    // Get tools relevant to this step
-    const stepTools = this.getToolsForStep(step)
 
     // Execute agent for this step
     let iteration = 0
     let lastError: string | undefined
 
     while (iteration < this.config.maxIterationsPerStep!) {
+      const currentIteration = iteration + 1
       try {
         const result = await this.agent.run(stepPrompt, context, (progress) => {
           onProgress?.({
@@ -224,7 +221,7 @@ export class PineAgentOrchestrator {
             currentStep: step,
             totalSteps: this.currentWorkflow!.steps.length,
             completedSteps: this.completedSteps.length,
-            message: `${progress.message} (iteration ${iteration + 1})`
+            message: `${progress.message} (iteration ${currentIteration})`,
           })
         })
 
@@ -242,7 +239,7 @@ export class PineAgentOrchestrator {
 
     return {
       success: false,
-      error: lastError || `Step "${step}" failed after ${iteration} iterations`
+      error: lastError || `Step "${step}" failed after ${iteration} iterations`,
     }
   }
 
@@ -257,7 +254,7 @@ export class PineAgentOrchestrator {
       fileName?: string
       selection?: string
       diagnostics?: string
-    }
+    },
   ): string {
     const stepInstructions: Record<WorkflowStep, string> = {
       research: `Research the requirements and find relevant Pine Script references. Use pine_search_docs and pine_reference tools to gather information about the APIs needed for: ${userRequest}`,
@@ -268,42 +265,45 @@ export class PineAgentOrchestrator {
 
       develop: `Write the Pine Script code based on the research and design. Follow Pine v6 best practices, use minimal patches, and ensure code quality for: ${userRequest}`,
 
-      validate: `Validate the generated Pine Script code using pine_validate. Check for syntax errors, type issues, static analysis problems, and reference conformance. Report all findings.`,
+      validate: 'Validate the generated Pine Script code using pine_validate. Check for syntax errors, type issues, static analysis problems, and reference conformance. Report all findings.',
 
-      debug: `Debug any issues found during validation or reported by the user. Use pine_debug and pine_analyze tools to diagnose problems and generate fixes.`,
+      debug: 'Debug any issues found during validation or reported by the user. Use pine_debug and pine_analyze tools to diagnose problems and generate fixes.',
 
-      optimize: `Optimize the Pine Script code for performance. Look for calculation caching opportunities, request.security consolidation, loop optimizations, and code structure improvements.`,
+      optimize: 'Optimize the Pine Script code for performance. Look for calculation caching opportunities, request.security consolidation, loop optimizations, and code structure improvements.',
 
-      backtest: `Run backtest analysis on the strategy. Collect metrics and analyze performance. Note: Pine-native metrics are baseline only; external research engine provides quant-grade analysis.`,
+      backtest: 'Run backtest analysis on the strategy. Collect metrics and analyze performance. Note: Pine-native metrics are baseline only; external research engine provides quant-grade analysis.',
 
-      inspect: `Inspect the code for issues. Use pine_analyze to identify problems, review diagnostics, and understand the current state of the code.`,
+      inspect: 'Inspect the code for issues. Use pine_analyze to identify problems, review diagnostics, and understand the current state of the code.',
 
-      reference_lookup: `Look up specific Pine Script references for symbols and APIs used in the code. Use pine_reference and pine_search_docs to verify correct usage.`,
+      reference_lookup: 'Look up specific Pine Script references for symbols and APIs used in the code. Use pine_reference and pine_search_docs to verify correct usage.',
 
-      diagnose: `Diagnose the root cause of identified issues. Analyze error patterns, trace through logic, and determine what needs to be fixed.`,
+      diagnose: 'Diagnose the root cause of identified issues. Analyze error patterns, trace through logic, and determine what needs to be fixed.',
 
-      patch: `Generate patches to fix identified issues. Use pine_patch to apply minimal, surgical edits that resolve problems without modifying unrelated code.`,
+      patch: 'Generate patches to fix identified issues. Use pine_patch to apply minimal, surgical edits that resolve problems without modifying unrelated code.',
 
-      analyze: `Perform comprehensive static analysis of the code. Identify complexity hotspots, optimization candidates, and structural issues.`,
+      analyze: 'Perform comprehensive static analysis of the code. Identify complexity hotspots, optimization candidates, and structural issues.',
 
-      scan: `Scan the code for v5-specific APIs and patterns that need migration to v6. Create a list of required changes.`,
+      scan: 'Scan the code for v5-specific APIs and patterns that need migration to v6. Create a list of required changes.',
 
-      map_apis: `Map v5 APIs to their v6 equivalents. Use pine_reference to verify correct v6 replacements for deprecated or changed APIs.`,
+      map_apis: 'Map v5 APIs to their v6 equivalents. Use pine_reference to verify correct v6 replacements for deprecated or changed APIs.',
 
-      transform: `Transform the code from v5 to v6 syntax. Apply API replacements and update any changed behavior.`,
+      transform: 'Transform the code from v5 to v6 syntax. Apply API replacements and update any changed behavior.',
 
-      optimize_candidates: `Identify specific optimization candidates in the code. Look for repeated calculations, inefficient loops, and suboptimal data structures.`
+      optimize_candidates: 'Identify specific optimization candidates in the code. Look for repeated calculations, inefficient loops, and suboptimal data structures.',
     }
 
     const baseInstruction = stepInstructions[step] || `Execute step: ${step}`
-
-    // Add context from previous steps
     const previousContext = this.getPreviousStepContext()
+
+    const fileDetails = [
+      context.fileName ? `File: ${context.fileName}` : '',
+      context.diagnostics ? `Diagnostics: ${context.diagnostics}` : '',
+      context.selection ? `Selection: ${context.selection}` : '',
+    ].filter(Boolean).join('\n')
 
     return `${baseInstruction}
 
-${previousContext ? `Context from previous steps:\n${previousContext}\n` : ''}
-User Request: ${userRequest}
+${fileDetails ? `${fileDetails}\n` : ''}${previousContext ? `Context from previous steps:\n${previousContext}\n` : ''}User Request: ${userRequest}
 
 Follow Pine v6 best practices and use available tools to complete this step.`
   }
@@ -328,15 +328,6 @@ Follow Pine v6 best practices and use available tools to complete this step.`
   }
 
   /**
-   * Get tools relevant to a specific step
-   */
-  private getToolsForStep(step: WorkflowStep): PineTool[] {
-    // This would filter tools based on step requirements
-    // For now, return all registered tools
-    return []
-  }
-
-  /**
    * Get current workflow progress
    */
   getProgress(): WorkflowProgress | null {
@@ -349,7 +340,7 @@ Follow Pine v6 best practices and use available tools to complete this step.`
       currentStep: this.currentStep,
       totalSteps: this.currentWorkflow.steps.length,
       completedSteps: this.completedSteps.length,
-      message: `Processing step: ${this.currentStep}`
+      message: `Processing step: ${this.currentStep}`,
     }
   }
 

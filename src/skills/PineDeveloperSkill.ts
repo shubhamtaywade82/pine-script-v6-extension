@@ -6,7 +6,6 @@
  */
 
 import { PineSkill, PineSkillDefinition, PineSkillContext, PineSkillResult } from './PineSkill'
-import { PineKnowledgeEngine } from '../knowledge/PineKnowledgeEngine'
 
 /**
  * Key engineering rules from TradersPost pine-developer skill
@@ -18,7 +17,7 @@ export const PINE_DEVELOPER_RULES = [
     name: 'UDT-First Architecture',
     description: 'When >= 3 related state fields exist, prefer UDT over parallel arrays',
     trigger: 'state management',
-    recommendation: 'Use user-defined types (UDT) with array<UDT> instead of parallel arrays'
+    recommendation: 'Use user-defined types (UDT) with array<UDT> instead of parallel arrays',
   },
   
   // Drawing rules
@@ -27,7 +26,7 @@ export const PINE_DEVELOPER_RULES = [
     name: 'Historical Drawing Coordinates',
     description: 'Use xloc.bar_time for historical drawings beyond safe limits',
     trigger: 'historical drawing',
-    recommendation: 'Store time + bar_index and use xloc.bar_time for line.new, box.new, etc.'
+    recommendation: 'Store time + bar_index and use xloc.bar_time for line.new, box.new, etc.',
   },
   
   // Loop semantics
@@ -36,7 +35,7 @@ export const PINE_DEVELOPER_RULES = [
     name: 'Loop Semantics v6',
     description: 'Follow v6 loop behavior changes',
     trigger: 'for loop',
-    recommendation: 'Ensure loop boundaries are properly cached; avoid dynamic recalculation'
+    recommendation: 'Ensure loop boundaries are properly cached; avoid dynamic recalculation',
   },
   
   // Input organization
@@ -45,7 +44,7 @@ export const PINE_DEVELOPER_RULES = [
     name: 'Input Organization',
     description: 'Group related inputs using input.group()',
     trigger: 'input configuration',
-    recommendation: 'Organize inputs into logical groups for better UX'
+    recommendation: 'Organize inputs into logical groups for better UX',
   },
   
   // Calculation caching
@@ -54,7 +53,7 @@ export const PINE_DEVELOPER_RULES = [
     name: 'Calculation Caching',
     description: 'Cache repeated calculations',
     trigger: 'repeated calculation',
-    recommendation: 'Store ta.sma(), ta.ema(), etc. in variables before reuse'
+    recommendation: 'Store ta.sma(), ta.ema(), etc. in variables before reuse',
   },
   
   // request.security consolidation
@@ -63,8 +62,8 @@ export const PINE_DEVELOPER_RULES = [
     name: 'HTF Request Consolidation',
     description: 'Combine multiple request.security calls into tuples',
     trigger: 'request.security',
-    recommendation: 'Use tuple returns to reduce security call overhead'
-  }
+    recommendation: 'Use tuple returns to reduce security call overhead',
+  },
 ] as const
 
 export class PineDeveloperSkill extends PineSkill {
@@ -83,22 +82,18 @@ export class PineDeveloperSkill extends PineSkill {
       'code',
       'script',
       'indicator',
-      'strategy'
+      'strategy',
     ],
     requiredTools: [
       'pine_search_docs',
       'pine_reference',
-      'pine_validate'
+      'pine_validate',
     ],
     optionalTools: [
       'pine_examples',
       'pine_analyze',
-      'pine_patch'
-    ]
-  }
-  
-  constructor(knowledgeEngine: PineKnowledgeEngine) {
-    super(knowledgeEngine)
+      'pine_patch',
+    ],
   }
   
   /**
@@ -109,7 +104,7 @@ export class PineDeveloperSkill extends PineSkill {
     
     // Always activate for code generation requests
     const hasTrigger = this.definition.triggerPatterns.some(pattern =>
-      request.includes(pattern.toLowerCase())
+      request.includes(pattern.toLowerCase()),
     )
     
     if (hasTrigger) {
@@ -149,8 +144,8 @@ export class PineDeveloperSkill extends PineSkill {
       metadata: {
         taskType,
         applicableRules: applicableRules.map(r => r.id),
-        referencesUsed: references.length
-      }
+        referencesUsed: references.length,
+      },
     }
   }
   
@@ -207,10 +202,10 @@ export class PineDeveloperSkill extends PineSkill {
   /**
    * Get applicable engineering rules for the request
    */
-  private getApplicableRules(request: string): typeof PINE_DEVELOPER_RULES {
+  private getApplicableRules(request: string): Array<(typeof PINE_DEVELOPER_RULES)[number]> {
     const lower = request.toLowerCase()
     return PINE_DEVELOPER_RULES.filter(rule =>
-      lower.includes(rule.trigger.toLowerCase())
+      lower.includes(rule.trigger.toLowerCase()),
     )
   }
   
@@ -222,7 +217,7 @@ export class PineDeveloperSkill extends PineSkill {
     request: string,
     context: PineSkillContext,
     references: string[],
-    rules: typeof PINE_DEVELOPER_RULES
+    rules: Array<(typeof PINE_DEVELOPER_RULES)[number]>,
   ): Promise<{ success: boolean; content: string; patches?: PineSkillResult['patches'] }> {
     
     const guidelines: string[] = []
@@ -249,7 +244,7 @@ export class PineDeveloperSkill extends PineSkill {
       default:
         return {
           success: true,
-          content: `Development task identified: ${taskType}\n\nGuidelines:\n${guidelines.join('\n')}\n\nReady to proceed with code generation.`
+          content: `Development task identified: ${taskType}\n\nGuidelines:\n${guidelines.join('\n')}\n\nReady to proceed with code generation.`,
         }
     }
   }
@@ -261,7 +256,7 @@ export class PineDeveloperSkill extends PineSkill {
     request: string,
     context: PineSkillContext,
     guidelines: string[],
-    references: string[]
+    references: string[],
   ): Promise<{ success: boolean; content: string; patches?: PineSkillResult['patches'] }> {
     
     return {
@@ -280,7 +275,7 @@ ${guidelines.map(g => g).join('\n')}
 2. Design indicator architecture (UDT-first if complex state)
 3. Generate initial code structure
 4. Validate with pine_validate
-5. Refine based on validation results`
+5. Refine based on validation results`,
     }
   }
   
@@ -291,7 +286,7 @@ ${guidelines.map(g => g).join('\n')}
     request: string,
     context: PineSkillContext,
     guidelines: string[],
-    references: string[]
+    references: string[],
   ): Promise<{ success: boolean; content: string; patches?: PineSkillResult['patches'] }> {
     
     return {
@@ -310,7 +305,7 @@ ${guidelines.map(g => g).join('\n')}
 2. Design strategy architecture (entry/exit logic, risk management)
 3. Generate initial code structure with strategy() declaration
 4. Validate with pine_validate
-5. Prepare for backtesting`
+5. Prepare for backtesting`,
     }
   }
   
@@ -321,13 +316,13 @@ ${guidelines.map(g => g).join('\n')}
     request: string,
     context: PineSkillContext,
     guidelines: string[],
-    references: string[]
+    references: string[],
   ): Promise<{ success: boolean; content: string; patches?: PineSkillResult['patches'] }> {
     
     if (!context.fileContent) {
       return {
         success: false,
-        content: 'No file content provided for modification. Please open or provide the Pine Script file to modify.'
+        content: 'No file content provided for modification. Please open or provide the Pine Script file to modify.',
       }
     }
     
@@ -340,13 +335,15 @@ ${guidelines.map(g => g).join('\n')}
 **Engineering Guidelines:**
 ${guidelines.map(g => g).join('\n')}
 
+**Relevant APIs:** ${references.join(', ') || 'None'}
+
 **Current File:** ${context.fileName || 'Untitled'}
 
 **Analysis Required:**
 1. Parse current code structure
 2. Identify sections needing modification
 3. Generate minimal patch using pine_patch
-4. Validate changes with pine_validate`
+4. Validate changes with pine_validate`,
     }
   }
   
@@ -357,7 +354,7 @@ ${guidelines.map(g => g).join('\n')}
     request: string,
     context: PineSkillContext,
     guidelines: string[],
-    references: string[]
+    references: string[],
   ): Promise<{ success: boolean; content: string; patches?: PineSkillResult['patches'] }> {
     
     return {
@@ -366,18 +363,24 @@ ${guidelines.map(g => g).join('\n')}
 
 **Request:** ${request}
 
+**File:** ${context.fileName || 'Untitled'}
+
+**Guidelines:**
+${guidelines.map(g => g).join('\n')}
+
+**Relevant APIs:** ${references.join(', ') || 'None'}
+
 **Key Migration Considerations:**
 - v6 loop semantics changes
 - Deprecated API replacements
 - New v6 features availability
 - Backward compatibility requirements
 
-**Migration Steps:**
-1. Scan code for v5-specific patterns
-2. Map deprecated APIs to v6 equivalents
-3. Apply transformations incrementally
-4. Validate each transformation
-5. Test final migrated code`
+**Next Steps:**
+1. Scan for deprecated v5 patterns with pine_analyze
+2. Map to v6 equivalents using pine_reference
+3. Apply surgical patch using pine_patch
+4. Validate with pine_validate`,
     }
   }
 }

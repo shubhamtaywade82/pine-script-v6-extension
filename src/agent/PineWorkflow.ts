@@ -54,19 +54,19 @@ export const PINE_WORKFLOWS: Record<PineWorkflowType, PineWorkflow> = {
       'develop',
       'validate',
       'debug',
-      'optimize'
+      'optimize',
     ],
     requiredTools: [
       'pine_search_docs',
       'pine_reference',
-      'pine_validate'
+      'pine_validate',
     ],
     optionalTools: [
       'pine_examples',
       'pine_analyze',
-      'pine_visualize'
+      'pine_visualize',
     ],
-    expectedOutput: 'Validated Pine Script indicator code ready for use'
+    expectedOutput: 'Validated Pine Script indicator code ready for use',
   },
 
   create_strategy: {
@@ -79,21 +79,21 @@ export const PINE_WORKFLOWS: Record<PineWorkflowType, PineWorkflow> = {
       'validate',
       'backtest',
       'debug',
-      'optimize'
+      'optimize',
     ],
     requiredTools: [
       'pine_search_docs',
       'pine_reference',
       'pine_validate',
-      'pine_backtest'
+      'pine_backtest',
     ],
     optionalTools: [
       'pine_examples',
       'pine_analyze',
       'pine_visualize',
-      'pine_optimize'
+      'pine_optimize',
     ],
-    expectedOutput: 'Validated Pine Script strategy with backtest results'
+    expectedOutput: 'Validated Pine Script strategy with backtest results',
   },
 
   debug: {
@@ -104,19 +104,19 @@ export const PINE_WORKFLOWS: Record<PineWorkflowType, PineWorkflow> = {
       'reference_lookup',
       'diagnose',
       'patch',
-      'validate'
+      'validate',
     ],
     requiredTools: [
       'pine_analyze',
       'pine_validate',
-      'pine_debug'
+      'pine_debug',
     ],
     optionalTools: [
       'pine_search_docs',
       'pine_reference',
-      'pine_patch'
+      'pine_patch',
     ],
-    expectedOutput: 'Diagnosed issues with patches applied and validated'
+    expectedOutput: 'Diagnosed issues with patches applied and validated',
   },
 
   refactor: {
@@ -127,18 +127,18 @@ export const PINE_WORKFLOWS: Record<PineWorkflowType, PineWorkflow> = {
       'optimize_candidates',
       'reference_lookup',
       'patch',
-      'validate'
+      'validate',
     ],
     requiredTools: [
       'pine_analyze',
-      'pine_validate'
+      'pine_validate',
     ],
     optionalTools: [
       'pine_reference',
       'pine_patch',
-      'pine_optimize'
+      'pine_optimize',
     ],
-    expectedOutput: 'Refactored code with improved structure and validated correctness'
+    expectedOutput: 'Refactored code with improved structure and validated correctness',
   },
 
   optimize: {
@@ -149,18 +149,18 @@ export const PINE_WORKFLOWS: Record<PineWorkflowType, PineWorkflow> = {
       'optimize_candidates',
       'reference_lookup',
       'patch',
-      'validate'
+      'validate',
     ],
     requiredTools: [
       'pine_analyze',
       'pine_validate',
-      'pine_optimize'
+      'pine_optimize',
     ],
     optionalTools: [
       'pine_reference',
-      'pine_patch'
+      'pine_patch',
     ],
-    expectedOutput: 'Optimized code with performance improvement report'
+    expectedOutput: 'Optimized code with performance improvement report',
   },
 
   migrate_v5_v6: {
@@ -170,18 +170,18 @@ export const PINE_WORKFLOWS: Record<PineWorkflowType, PineWorkflow> = {
       'scan',
       'map_apis',
       'transform',
-      'validate'
+      'validate',
     ],
     requiredTools: [
       'pine_analyze',
       'pine_validate',
-      'pine_reference'
+      'pine_reference',
     ],
     optionalTools: [
       'pine_patch',
-      'pine_examples'
+      'pine_examples',
     ],
-    expectedOutput: 'Migrated v6 code with migration report listing changes'
+    expectedOutput: 'Migrated v6 code with migration report listing changes',
   },
 
   backtest: {
@@ -191,17 +191,17 @@ export const PINE_WORKFLOWS: Record<PineWorkflowType, PineWorkflow> = {
       'validate',
       'backtest',
       'analyze',
-      'diagnose'
+      'diagnose',
     ],
     requiredTools: [
       'pine_validate',
-      'pine_backtest'
+      'pine_backtest',
     ],
     optionalTools: [
       'pine_analyze',
-      'pine_visualize'
+      'pine_visualize',
     ],
-    expectedOutput: 'Backtest results with metrics and analysis'
+    expectedOutput: 'Backtest results with metrics and analysis',
   },
 
   publish: {
@@ -210,15 +210,15 @@ export const PINE_WORKFLOWS: Record<PineWorkflowType, PineWorkflow> = {
     steps: [
       'validate',
       'optimize',
-      'design'
+      'design',
     ],
     requiredTools: [
-      'pine_validate'
+      'pine_validate',
     ],
     optionalTools: [
-      'pine_optimize'
+      'pine_optimize',
     ],
-    expectedOutput: 'Publish-ready code with documentation'
+    expectedOutput: 'Publish-ready code with documentation',
   },
 
   explain: {
@@ -227,17 +227,17 @@ export const PINE_WORKFLOWS: Record<PineWorkflowType, PineWorkflow> = {
     steps: [
       'analyze',
       'research',
-      'reference_lookup'
+      'reference_lookup',
     ],
     requiredTools: [
       'pine_analyze',
-      'pine_search_docs'
+      'pine_search_docs',
     ],
     optionalTools: [
       'pine_reference',
-      'pine_examples'
+      'pine_examples',
     ],
-    expectedOutput: 'Detailed explanation of code behavior and structure'
+    expectedOutput: 'Detailed explanation of code behavior and structure',
   },
 
   fix: {
@@ -248,19 +248,19 @@ export const PINE_WORKFLOWS: Record<PineWorkflowType, PineWorkflow> = {
       'reference_lookup',
       'diagnose',
       'patch',
-      'validate'
+      'validate',
     ],
     requiredTools: [
       'pine_validate',
-      'pine_patch'
+      'pine_patch',
     ],
     optionalTools: [
       'pine_reference',
       'pine_search_docs',
-      'pine_analyze'
+      'pine_analyze',
     ],
-    expectedOutput: 'Fixed code with all diagnostics resolved'
-  }
+    expectedOutput: 'Fixed code with all diagnostics resolved',
+  },
 }
 
 /**
@@ -290,10 +290,10 @@ export function isValidStep(workflowType: PineWorkflowType, step: WorkflowStep):
  */
 export function getNextStep(
   workflowType: PineWorkflowType,
-  currentStep: WorkflowStep
+  currentStep: WorkflowStep,
 ): WorkflowStep | undefined {
   const workflow = PINE_WORKFLOWS[workflowType]
-  if (!workflow) return undefined
+  if (!workflow) {return undefined}
 
   const currentIndex = workflow.steps.indexOf(currentStep)
   if (currentIndex === -1 || currentIndex >= workflow.steps.length - 1) {
@@ -316,10 +316,10 @@ export function getFirstStep(workflowType: PineWorkflowType): WorkflowStep | und
  */
 export function isWorkflowComplete(
   workflowType: PineWorkflowType,
-  currentStep: WorkflowStep
+  currentStep: WorkflowStep,
 ): boolean {
   const workflow = PINE_WORKFLOWS[workflowType]
-  if (!workflow) return false
+  if (!workflow) {return false}
 
   const lastStep = workflow.steps[workflow.steps.length - 1]
   return currentStep === lastStep

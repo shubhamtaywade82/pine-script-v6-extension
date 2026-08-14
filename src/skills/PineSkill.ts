@@ -5,7 +5,6 @@
  * Purpose: Modular capabilities instead of monolithic system prompt
  */
 
-import { PineTool } from '../tools/PineTool'
 import { PineKnowledgeEngine } from '../knowledge/PineKnowledgeEngine'
 
 export interface PineSkillDefinition {
@@ -97,7 +96,7 @@ export abstract class PineSkill {
   shouldActivate(context: PineSkillContext): boolean {
     const request = context.userRequest.toLowerCase()
     return this.definition.triggerPatterns.some(pattern => 
-      request.includes(pattern.toLowerCase())
+      request.includes(pattern.toLowerCase()),
     )
   }
   
@@ -133,11 +132,11 @@ export abstract class PineSkill {
  */
 export function skillMatchesRequest(
   skill: PineSkill,
-  request: string
+  request: string,
 ): boolean {
   const requestLower = request.toLowerCase()
   return skill.definition.triggerPatterns.some(pattern =>
-    requestLower.includes(pattern.toLowerCase())
+    requestLower.includes(pattern.toLowerCase()),
   )
 }
 
@@ -146,17 +145,17 @@ export function skillMatchesRequest(
  */
 export function rankSkillsByRelevance(
   skills: PineSkill[],
-  request: string
+  request: string,
 ): PineSkill[] {
   const requestLower = request.toLowerCase()
   
   return skills.sort((a, b) => {
     const aScore = a.definition.triggerPatterns.filter(p => 
-      requestLower.includes(p.toLowerCase())
+      requestLower.includes(p.toLowerCase()),
     ).length
     
     const bScore = b.definition.triggerPatterns.filter(p => 
-      requestLower.includes(p.toLowerCase())
+      requestLower.includes(p.toLowerCase()),
     ).length
     
     return bScore - aScore

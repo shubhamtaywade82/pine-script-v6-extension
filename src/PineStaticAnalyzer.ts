@@ -90,6 +90,7 @@ export class PineStaticAnalyzer {
           const idx = parseInt(match[3], 10)
           const info = this.arrays.get(arrName)
           if (!info || info.size === null) {continue}
+
           const col = match.index + 1
           const endCol = col + match[0].length
           const diag = this.checkIndexBounds(info, idx, i + 1, col, endCol)

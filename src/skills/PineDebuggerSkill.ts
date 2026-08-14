@@ -6,7 +6,6 @@
  */
 
 import { PineSkill, PineSkillDefinition, PineSkillContext, PineSkillResult } from './PineSkill'
-import { PineKnowledgeEngine } from '../knowledge/PineKnowledgeEngine'
 
 /**
  * Instrumentation patterns from TradersPost pine-debugger skill
@@ -52,8 +51,8 @@ export const DEBUG_PATTERNS = {
       'request.security lookahead usage',
       'barstate.isconfirmed vs barstate.isnew',
       'Close price usage on incomplete bars',
-      'Value changes between bars'
-    ]
+      'Value changes between bars',
+    ],
   },
   
   na_propagation: {
@@ -65,8 +64,8 @@ export const DEBUG_PATTERNS = {
       'Initial NA conditions',
       'Division by zero possibilities',
       'Array access out of bounds',
-      'Function return NA propagation'
-    ]
+      'Function return NA propagation',
+    ],
   },
   
   request_security: {
@@ -78,8 +77,8 @@ export const DEBUG_PATTERNS = {
       'Lookahead parameter usage',
       'Gaps handling',
       'Bar merging behavior',
-      'Symbol resolution'
-    ]
+      'Symbol resolution',
+    ],
   },
   
   loop_debugger: {
@@ -91,8 +90,8 @@ export const DEBUG_PATTERNS = {
       'Loop boundary calculation',
       'Iteration count limits',
       'Break/continue conditions',
-      'State accumulation in loops'
-    ]
+      'State accumulation in loops',
+    ],
   },
   
   label_inspector: {
@@ -100,7 +99,7 @@ export const DEBUG_PATTERNS = {
     name: 'Label Value Inspector',
     description: 'Display variable values using labels on chart',
     triggers: ['label', 'display', 'show value', 'inspect'],
-    checks: []
+    checks: [],
   },
   
   table_monitor: {
@@ -108,7 +107,7 @@ export const DEBUG_PATTERNS = {
     name: 'Table Variable Monitor',
     description: 'Monitor multiple variables in a table overlay',
     triggers: ['table', 'monitor', 'dashboard', 'panel'],
-    checks: []
+    checks: [],
   },
   
   udt_inspector: {
@@ -120,8 +119,8 @@ export const DEBUG_PATTERNS = {
       'Field initialization',
       'Type casting',
       'Nested UDT structure',
-      'Array of UDTs'
-    ]
+      'Array of UDTs',
+    ],
   },
   
   drawing_validator: {
@@ -133,8 +132,8 @@ export const DEBUG_PATTERNS = {
       'Coordinate validity',
       'xloc usage (bar_index vs bar_time)',
       'Object lifecycle management',
-      'Max drawings limit'
-    ]
+      'Max drawings limit',
+    ],
   },
   
   xloc_validator: {
@@ -145,9 +144,9 @@ export const DEBUG_PATTERNS = {
     checks: [
       'Historical drawing coordinate type',
       'Time vs bar_index consistency',
-      'Future bar references'
-    ]
-  }
+      'Future bar references',
+    ],
+  },
 } as const
 
 export class PineDebuggerSkill extends PineSkill {
@@ -167,22 +166,18 @@ export class PineDebuggerSkill extends PineSkill {
       'instrument',
       'trace',
       'inspect',
-      'monitor'
+      'monitor',
     ],
     requiredTools: [
       'pine_analyze',
-      'pine_validate'
+      'pine_validate',
     ],
     optionalTools: [
       'pine_search_docs',
       'pine_reference',
       'pine_patch',
-      'pine_visualize'
-    ]
-  }
-  
-  constructor(knowledgeEngine: PineKnowledgeEngine) {
-    super(knowledgeEngine)
+      'pine_visualize',
+    ],
   }
   
   /**
@@ -203,7 +198,7 @@ export class PineDebuggerSkill extends PineSkill {
     const instrumentationPlan = this.generateInstrumentationPlan(
       relevantPatterns,
       analysisResults,
-      context
+      context,
     )
     
     return {
@@ -214,8 +209,8 @@ export class PineDebuggerSkill extends PineSkill {
       metadata: {
         patternsIdentified: relevantPatterns.map(p => p.id),
         issuesFound: analysisResults?.issues.length ?? 0,
-        instrumentationGenerated: instrumentationPlan.codeSnippets.length
-      }
+        instrumentationGenerated: instrumentationPlan.codeSnippets.length,
+      },
     }
   }
   
@@ -231,7 +226,7 @@ export class PineDebuggerSkill extends PineSkill {
       
       // Check if any trigger word matches
       const hasTrigger = pattern.triggers.some(trigger =>
-        lower.includes(trigger.toLowerCase())
+        lower.includes(trigger.toLowerCase()),
       )
       
       if (hasTrigger) {
@@ -252,7 +247,7 @@ export class PineDebuggerSkill extends PineSkill {
    */
   private analyzeCodeForIssues(
     code: string,
-    patterns: typeof DEBUG_PATTERNS[keyof typeof DEBUG_PATTERNS][]
+    patterns: typeof DEBUG_PATTERNS[keyof typeof DEBUG_PATTERNS][],
   ): { issues: Array<{ type: string; line: number; message: string }> } {
     const issues: Array<{ type: string; line: number; message: string }> = []
     const lines = code.split('\n')
@@ -281,7 +276,7 @@ export class PineDebuggerSkill extends PineSkill {
   private checkForIssue(
     line: string,
     lineNum: number,
-    issueType: string
+    issueType: string,
   ): { type: string; line: number; message: string } | null {
     // Repainting checks
     if (issueType.includes('lookahead')) {
@@ -289,7 +284,7 @@ export class PineDebuggerSkill extends PineSkill {
         return {
           type: 'potential_repaint',
           line: lineNum,
-          message: 'request.security with lookahead parameter may cause repainting'
+          message: 'request.security with lookahead parameter may cause repainting',
         }
       }
     }
@@ -300,7 +295,7 @@ export class PineDebuggerSkill extends PineSkill {
         return {
           type: 'potential_na',
           line: lineNum,
-          message: 'Division operation detected - check for division by zero'
+          message: 'Division operation detected - check for division by zero',
         }
       }
     }
@@ -312,7 +307,7 @@ export class PineDebuggerSkill extends PineSkill {
           return {
             type: 'drawing_coordinate',
             line: lineNum,
-            message: 'Drawing without explicit xloc - consider xloc.bar_time for historical drawings'
+            message: 'Drawing without explicit xloc - consider xloc.bar_time for historical drawings',
           }
         }
       }
@@ -327,18 +322,21 @@ export class PineDebuggerSkill extends PineSkill {
   private generateInstrumentationPlan(
     patterns: typeof DEBUG_PATTERNS[keyof typeof DEBUG_PATTERNS][],
     analysisResults: { issues: Array<{ type: string; line: number; message: string }> } | null,
-    context: PineSkillContext
+    context: PineSkillContext,
   ): {
-    report: string
-    patches?: PineSkillResult['patches']
-    diagnostics?: PineSkillResult['diagnostics']
-    codeSnippets: string[]
-  } {
+      report: string
+      patches?: PineSkillResult['patches']
+      diagnostics?: PineSkillResult['diagnostics']
+      codeSnippets: string[]
+    } {
     const reportLines: string[] = []
     const codeSnippets: string[] = []
     const diagnostics: PineSkillResult['diagnostics'] = []
     
     reportLines.push('# Pine Script Debug Analysis\n')
+    if (context.fileName) {
+      reportLines.push(`**File:** ${context.fileName}\n`)
+    }
     
     // Report identified patterns
     reportLines.push(`## Debug Patterns Identified: ${patterns.length}\n`)
@@ -360,7 +358,7 @@ export class PineDebuggerSkill extends PineSkill {
           line: issue.line,
           column: 0,
           severity: 'warning',
-          message: issue.message
+          message: issue.message,
         })
       }
       reportLines.push('')
@@ -370,10 +368,9 @@ export class PineDebuggerSkill extends PineSkill {
     reportLines.push('## Recommended Instrumentation\n')
     
     for (const pattern of patterns) {
-      const instrumentation = this.generateInstrumentationForPattern(pattern, context)
-      codeSnippets.push(instrumentation.code)
-      reportLines.push(`### ${pattern.name}`)
-      reportLines.push(instrumentation.description)
+      const instrumentation = this.generateInstrumentationForPattern(pattern)
+      codeSnippets.push(`// --- ${pattern.name} ---\n${instrumentation.code}`)
+      reportLines.push(`### ${pattern.name}\n${instrumentation.description}`)
       reportLines.push('```pine')
       reportLines.push(instrumentation.code)
       reportLines.push('```\n')
@@ -382,7 +379,7 @@ export class PineDebuggerSkill extends PineSkill {
     return {
       report: reportLines.join('\n'),
       diagnostics,
-      codeSnippets
+      codeSnippets,
     }
   }
   
@@ -391,31 +388,30 @@ export class PineDebuggerSkill extends PineSkill {
    */
   private generateInstrumentationForPattern(
     pattern: typeof DEBUG_PATTERNS[keyof typeof DEBUG_PATTERNS],
-    context: PineSkillContext
   ): { code: string; description: string } {
     switch (pattern.id) {
       case 'DEBUG-REPAINT-001':
-        return this.generateRepaintDetector(context)
+        return this.generateRepaintDetector()
       
       case 'DEBUG-NA-001':
-        return this.generateNATracker(context)
+        return this.generateNATracker()
       
       case 'DEBUG-HTF-001':
-        return this.generateHTFDebugger(context)
+        return this.generateHTFDebugger()
       
       case 'DEBUG-LOOP-001':
-        return this.generateLoopDebugger(context)
+        return this.generateLoopDebugger()
       
       case 'DEBUG-LABEL-001':
-        return this.generateLabelInspector(context)
+        return this.generateLabelInspector()
       
       case 'DEBUG-TABLE-001':
-        return this.generateTableMonitor(context)
+        return this.generateTableMonitor()
       
       default:
         return {
           code: '// General instrumentation placeholder',
-          description: 'General debugging instrumentation'
+          description: 'General debugging instrumentation',
         }
     }
   }
@@ -423,7 +419,7 @@ export class PineDebuggerSkill extends PineSkill {
   /**
    * Generate repainting detector instrumentation
    */
-  private generateRepaintDetector(context: PineSkillContext): { code: string; description: string } {
+  private generateRepaintDetector(): { code: string; description: string } {
     return {
       code: `// Repainting Detector Instrumentation
 // Compare realtime vs historical values
@@ -457,14 +453,14 @@ if barstate.islast
     table.cell(statsTable, 1, 1, str.tostring(repaintChecks))
     table.cell(statsTable, 0, 2, "Changes")
     table.cell(statsTable, 1, 2, str.tostring(repaintChanges))`,
-      description: 'This instrumentation tracks value changes between realtime updates to detect repainting behavior.'
+      description: 'This instrumentation tracks value changes between realtime updates to detect repainting behavior.',
     }
   }
   
   /**
    * Generate NA propagation tracker
    */
-  private generateNATracker(context: PineSkillContext): { code: string; description: string } {
+  private generateNATracker(): { code: string; description: string } {
     return {
       code: `// NA Propagation Tracker
 // Track where NA values originate and spread
@@ -499,14 +495,14 @@ if barstate.islast
          text = "NA Count: " + str.tostring(naCount),
          style = label.style_label_up,
          color = color.orange)`,
-      description: 'This instrumentation identifies sources of NA values and tracks their propagation through calculations.'
+      description: 'This instrumentation identifies sources of NA values and tracks their propagation through calculations.',
     }
   }
   
   /**
    * Generate HTF (Higher Timeframe) debugger
    */
-  private generateHTFDebugger(context: PineSkillContext): { code: string; description: string } {
+  private generateHTFDebugger(): { code: string; description: string } {
     return {
       code: `// HTF Request.Security Debugger
 // Debug higher timeframe data access
@@ -545,14 +541,14 @@ if barstate.islast
     table.cell(htfTable, 1, 2, str.tostring(htfCloseWithLookahead))
     table.cell(htfTable, 0, 3, "Difference")
     table.cell(htfTable, 1, 3, str.tostring(htfDiff))`,
-      description: 'This instrumentation compares request.security behavior with different lookahead settings to identify HTF issues.'
+      description: 'This instrumentation compares request.security behavior with different lookahead settings to identify HTF issues.',
     }
   }
   
   /**
    * Generate loop debugger
    */
-  private generateLoopDebugger(context: PineSkillContext): { code: string; description: string } {
+  private generateLoopDebugger(): { code: string; description: string } {
     return {
       code: `// Loop Iteration Debugger
 // Track loop behavior and iteration counts
@@ -591,14 +587,14 @@ if barstate.islast
     table.cell(loopTable, 1, 1, str.tostring(loopEntryCount))
     table.cell(loopTable, 0, 2, "Max Iterations")
     table.cell(loopTable, 1, 2, str.tostring(maxIterationsInLoop))`,
-      description: 'This instrumentation tracks loop iteration counts and identifies potential infinite loop conditions.'
+      description: 'This instrumentation tracks loop iteration counts and identifies potential infinite loop conditions.',
     }
   }
   
   /**
    * Generate label value inspector
    */
-  private generateLabelInspector(context: PineSkillContext): { code: string; description: string } {
+  private generateLabelInspector(): { code: string; description: string } {
     return {
       code: `// Label Value Inspector
 // Display variable values on chart using labels
@@ -622,14 +618,14 @@ if barstate.islast
 // Alternative: Click-based inspection (using alerts)
 // alertcondition(barstate.islast, "Inspect Values", 
 //     "Price: {{close}}\\nVolume: {{volume}}\\nRSI: " + str.tostring(inspectRSI, "#.##"))`,
-      description: 'This instrumentation displays variable values directly on the chart using labels for easy visual inspection.'
+      description: 'This instrumentation displays variable values directly on the chart using labels for easy visual inspection.',
     }
   }
   
   /**
    * Generate table variable monitor
    */
-  private generateTableMonitor(context: PineSkillContext): { code: string; description: string } {
+  private generateTableMonitor(): { code: string; description: string } {
     return {
       code: `// Table Variable Monitor
 // Monitor multiple variables in a dashboard table
@@ -670,7 +666,7 @@ if barstate.islast
     float atr = ta.atr(14)
     table.cell(monitorTable, 0, 7, "ATR(14)")
     table.cell(monitorTable, 1, 7, str.tostring(atr, "#.##"))`,
-      description: 'This instrumentation creates a persistent dashboard table showing multiple variable values for real-time monitoring.'
+      description: 'This instrumentation creates a persistent dashboard table showing multiple variable values for real-time monitoring.',
     }
   }
 }

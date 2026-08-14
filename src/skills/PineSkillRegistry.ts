@@ -38,7 +38,7 @@ export class PineSkillRegistry {
       description: skill.definition.description,
       version: skill.definition.version,
       loaded: true,
-      skill
+      skill,
     })
   }
   
@@ -138,13 +138,13 @@ export class PineSkillRegistry {
    */
   async executeSkill(
     skillId: string,
-    context: PineSkillContext
+    context: PineSkillContext,
   ): Promise<{ success: boolean; content: string }> {
     const skill = this.skills.get(skillId)
     if (!skill) {
       return {
         success: false,
-        content: `Skill not found: ${skillId}`
+        content: `Skill not found: ${skillId}`,
       }
     }
     
@@ -152,12 +152,12 @@ export class PineSkillRegistry {
       const result = await skill.execute(context)
       return {
         success: result.success,
-        content: result.content
+        content: result.content,
       }
     } catch (error: any) {
       return {
         success: false,
-        content: `Skill execution error: ${error.message}`
+        content: `Skill execution error: ${error.message}`,
       }
     }
   }
@@ -167,20 +167,20 @@ export class PineSkillRegistry {
    */
   async executeBestMatch(
     request: string,
-    context: PineSkillContext
+    context: PineSkillContext,
   ): Promise<{ success: boolean; content: string; skillId?: string }> {
     const skill = this.selectBestSkill(request)
     if (!skill) {
       return {
         success: false,
-        content: `No matching skill found for request: ${request}`
+        content: `No matching skill found for request: ${request}`,
       }
     }
     
     const result = await this.executeSkill(skill.definition.id, context)
     return {
       ...result,
-      skillId: skill.definition.id
+      skillId: skill.definition.id,
     }
   }
   
