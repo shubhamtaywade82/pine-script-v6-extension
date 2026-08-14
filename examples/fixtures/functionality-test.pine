@@ -12,7 +12,7 @@ indicator("Extension Functionality Test", overlay=true)
 // @returns Test return value
 
 // Test 3: Import statements
-import TradingView/Patterns/1 as p
+import TradingView/ta/7 as p
 
 // Test 4: Function declarations
 testFunction(int param1, float param2) =>
