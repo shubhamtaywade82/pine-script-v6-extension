@@ -91,10 +91,10 @@ export class OllamaClient {
     } catch (err) {
       if (url.includes('localhost')) {
         const fallbackUrl = url.replace('localhost', '127.0.0.1')
-        return await tryFetch(fallbackUrl)
+        return tryFetch(fallbackUrl)
       } else if (url.includes('127.0.0.1')) {
         const fallbackUrl = url.replace('127.0.0.1', 'localhost')
-        return await tryFetch(fallbackUrl)
+        return tryFetch(fallbackUrl)
       }
       throw err
     }
@@ -281,7 +281,11 @@ export class OllamaClient {
         const parsed = JSON.parse(dataStr) as Record<string, unknown>
         const msg = parsed.message as Record<string, unknown> | undefined
         const delta = (parsed.choices as Array<{ delta?: Record<string, unknown> }> | undefined)?.[0]?.delta
-        const content = typeof msg?.content === 'string' ? msg.content : (typeof delta?.content === 'string' ? delta.content : '')
+        const content = typeof msg?.content === 'string'
+          ? msg.content
+          : (typeof delta?.content === 'string'
+            ? delta.content
+            : (typeof parsed.response === 'string' ? parsed.response : ''))
         if (content) {
           text += content
           onStream(content)

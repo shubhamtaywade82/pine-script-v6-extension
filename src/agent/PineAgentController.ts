@@ -43,6 +43,10 @@ export class PineAgentController {
     return this.agent
   }
 
+  getOutputChannel(): vscode.OutputChannel {
+    return this.outputChannel
+  }
+
   initialize(context: vscode.ExtensionContext): void {
     this.knowledgeEngine = new PineKnowledgeEngine(Class.PineDocsManager)
     this.statusBar = getGlobalStatusBar()

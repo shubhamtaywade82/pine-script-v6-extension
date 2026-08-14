@@ -36,7 +36,7 @@ export class PineChatParticipant {
       )
 
       this.participant.iconPath = vscode.Uri.file(
-        context.asAbsolutePath('media/pine-logo.png'),
+        context.asAbsolutePath('media/PineLogo.png'),
       )
 
       context.subscriptions.push(this.participant)

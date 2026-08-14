@@ -24,9 +24,27 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
   resolveWebviewView(webviewView: vscode.WebviewView): void {
     this.view = webviewView
     webviewView.webview.options = { enableScripts: true, localResourceRoots: [this.extensionUri] }
-    webviewView.webview.html = this.getHtml()
+    webviewView.webview.html = this.getHtml(webviewView.webview)
     webviewView.webview.onDidReceiveMessage((msg: WebviewMessage) => this.handleMessage(msg))
-    this.postStatus()
+
+    const activeEditorListener = vscode.window.onDidChangeActiveTextEditor(() => {
+      void this.postStatus()
+    })
+    webviewView.onDidDispose(() => {
+      activeEditorListener.dispose()
+    })
+
+    void this.postStatus()
+  }
+
+  private getActivePineEditor(): vscode.TextEditor | undefined {
+    if (vscode.window.activeTextEditor) {
+      return vscode.window.activeTextEditor
+    }
+    const pineEditor = vscode.window.visibleTextEditors.find(
+      e => e.document.languageId === 'pine' || e.document.fileName.endsWith('.pine') || e.document.fileName.endsWith('.pinescript'),
+    )
+    return pineEditor ?? vscode.window.visibleTextEditors[0]
   }
 
   private async handleMessage(message: WebviewMessage): Promise<void> {
@@ -68,26 +86,45 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
   }
 
   private async processPrompt(prompt: string, includeContext: boolean): Promise<void> {
-    const editor = vscode.window.activeTextEditor
+    const editor = this.getActivePineEditor()
     const fileContent = (includeContext && editor) ? editor.document.getText() : undefined
     const selection = (includeContext && editor) ? editor.document.getText(editor.selection) : undefined
     const fileName = editor?.document.fileName
 
     const transcript: TranscriptStep[] = []
     this.postMessage({ type: 'startStreaming', userPrompt: prompt })
+    const outputChannel = PineAgentController.getInstance().getOutputChannel()
+    outputChannel.appendLine(`\n[${new Date().toLocaleTimeString()}] === PineForge Chat Request ===\nUser: ${prompt}`)
 
     try {
+      const config = vscode.workspace.getConfiguration('pineForge')
+      const host = config.get<string>('ollama.host', 'http://localhost:11434')
+      const model = config.get<string>('ollama.model', 'minimax-m3:cloud')
+      const temperature = config.get<number>('ollama.temperature', 0)
+      const maxIterations = config.get<number>('agent.maxIterations', 12)
+
       const agent = PineAgentController.getInstance().getAgent()
       const client = agent.getClient()
+      client.updateConfig({ host, model, temperature, maxIterations })
+
+      const isHealthy = await agent.healthCheck().catch(() => false)
+      if (!isHealthy) {
+        throw new Error(
+          `Cannot connect to Ollama at ${host}.\n` +
+          `Please make sure Ollama is running ('ollama serve') and model '${model}' is downloaded.\n` +
+          'You can update Ollama host/model settings using the ⚙️ Settings button above.',
+        )
+      }
+
       const tools = agent.getOllamaTools()
-      const systemPrompt = 'You are PineForge AI, expert TradingView Pine Script v6 engineering assistant.\\n' +
-        'Rules:\\n' +
-        '1. Always use Pine Script v6 syntax (@version=6) with indicator() or strategy() declaration.\\n' +
-        '2. NEVER use semicolons (;) at line endings. Pine Script uses indentation and newlines.\\n' +
-        '3. Use standard Pine v6 inputs: input.int(), input.float(), input.bool(), input.string(), input.color().\\n' +
-        '4. User-defined types use: type TypeName\\n    float field1\\n    int field2 (never use struct or C-syntax).\\n' +
-        '5. Use standard plotting functions: plot(), plotshape(), plotchar(), line.new(), box.new(), label.new().\\n' +
-        '6. For collections use: array.new<float>(), matrix.new<float>(), map.new<string, float>().\\n' +
+      const systemPrompt = 'You are PineForge AI, expert TradingView Pine Script v6 engineering assistant.\n' +
+        'Rules:\n' +
+        '1. Always use Pine Script v6 syntax (@version=6) with indicator() or strategy() declaration.\n' +
+        '2. NEVER use semicolons (;) at line endings. Pine Script uses indentation and newlines.\n' +
+        '3. Use standard Pine v6 inputs: input.int(), input.float(), input.bool(), input.string(), input.color().\n' +
+        '4. User-defined types use: type TypeName\n    float field1\n    int field2 (never use struct or C-syntax).\n' +
+        '5. Use standard plotting functions: plot(), plotshape(), plotchar(), line.new(), box.new(), label.new().\n' +
+        '6. For collections use: array.new<float>(), matrix.new<float>(), map.new<string, float>().\n' +
         '7. Never invent fake APIs. Output valid, complete, copy-pasteable Pine Script v6 code in ```pine code blocks.'
       
       let userMsg = prompt
@@ -100,6 +137,9 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
         const step: TranscriptStep = { time, state, message: msg }
         transcript.push(step)
         this.postMessage({ type: 'progress', step, transcript })
+        if (state !== 'RESET_STREAM') {
+          outputChannel.appendLine(`[${time}] [${state}] ${msg}`)
+        }
       }
 
       const onStream = (chunk: string) => {
@@ -118,18 +158,29 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
         onStream,
       )
 
+      outputChannel.appendLine(`=== Agent Response ===\n${response}\n---`)
       this.postMessage({ type: 'streamEnd', content: response, transcript })
     } catch (err: unknown) {
       const errorMsg = err instanceof Error ? err.message : String(err)
+      outputChannel.appendLine(`[ERROR] ${errorMsg}`)
       this.postMessage({ type: 'streamError', error: errorMsg, transcript })
     }
   }
 
   private async processAction(action: string): Promise<void> {
-    const editor = vscode.window.activeTextEditor
+    const editor = this.getActivePineEditor()
     const code = editor?.document.getText() ?? ''
 
     if (action === 'validate') {
+      if (!code.trim()) {
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        this.postMessage({
+          type: 'botResponse',
+          content: '### Pine Script Validation\n\n⚠️ **No active Pine Script document found.**\nPlease open a `.pine` file in the editor to run validation.',
+          transcript: [{ time, state: 'VALIDATE', message: 'No active Pine Script found to validate.' }],
+        })
+        return
+      }
       const tool = new PineValidateTool(this.knowledgeEngine)
       const res = await tool.execute({ code, mode: 'full' })
       const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
@@ -137,6 +188,16 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
         type: 'botResponse',
         content: `### Pine Script Validation Report\n\n${res.content}`,
         transcript: [{ time, state: 'VALIDATE', message: 'Executed full Pine v6 conformance validation.' }],
+      })
+      return
+    }
+
+    if (!code.trim() && action !== 'explain') {
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+      this.postMessage({
+        type: 'botResponse',
+        content: `⚠️ **No active Pine Script document found.**\nPlease open a \`.pine\` file in the editor to use the **${action}** action.`,
+        transcript: [{ time, state: 'ACTION', message: `Action ${action} aborted: no active script.` }],
       })
       return
     }
@@ -153,7 +214,7 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
   }
 
   private async applyCodeToEditor(code: string, mode: 'replace' | 'insert'): Promise<void> {
-    const editor = vscode.window.activeTextEditor
+    const editor = this.getActivePineEditor()
     if (!editor) {
       const doc = await vscode.workspace.openTextDocument({ language: 'pine', content: code })
       await vscode.window.showTextDocument(doc)
@@ -185,7 +246,7 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
       const temperature = config.get<number>('ollama.temperature', 0)
       const autoRepair = config.get<boolean>('agent.autoRepair', true)
       const maxIterations = config.get<number>('agent.maxIterations', 12)
-      const activeFile = vscode.window.activeTextEditor?.document.fileName.split(/[/\\]/).pop()
+      const activeFile = this.getActivePineEditor()?.document.fileName.split(/[/\\]/).pop()
 
       let connected = false
       let models: string[] = []
@@ -226,23 +287,41 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
     this.view?.webview.postMessage(msg)
   }
 
-  private getHtml(): string {
-    return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><style>
+  private getNonce(): string {
+    let text = ''
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    for (let i = 0; i < 32; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length))
+    }
+    return text
+  }
+
+  private getHtml(webview: vscode.Webview): string {
+    const nonce = this.getNonce()
+    const config = vscode.workspace.getConfiguration('pineForge')
+    const initialModel = config.get<string>('ollama.model', 'minimax-m3:cloud')
+    const initialHost = config.get<string>('ollama.host', 'http://localhost:11434')
+    const initialTemp = config.get<number>('ollama.temperature', 0)
+    const initialIter = config.get<number>('agent.maxIterations', 12)
+    const initialRepair = config.get<boolean>('agent.autoRepair', true)
+
+    return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webview.cspSource} https: data:; style-src ${webview.cspSource} 'unsafe-inline'; script-src 'nonce-${nonce}'; font-src ${webview.cspSource};"><style>
 :root{--bg:var(--vscode-sideBar-background,#1e1e1e);--fg:var(--vscode-foreground,#ccc);--card:var(--vscode-editor-background,#252526);--border:var(--vscode-widget-border,#333);--accent:var(--vscode-button-background,#0e639c);--accent-hover:var(--vscode-button-hoverBackground,#1177bb);font-family:var(--vscode-font-family,sans-serif);}
 *{box-sizing:border-box;margin:0;padding:0;}body{background:var(--bg);color:var(--fg);font-size:12px;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+button{font-family:inherit;cursor:pointer;}
 .header{padding:6px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:6px;}
-.model-tag{display:flex;align-items:center;gap:5px;cursor:pointer;padding:2px 6px;border-radius:4px;background:var(--card);border:1px solid var(--border);font-size:11px;}
+.model-tag{display:flex;align-items:center;gap:5px;cursor:pointer;padding:2px 6px;border-radius:4px;background:var(--card);border:1px solid var(--border);font-size:11px;user-select:none;}
 .dot{width:7px;height:7px;border-radius:50%;background:#e51400;}.dot.online{background:#89d185;}.header-actions{display:flex;gap:4px;}
 .settings-drawer{display:none;padding:10px;border-bottom:1px solid var(--border);background:var(--card);flex-direction:column;gap:6px;font-size:11px;}
-.settings-drawer.open{display:flex;}.cfg-row{display:flex;flex-direction:column;gap:2px;}.cfg-row label{opacity:0.85;font-size:10px;}
+.settings-drawer.open{display:flex!important;}.cfg-row{display:flex;flex-direction:column;gap:2px;}.cfg-row label{opacity:0.85;font-size:10px;}
 .cfg-input{background:var(--bg);color:var(--fg);border:1px solid var(--border);border-radius:3px;padding:4px 6px;font-size:11px;}
 .cfg-actions{display:flex;gap:6px;margin-top:4px;}
 .tab-bar{display:flex;border-bottom:1px solid var(--border);background:var(--card);}
-.tab-btn{flex:1;padding:5px;background:transparent;border:none;color:var(--fg);cursor:pointer;font-size:11px;opacity:0.7;border-bottom:2px solid transparent;}
+.tab-btn{flex:1;padding:6px 4px;background:transparent;border:none;color:var(--fg);cursor:pointer;font-size:11px;opacity:0.7;border-bottom:2px solid transparent;user-select:none;}
 .tab-btn.active{opacity:1;font-weight:bold;border-bottom:2px solid var(--accent);}
-.quick-bar{display:flex;gap:4px;padding:6px 10px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
-.chip{background:var(--card);border:1px solid var(--border);color:var(--fg);padding:2px 7px;border-radius:12px;cursor:pointer;white-space:nowrap;font-size:11px;}
-.chip:hover{background:var(--accent);color:#fff;}.view-panel{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;}
+.quick-bar{display:flex;gap:5px;padding:6px 10px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+.chip{background:var(--card);border:1px solid var(--border);color:var(--fg);padding:3px 8px;border-radius:12px;cursor:pointer;white-space:nowrap;font-size:11px;user-select:none;transition:background 0.15s ease,color 0.15s ease,border-color 0.15s ease;}
+.chip:hover{background:var(--accent);color:#fff;border-color:var(--accent);}.chip:active{transform:translateY(1px);}.view-panel{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;}
 .msg{padding:7px 9px;border-radius:6px;line-height:1.4;word-break:break-word;}.msg.user{background:var(--accent);color:#fff;align-self:flex-end;max-width:85%;}.msg.bot{background:var(--card);border:1px solid var(--border);align-self:flex-start;max-width:95%;}
 .transcript-box{margin-bottom:6px;border:1px solid var(--border);border-radius:4px;background:#181818;font-size:11px;}
 .transcript-box summary{padding:4px 8px;cursor:pointer;background:#202020;border-radius:4px;color:#85c2ff;font-size:10px;user-select:none;}
@@ -276,16 +355,16 @@ textarea{flex:1;height:48px;resize:none;background:var(--card);color:var(--fg);b
 textarea:focus{outline:1px solid var(--accent);}.send-btn{background:var(--accent);color:#fff;border:none;border-radius:4px;padding:0 12px;cursor:pointer;font-weight:bold;}.send-btn:hover{background:var(--accent-hover);}
 </style></head><body>
 <div class="header">
-<div class="model-tag" id="modelTag"><span class="dot" id="statusDot"></span><span id="modelName">Connecting...</span></div>
+<div class="model-tag" id="modelTag"><span class="dot online" id="statusDot"></span><span id="modelName">${initialModel}</span></div>
 <div class="header-actions"><button class="btn-sm" id="btnSettingsToggle">⚙️ Settings</button><button class="btn-sm" id="btnClearChat">Clear</button></div>
 </div>
 <div class="settings-drawer" id="settingsDrawer">
-<div class="cfg-row"><label>Model</label><select id="cfgModelSelect" class="cfg-input"></select></div>
-<div class="cfg-row"><label>Custom Model Tag</label><input type="text" id="cfgModelCustom" class="cfg-input" placeholder="e.g. minimax-m3:cloud"></div>
-<div class="cfg-row"><label>Ollama Host</label><input type="text" id="cfgHost" class="cfg-input" placeholder="http://localhost:11434"></div>
-<div class="cfg-row"><label>Temperature</label><input type="number" id="cfgTemp" class="cfg-input" step="0.1" min="0" max="1" value="0"></div>
-<div class="cfg-row"><label>Max Iterations</label><input type="number" id="cfgMaxIter" class="cfg-input" min="1" max="30" value="12"></div>
-<div class="cfg-row"><label><input type="checkbox" id="cfgAutoRepair"> Auto-repair validation failures</label></div>
+<div class="cfg-row"><label>Model</label><select id="cfgModelSelect" class="cfg-input"><option value="${initialModel}" selected>${initialModel}</option></select></div>
+<div class="cfg-row"><label>Custom Model Tag</label><input type="text" id="cfgModelCustom" class="cfg-input" value="${initialModel}" placeholder="e.g. minimax-m3:cloud"></div>
+<div class="cfg-row"><label>Ollama Host</label><input type="text" id="cfgHost" class="cfg-input" value="${initialHost}" placeholder="http://localhost:11434"></div>
+<div class="cfg-row"><label>Temperature</label><input type="number" id="cfgTemp" class="cfg-input" step="0.1" min="0" max="1" value="${initialTemp}"></div>
+<div class="cfg-row"><label>Max Iterations</label><input type="number" id="cfgMaxIter" class="cfg-input" min="1" max="30" value="${initialIter}"></div>
+<div class="cfg-row"><label><input type="checkbox" id="cfgAutoRepair" ${initialRepair ? 'checked' : ''}> Auto-repair validation failures</label></div>
 <div class="cfg-actions"><button class="btn-primary" id="btnSaveSettings">Save & Apply</button><button class="btn-sm" id="btnVSCodeSettings">VS Code Settings</button></div>
 </div>
 <div class="tab-bar">
@@ -310,10 +389,16 @@ textarea:focus{outline:1px solid var(--accent);}.send-btn{background:var(--accen
 <div class="context-row"><label><input type="checkbox" id="ctxCheck" checked> Include active script</label><span id="activeFileLabel">No active file</span></div>
 <div class="input-row"><textarea id="promptInput" placeholder="Ask PineForge AI... (Enter to send, Shift+Enter for newline)"></textarea><button class="send-btn" id="sendBtn">Send</button></div>
 </div>
-<script>
+<script nonce="${nonce}">
 (function(){
 try {
-var vscode = acquireVsCodeApi();
+var vscode;
+try {
+  vscode = acquireVsCodeApi();
+} catch(e) {
+  console.log('acquireVsCodeApi fallback:', e);
+}
+
 var chatFlow = document.getElementById('chatFlow');
 var logFlow = document.getElementById('logFlow');
 var fullLogStream = document.getElementById('fullLogStream');
@@ -322,38 +407,94 @@ var ctxCheck = document.getElementById('ctxCheck');
 var currentTranscript = [], streamBuffer = '', activeBotMsg = null, activeStreamBody = null, activeStreamHeader = null;
 
 function switchTab(t){
-document.getElementById('tabChatBtn').className = 'tab-btn ' + (t==='chat'?'active':'');
-document.getElementById('tabLogBtn').className = 'tab-btn ' + (t==='logs'?'active':'');
-chatFlow.style.display = t==='chat' ? 'flex' : 'none';
-logFlow.style.display = t==='logs' ? 'flex' : 'none';
-document.getElementById('quickBar').style.display = t==='chat' ? 'flex' : 'none';
+var tabChatBtn = document.getElementById('tabChatBtn');
+var tabLogBtn = document.getElementById('tabLogBtn');
+var quickBar = document.getElementById('quickBar');
+if (tabChatBtn) tabChatBtn.className = 'tab-btn ' + (t==='chat'?'active':'');
+if (tabLogBtn) tabLogBtn.className = 'tab-btn ' + (t==='logs'?'active':'');
+if (chatFlow) chatFlow.style.display = t==='chat' ? 'flex' : 'none';
+if (logFlow) logFlow.style.display = t==='logs' ? 'flex' : 'none';
+if (quickBar) quickBar.style.display = t==='chat' ? 'flex' : 'none';
 }
+
 function submitPrompt(){
-var t = promptInput.value.trim();
+var t = promptInput ? promptInput.value.trim() : '';
 if (!t) return;
 appendMessage(t, 'user');
-promptInput.value = '';
+if (promptInput) promptInput.value = '';
 appendLog('USER: ' + t);
-vscode.postMessage({ type: 'sendPrompt', prompt: t, includeContext: Boolean(ctxCheck.checked) });
+if (vscode) {
+  vscode.postMessage({ type: 'sendPrompt', prompt: t, includeContext: Boolean(ctxCheck && ctxCheck.checked) });
 }
+}
+
 function toggleSettings(){
-document.getElementById('settingsDrawer').classList.toggle('open');
+var drawer = document.getElementById('settingsDrawer');
+if (drawer) drawer.classList.toggle('open');
 }
+
 function saveSettings(){
 var m = document.getElementById('cfgModelCustom').value.trim() || document.getElementById('cfgModelSelect').value;
 var h = document.getElementById('cfgHost').value.trim(), temp = parseFloat(document.getElementById('cfgTemp').value) || 0;
 var iter = parseInt(document.getElementById('cfgMaxIter').value, 10) || 12, rep = document.getElementById('cfgAutoRepair').checked;
-vscode.postMessage({ type: 'updateConfig', config: { model: m, host: h, temperature: temp, maxIterations: iter, autoRepair: rep } });
+if (vscode) {
+  vscode.postMessage({ type: 'updateConfig', config: { model: m, host: h, temperature: temp, maxIterations: iter, autoRepair: rep } });
+}
 toggleSettings();
 }
+
+function openVSCodeSettings(){
+if (vscode) vscode.postMessage({ type: 'openVSCodeSettings' });
+}
+
+function quickAction(act){
+var labels = {
+explain: '💡 Explain active script',
+fix: '🔧 Fix errors & bugs in active script',
+optimize: '⚡ Optimize performance of active script',
+migrate: '🚀 Migrate active script to Pine v6',
+validate: '✓ Validate Pine v6 conformance'
+};
+appendMessage(labels[act] || ('Action: ' + act), 'user');
+appendLog('QUICK ACTION: ' + act);
+if (vscode) {
+  vscode.postMessage({ type: 'quickAction', action: act });
+}
+}
+
+function copyToClipboard(text){
+if (!text) return;
+if (navigator.clipboard && navigator.clipboard.writeText) {
+  navigator.clipboard.writeText(text).catch(function(){ fallbackCopy(text); });
+} else {
+  fallbackCopy(text);
+}
+}
+function fallbackCopy(text){
+var ta = document.createElement('textarea');
+ta.value = text;
+ta.style.position = 'fixed';
+ta.style.opacity = '0';
+document.body.appendChild(ta);
+ta.select();
+try { document.execCommand('copy'); } catch(e){}
+document.body.removeChild(ta);
+}
+
+function copyLog(){
+if (fullLogStream) copyToClipboard(fullLogStream.innerText || fullLogStream.textContent || '');
+}
+
 function clearChat(){
-chatFlow.innerHTML = '<div class="msg bot">Chat cleared. Ready for your Pine Script v6 requests.</div>';
-fullLogStream.innerText = 'Log cleared.\\n';
+if (chatFlow) chatFlow.innerHTML = '<div class="msg bot">Chat cleared. Ready for your Pine Script v6 requests.</div>';
+if (fullLogStream) fullLogStream.innerText = 'Log cleared.\\n';
 }
+
 function appendLog(text){
-fullLogStream.innerText += text + '\\n';
-logFlow.scrollTop = logFlow.scrollHeight;
+if (fullLogStream) fullLogStream.innerText += text + '\\n';
+if (logFlow) logFlow.scrollTop = logFlow.scrollHeight;
 }
+
 function appendMessage(c, t, trans){
 var d = document.createElement('div');
 d.className = 'msg ' + t;
@@ -365,10 +506,13 @@ html += '</div></details>';
 }
 html += renderMarkdown(c);
 d.innerHTML = html;
-chatFlow.appendChild(d);
-chatFlow.scrollTop = chatFlow.scrollHeight;
+if (chatFlow) {
+  chatFlow.appendChild(d);
+  chatFlow.scrollTop = chatFlow.scrollHeight;
+}
 return d;
 }
+
 function renderMarkdown(src){
 if (!src) return '';
 var codeBlocks = [];
@@ -425,61 +569,150 @@ return codeBlocks[parseInt(i, 10)];
 return text;
 }
 
-document.getElementById('modelTag').addEventListener('click', toggleSettings);
-document.getElementById('btnSettingsToggle').addEventListener('click', toggleSettings);
-document.getElementById('btnClearChat').addEventListener('click', clearChat);
-document.getElementById('btnSaveSettings').addEventListener('click', saveSettings);
-document.getElementById('btnVSCodeSettings').addEventListener('click', function(){ vscode.postMessage({ type: 'openVSCodeSettings' }); });
-document.getElementById('tabChatBtn').addEventListener('click', function(){ switchTab('chat'); });
-document.getElementById('tabLogBtn').addEventListener('click', function(){ switchTab('logs'); });
-document.getElementById('btnCopyLog').addEventListener('click', function(){ navigator.clipboard.writeText(fullLogStream.innerText); });
-document.getElementById('sendBtn').addEventListener('click', submitPrompt);
-document.getElementById('cfgModelSelect').addEventListener('change', function(e){ if (e.target.value) document.getElementById('cfgModelCustom').value = e.target.value; });
-promptInput.addEventListener('keydown', function(e){ if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitPrompt(); } });
+document.addEventListener('click', function(e){
+var target = (e.target && e.target.nodeType === 3) ? e.target.parentElement : e.target;
+if (!target || typeof target.closest !== 'function') return;
 
-var chips = document.querySelectorAll('.chip');
-for (var i = 0; i < chips.length; i++) {
-(function(btn){
-btn.addEventListener('click', function(){ vscode.postMessage({ type: 'quickAction', action: btn.getAttribute('data-action') }); });
-})(chips[i]);
+var chip = target.closest('.chip');
+if (chip) {
+var act = chip.getAttribute('data-action');
+if (act) quickAction(act);
+return;
 }
 
-chatFlow.addEventListener('click', function(e){
-var applyBtn = e.target.closest('.btn-apply'), insertBtn = e.target.closest('.btn-insert'), copyBtn = e.target.closest('.btn-copy');
+if (target.closest('#sendBtn')) {
+submitPrompt();
+return;
+}
+if (target.closest('#modelTag') || target.closest('#btnSettingsToggle')) {
+toggleSettings();
+return;
+}
+if (target.closest('#btnClearChat')) {
+clearChat();
+return;
+}
+if (target.closest('#btnSaveSettings')) {
+saveSettings();
+return;
+}
+if (target.closest('#btnVSCodeSettings')) {
+openVSCodeSettings();
+return;
+}
+if (target.closest('#tabChatBtn')) {
+switchTab('chat');
+return;
+}
+if (target.closest('#tabLogBtn')) {
+switchTab('logs');
+return;
+}
+if (target.closest('#btnCopyLog')) {
+copyLog();
+return;
+}
+
+var applyBtn = target.closest('.btn-apply');
 if (applyBtn) {
-var code = applyBtn.closest('pre').querySelector('code').innerText;
-vscode.postMessage({ type: 'applyCode', code: code, mode: 'replace' });
-} else if (insertBtn) {
-var code = insertBtn.closest('pre').querySelector('code').innerText;
-vscode.postMessage({ type: 'applyCode', code: code, mode: 'insert' });
-} else if (copyBtn) {
-navigator.clipboard.writeText(copyBtn.closest('pre').querySelector('code').innerText);
+var pre = applyBtn.closest('.code-container').querySelector('code');
+if (pre && vscode) vscode.postMessage({ type: 'applyCode', code: pre.textContent || pre.innerText, mode: 'replace' });
+return;
+}
+var insertBtn = target.closest('.btn-insert');
+if (insertBtn) {
+var pre = insertBtn.closest('.code-container').querySelector('code');
+if (pre && vscode) vscode.postMessage({ type: 'applyCode', code: pre.textContent || pre.innerText, mode: 'insert' });
+return;
+}
+var copyBtn = target.closest('.btn-copy');
+if (copyBtn) {
+var pre = copyBtn.closest('.code-container').querySelector('code');
+if (pre) {
+copyToClipboard(pre.textContent || pre.innerText);
 copyBtn.innerText = 'Copied!';
 setTimeout(function(){ copyBtn.innerText = 'Copy'; }, 1500);
 }
+return;
+}
 });
+
+function wireEvents(){
+var btnSettings = document.getElementById('btnSettingsToggle');
+if (btnSettings) btnSettings.addEventListener('click', toggleSettings);
+var modelTag = document.getElementById('modelTag');
+if (modelTag) modelTag.addEventListener('click', toggleSettings);
+var btnClear = document.getElementById('btnClearChat');
+if (btnClear) btnClear.addEventListener('click', clearChat);
+var sendBtn = document.getElementById('sendBtn');
+if (sendBtn) sendBtn.addEventListener('click', submitPrompt);
+var btnSave = document.getElementById('btnSaveSettings');
+if (btnSave) btnSave.addEventListener('click', saveSettings);
+var btnVSCode = document.getElementById('btnVSCodeSettings');
+if (btnVSCode) btnVSCode.addEventListener('click', openVSCodeSettings);
+var tabChat = document.getElementById('tabChatBtn');
+if (tabChat) tabChat.addEventListener('click', function(){ switchTab('chat'); });
+var tabLog = document.getElementById('tabLogBtn');
+if (tabLog) tabLog.addEventListener('click', function(){ switchTab('logs'); });
+var btnCopy = document.getElementById('btnCopyLog');
+if (btnCopy) btnCopy.addEventListener('click', copyLog);
+var chips = document.querySelectorAll('.chip');
+chips.forEach(function(c){
+c.addEventListener('click', function(){
+var act = c.getAttribute('data-action');
+if (act) quickAction(act);
+});
+});
+}
+wireEvents();
+
+document.addEventListener('keydown', function(e){
+if (e.target && e.target.id === 'promptInput') {
+if (e.key === 'Enter' && !e.shiftKey) {
+e.preventDefault();
+submitPrompt();
+}
+}
+});
+
+var cfgSelect = document.getElementById('cfgModelSelect');
+if (cfgSelect) {
+cfgSelect.addEventListener('change', function(e){ if (e.target.value) document.getElementById('cfgModelCustom').value = e.target.value; });
+}
 
 window.addEventListener('message', function(e){
 var m = e.data;
 if (!m) return;
 if (m.type === 'statusUpdate') {
-document.getElementById('modelName').innerText = m.connected ? (m.model || 'Connected') : 'Disconnected';
-document.getElementById('statusDot').className = 'dot ' + (m.connected ? 'online' : '');
-document.getElementById('activeFileLabel').innerText = m.activeFile || 'No active file';
-document.getElementById('cfgHost').value = m.host || 'http://localhost:11434';
-document.getElementById('cfgModelCustom').value = m.model || '';
-document.getElementById('cfgTemp').value = m.temperature !== undefined ? m.temperature : 0;
-document.getElementById('cfgMaxIter').value = m.maxIterations || 12;
-document.getElementById('cfgAutoRepair').checked = Boolean(m.autoRepair);
+var modelNameEl = document.getElementById('modelName');
+var statusDotEl = document.getElementById('statusDot');
+var activeFileEl = document.getElementById('activeFileLabel');
+var cfgHostEl = document.getElementById('cfgHost');
+var cfgModelEl = document.getElementById('cfgModelCustom');
+var cfgTempEl = document.getElementById('cfgTemp');
+var cfgMaxIterEl = document.getElementById('cfgMaxIter');
+var cfgAutoRepairEl = document.getElementById('cfgAutoRepair');
 var sel = document.getElementById('cfgModelSelect');
-sel.innerHTML = '';
-var list = m.models && m.models.length > 0 ? m.models : [m.model].filter(Boolean);
-list.forEach(function(item){
-var opt = document.createElement('option');
-opt.value = item; opt.innerText = item;
-if (item === m.model) opt.selected = true;
-sel.appendChild(opt);
-});
+
+if (modelNameEl) modelNameEl.innerText = m.connected ? (m.model || 'Connected') : 'Disconnected';
+if (statusDotEl) statusDotEl.className = 'dot ' + (m.connected ? 'online' : '');
+if (activeFileEl) activeFileEl.innerText = m.activeFile || 'No active file';
+if (cfgHostEl) cfgHostEl.value = m.host || 'http://localhost:11434';
+if (cfgModelEl) cfgModelEl.value = m.model || '';
+if (cfgTempEl) cfgTempEl.value = m.temperature !== undefined ? m.temperature : 0;
+if (cfgMaxIterEl) cfgMaxIterEl.value = m.maxIterations || 12;
+if (cfgAutoRepairEl) cfgAutoRepairEl.checked = Boolean(m.autoRepair);
+
+if (sel) {
+  sel.innerHTML = '';
+  var list = m.models && m.models.length > 0 ? m.models : [m.model].filter(Boolean);
+  list.forEach(function(item){
+    var opt = document.createElement('option');
+    opt.value = item; opt.innerText = item;
+    if (item === m.model) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
 } else if (m.type === 'startStreaming') {
 streamBuffer = ''; currentTranscript = [];
 activeBotMsg = document.createElement('div'); activeBotMsg.className = 'msg bot';
@@ -487,7 +720,10 @@ activeStreamHeader = document.createElement('div'); activeStreamHeader.className
 activeStreamHeader.innerHTML = '<span class="pulse-dot"></span><span>Thinking...</span>';
 activeStreamBody = document.createElement('div'); activeStreamBody.className = 'stream-body';
 activeBotMsg.appendChild(activeStreamHeader); activeBotMsg.appendChild(activeStreamBody);
-chatFlow.appendChild(activeBotMsg); chatFlow.scrollTop = chatFlow.scrollHeight;
+if (chatFlow) {
+  chatFlow.appendChild(activeBotMsg);
+  chatFlow.scrollTop = chatFlow.scrollHeight;
+}
 } else if (m.type === 'progress') {
 currentTranscript = m.transcript || [];
 if (m.step && m.step.state === 'RESET_STREAM') {
@@ -499,7 +735,10 @@ if (activeStreamHeader) { activeStreamHeader.innerHTML = '<span class="pulse-dot
 }
 } else if (m.type === 'streamChunk') {
 streamBuffer += m.chunk;
-if (activeStreamBody) { activeStreamBody.innerHTML = renderMarkdown(streamBuffer); chatFlow.scrollTop = chatFlow.scrollHeight; }
+if (activeStreamBody) {
+  activeStreamBody.innerHTML = renderMarkdown(streamBuffer);
+  if (chatFlow) chatFlow.scrollTop = chatFlow.scrollHeight;
+}
 } else if (m.type === 'streamEnd' || m.type === 'botResponse') {
 var trans = m.transcript || currentTranscript, content = m.content || streamBuffer;
 if (activeBotMsg) { activeBotMsg.remove(); activeBotMsg = null; activeStreamBody = null; activeStreamHeader = null; }
@@ -515,8 +754,10 @@ currentTranscript = []; streamBuffer = '';
 }
 });
 
-vscode.postMessage({ type: 'webviewReady' });
-setInterval(function(){ vscode.postMessage({ type: 'refreshStatus' }); }, 5000);
+if (vscode) {
+  vscode.postMessage({ type: 'webviewReady' });
+  setInterval(function(){ vscode.postMessage({ type: 'refreshStatus' }); }, 5000);
+}
 } catch(err) {
 console.error('PineForge UI error:', err);
 }
