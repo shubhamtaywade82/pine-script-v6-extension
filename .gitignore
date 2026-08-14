@@ -1,6 +1,1 @@
-```yaml
-# GitHub workflow artifacts
-.github/workflows/ci.yml
-.github/workflows/prerelease.yml
-.github/workflows/publish.yml
-```
+Nothing needs to be added to the .gitignore file since the changes only include GitHub workflow configuration files (`.github/workflows/ci.yml`, `.github/workflows/prerelease.yml`, `.github/workflows/publish.yml`), which are source/config files and not build artifacts, dependencies, or temporary files.
