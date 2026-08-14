@@ -8,20 +8,20 @@ A VS Code / Cursor extension for [TradingView Pine Script v6](https://www.tradin
 
 ### Option 1: Download and double-click
 
-1. Download **[`INSTALL-ME.vsix`](./INSTALL-ME.vsix)** from this repo
+1. Download **[`pinescriptv6.vsix`](./pinescriptv6.vsix)** from this repo
 2. Open VS Code or Cursor
 3. `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac) > **"Extensions: Install from VSIX..."**
-4. Select the downloaded `INSTALL-ME.vsix` file
+4. Select the downloaded `pinescriptv6.vsix` file
 5. Reload the editor
 
 ### Option 2: Command line
 
 ```bash
 # VS Code
-code --install-extension INSTALL-ME.vsix
+code --install-extension pinescriptv6.vsix
 
 # Cursor
-cursor --install-extension INSTALL-ME.vsix
+cursor --install-extension pinescriptv6.vsix
 ```
 
 ### Option 3: Build from source
@@ -113,7 +113,7 @@ In addition to local static analysis, the extension sends your code to TradingVi
 
 ```
 .
-├── INSTALL-ME.vsix                    <-- GRAB THIS TO INSTALL
+├── pinescriptv6.vsix                  <-- GRAB THIS TO INSTALL
 ├── README.md
 ├── package.json                        Extension manifest
 ├── src/

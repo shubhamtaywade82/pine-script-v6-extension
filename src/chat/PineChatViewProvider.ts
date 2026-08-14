@@ -80,7 +80,15 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
       const agent = PineAgentController.getInstance().getAgent()
       const client = agent.getClient()
       const tools = agent.getOllamaTools()
-      const systemPrompt = 'You are PineForge AI, expert in TradingView Pine Script v6. Always use v6 syntax (@version=6). Provide clean, type-safe, optimized code. Explain key changes clearly.'
+      const systemPrompt = 'You are PineForge AI, expert TradingView Pine Script v6 engineering assistant.\\n' +
+        'Rules:\\n' +
+        '1. Always use Pine Script v6 syntax (@version=6) with indicator() or strategy() declaration.\\n' +
+        '2. NEVER use semicolons (;) at line endings. Pine Script uses indentation and newlines.\\n' +
+        '3. Use standard Pine v6 inputs: input.int(), input.float(), input.bool(), input.string(), input.color().\\n' +
+        '4. User-defined types use: type TypeName\\n    float field1\\n    int field2 (never use struct or C-syntax).\\n' +
+        '5. Use standard plotting functions: plot(), plotshape(), plotchar(), line.new(), box.new(), label.new().\\n' +
+        '6. For collections use: array.new<float>(), matrix.new<float>(), map.new<string, float>().\\n' +
+        '7. Never invent fake APIs. Output valid, complete, copy-pasteable Pine Script v6 code in ```pine code blocks.'
       
       let userMsg = prompt
       if (fileContent) {
@@ -135,9 +143,9 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
 
     const prompts: Record<string, string> = {
       explain: 'Explain the logic, indicators, and structure of this Pine Script v6 file in detail.',
-      fix: 'Diagnose syntax errors, repainting issues, and runtime na bugs in this script and provide the corrected script.',
-      optimize: 'Optimize this Pine Script v6 code for performance, calculation caching, and memory efficiency.',
-      migrate: 'Migrate this Pine Script code to Pine Script v6 standard syntax, utilizing new v6 features.',
+      fix: 'Diagnose syntax errors, repainting issues, and runtime na bugs in this script and provide the corrected Pine Script v6 code.',
+      optimize: 'Optimize this Pine Script v6 code for calculation performance, memory efficiency, and caching while maintaining exact TradingView Pine Script v6 syntax. Provide the full valid v6 script.',
+      migrate: 'Migrate this Pine Script code to Pine Script v6 standard syntax, utilizing new v6 features. Provide the full valid v6 script.',
     }
 
     const promptText = prompts[action] ?? `Execute ${action} on the current script.`
