@@ -47,8 +47,11 @@
     "test:coverage": "vitest run --coverage",
     "compile-tests": "pnpm run tsc -p . --outDir out",
     "watch-tests": "pnpm run tsc -p . -w --outDir out",
-    "lint": "pnpm run eslint src --ext ts",
-    "vsce-package": "vsce package -o pinescriptv6.vsix"
+    "lint": "eslint src --ext ts",
+    "lint:fix": "eslint src --ext ts --fix",
+    "type-check": "tsc --noEmit -p tsconfig.json",
+    "vsce-package": "vsce package -o pinescriptv6.vsix",
+    "package": "vsce package -o pinescriptv6.vsix"
   },
   "main": "./dist/extension.js",
   "contributes": {
