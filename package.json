@@ -47,8 +47,11 @@
     "test:coverage": "vitest run --coverage",
     "compile-tests": "pnpm run tsc -p . --outDir out",
     "watch-tests": "pnpm run tsc -p . -w --outDir out",
-    "lint": "pnpm run eslint src --ext ts",
-    "vsce-package": "vsce package -o pinescriptv6.vsix"
+    "lint": "eslint src --ext ts",
+    "lint:fix": "eslint src --ext ts --fix",
+    "type-check": "tsc --noEmit -p tsconfig.json",
+    "vsce-package": "vsce package --no-dependencies -o pinescriptv6.vsix",
+    "package": "vsce package --no-dependencies -o pinescriptv6.vsix"
   },
   "main": "./dist/extension.js",
   "contributes": {
@@ -359,6 +362,7 @@
     "@typescript-eslint/parser": "^7.0.0",
     "@vitest/coverage-v8": "^4.1.2",
     "@vscode/vsce": "^3.1.0",
+    "ovsx": "^0.8.3",
     "eslint": "^8.56.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^18.0.0",
