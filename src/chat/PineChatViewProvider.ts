@@ -428,8 +428,13 @@ activeBotMsg.appendChild(activeStreamHeader); activeBotMsg.appendChild(activeStr
 chatFlow.appendChild(activeBotMsg); chatFlow.scrollTop = chatFlow.scrollHeight;
 } else if (m.type === 'progress') {
 currentTranscript = m.transcript || [];
+if (m.step && m.step.state === 'RESET_STREAM') {
+streamBuffer = '';
+if (activeStreamBody) { activeStreamBody.innerHTML = ''; }
+} else {
 appendLog('[' + m.step.time + '] [' + m.step.state + '] ' + m.step.message);
 if (activeStreamHeader) { activeStreamHeader.innerHTML = '<span class="pulse-dot"></span><span>[' + m.step.state + '] ' + m.step.message + '</span>'; }
+}
 } else if (m.type === 'streamChunk') {
 streamBuffer += m.chunk;
 if (activeStreamBody) { activeStreamBody.innerHTML = renderMarkdown(streamBuffer); chatFlow.scrollTop = chatFlow.scrollHeight; }

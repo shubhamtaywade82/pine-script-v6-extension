@@ -302,23 +302,74 @@ export class OllamaClient {
     while (iteration < this.config.maxIterations) {
       onProgress?.('THINKING', `Iteration ${iteration + 1}...`)
 
-      const response = await this.chat(messages, tools.length > 0 ? tools : undefined, onStream)
+      let iterationStream = ''
+      const streamCallback = onStream ? (chunk: string) => {
+        iterationStream += chunk
+        onStream(chunk)
+      } : undefined
+
+      const response = await this.chat(messages, tools.length > 0 ? tools : undefined, streamCallback)
       if (!response.message) {
         throw new Error('Received empty message from Ollama')
+      }
+
+      // Check if model returned a text-based JSON tool call instead of structured tool_calls
+      if (!response.message.tool_calls || response.message.tool_calls.length === 0) {
+        const textTool = this.extractTextToolCall(response.message.content || iterationStream)
+        if (textTool) {
+          response.message.tool_calls = [textTool]
+        }
       }
 
       messages.push(response.message)
 
       if (!response.message.tool_calls || response.message.tool_calls.length === 0) {
-        finalResponse = response.message.content || ''
+        finalResponse = response.message.content || iterationStream || ''
         break
       }
+
+      // Intermediate tool-calling iteration: reset streamed text buffer for the upcoming answer
+      onProgress?.('RESET_STREAM', 'Tool call dispatched.')
 
       await this.runToolCalls(response.message.tool_calls, messages, executeTool, onProgress)
       iteration++
     }
 
     return finalResponse || messages[messages.length - 1]?.content || ''
+  }
+
+  private extractTextToolCall(content: string | undefined): OllamaToolCall | null {
+    if (!content) return null
+    const trimmed = content.trim()
+    let jsonStr = ''
+    if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+      jsonStr = trimmed
+    } else {
+      const match = trimmed.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/)
+      if (match) {
+        jsonStr = match[1]
+      }
+    }
+    if (jsonStr) {
+      try {
+        const obj = JSON.parse(jsonStr) as Record<string, unknown>
+        const name = (obj.name || obj.tool || obj.function) as string | undefined
+        const params = obj.parameters || obj.arguments || obj.args
+        if (name && typeof name === 'string' && typeof params === 'object') {
+          return {
+            id: `call_${Date.now()}`,
+            type: 'function',
+            function: {
+              name,
+              arguments: JSON.stringify(params),
+            },
+          }
+        }
+      } catch {
+        // Not a valid JSON tool call
+      }
+    }
+    return null
   }
 
   private async runToolCalls(
