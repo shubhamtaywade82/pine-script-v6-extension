@@ -44,7 +44,7 @@ code --install-extension pinescriptv6.vsix
 Catches errors **instantly** without calling the TradingView API:
 
 | Detection | Severity | Example |
-|-----------|----------|---------|
+| --- | --- | --- |
 | **Array index out of bounds** | Error | `a = array.from(1,2,3)` then `array.get(a, 5)` |
 | **Negative index out of bounds** | Error | `array.get(a, -4)` on a size-3 array |
 | **Off-by-one with array.size()** | Error | `array.get(a, array.size(a))` — should be `size - 1` |
@@ -111,7 +111,7 @@ In addition to local static analysis, the extension sends your code to TradingVi
 
 ## Repo Structure
 
-```
+```text
 .
 ├── pinescriptv6.vsix                  <-- GRAB THIS TO INSTALL
 ├── README.md
@@ -181,7 +181,7 @@ pnpm run vsce-package
 ## Supported File Types
 
 | Extension | Language ID |
-|-----------|------------|
+| --- | --- |
 | `.pine` | pine |
 | `.ps` | pine |
 | `.pinescript` | pine |
