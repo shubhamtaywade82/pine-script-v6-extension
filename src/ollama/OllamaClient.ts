@@ -91,7 +91,7 @@ export class OllamaClient {
     try {
       const response = await fetch(`${this.config.host}/api/tags`)
       const data = (await response.json()) as { models?: Array<{ name: string }> }
-      return data.models?.map((m: any) => m.name) ?? []
+      return data.models?.map(m => m.name) ?? []
     } catch {
       return []
     }
@@ -105,89 +105,135 @@ export class OllamaClient {
     tools?: OllamaTool[],
     onStream?: (chunk: string) => void,
   ): Promise<OllamaResponse> {
-    const response = await fetch(`${this.config.host}/v1/chat/completions`, {
+    const payload: Record<string, unknown> = {
+      model: this.config.model,
+      messages,
+      stream: Boolean(onStream),
+      options: { temperature: this.config.temperature },
+    }
+    if (tools && tools.length > 0) {
+      payload.tools = tools
+    }
+
+    const response = await fetch(`${this.config.host}/api/chat`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: this.config.model,
-        messages,
-        tools,
-        stream: !!onStream,
-        temperature: this.config.temperature,
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
     })
 
     if (!response.ok) {
-      throw new Error(`Ollama error: ${response.status} ${response.statusText}`)
+      const errText = await response.text().catch(() => '')
+      throw new Error(`Ollama error ${response.status}: ${response.statusText}${errText ? ` - ${errText}` : ''}`)
     }
 
     if (onStream && response.body) {
       return this.handleStreaming(response.body, onStream)
     }
 
-    return response.json() as Promise<OllamaResponse>
+    return this.parseJsonResponse(await response.json())
   }
 
-  /**
-   * Handle streaming response
-   */
+  private parseJsonResponse(raw: unknown): OllamaResponse {
+    const data = (raw && typeof raw === 'object') ? (raw as Record<string, unknown>) : {}
+    const rawMsg = (data.message ?? (data.choices as Array<{ message?: unknown }> | undefined)?.[0]?.message) as
+      | Record<string, unknown>
+      | undefined
+
+    const content = typeof rawMsg?.content === 'string'
+      ? rawMsg.content
+      : (typeof data.response === 'string' ? data.response : '')
+    const role = (rawMsg?.role === 'system' || rawMsg?.role === 'user' || rawMsg?.role === 'tool')
+      ? rawMsg.role
+      : 'assistant'
+
+    const rawTools = rawMsg?.tool_calls ?? data.tool_calls
+    const toolCalls = this.normalizeToolCalls(rawTools)
+
+    return {
+      model: typeof data.model === 'string' ? data.model : this.config.model,
+      created_at: typeof data.created_at === 'string' ? data.created_at : new Date().toISOString(),
+      message: {
+        role,
+        content,
+        tool_calls: toolCalls.length > 0 ? toolCalls : undefined,
+      },
+      done: typeof data.done === 'boolean' ? data.done : true,
+    }
+  }
+
+  private normalizeToolCalls(rawTools: unknown): OllamaToolCall[] {
+    if (!Array.isArray(rawTools)) {
+      return []
+    }
+    return rawTools.map((tc: Record<string, unknown>, idx: number) => {
+      const fn = ((tc.function && typeof tc.function === 'object') ? tc.function : tc) as Record<string, unknown>
+      const name = typeof fn.name === 'string' ? fn.name : ''
+      const rawArgs = fn.arguments
+      const args = typeof rawArgs === 'string' ? rawArgs : JSON.stringify(rawArgs ?? {})
+      return {
+        id: typeof tc.id === 'string' ? tc.id : `call_${idx}_${Date.now()}`,
+        type: 'function' as const,
+        function: { name, arguments: args },
+      }
+    })
+  }
+
   private async handleStreaming(
-    body: any,
+    body: unknown,
     onStream: (chunk: string) => void,
   ): Promise<OllamaResponse> {
-    const reader = body.getReader()
+    const reader = (body as { getReader: () => ReadableStreamDefaultReader<Uint8Array> }).getReader()
     const decoder = new TextDecoder()
     let fullContent = ''
-    let toolCalls: OllamaToolCall[] = []
-    let lastMessage: OllamaResponse | null = null
+    const toolCalls: OllamaToolCall[] = []
 
     while (true) {
       const { done, value } = await reader.read()
       if (done) {break}
+      const chunk = decoder.decode(value, { stream: true })
+      const text = this.processStreamChunk(chunk, onStream, toolCalls)
+      fullContent += text
+    }
 
-      const chunk = decoder.decode(value)
-      const lines = chunk.split('\n').filter(line => line.trim())
+    return {
+      model: this.config.model,
+      created_at: new Date().toISOString(),
+      message: {
+        role: 'assistant',
+        content: fullContent,
+        tool_calls: toolCalls.length > 0 ? toolCalls : undefined,
+      },
+      done: true,
+    }
+  }
 
-      for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          const data = line.slice(6)
-          if (data === '[DONE]') {continue}
-
-          try {
-            const parsed: OllamaStreamChunk = JSON.parse(data)
-            if (parsed.message.content) {
-              fullContent += parsed.message.content
-              onStream(parsed.message.content)
-            }
-            if (parsed.message.tool_calls) {
-              toolCalls = [...toolCalls, ...parsed.message.tool_calls]
-            }
-            if (parsed.done) {
-              lastMessage = {
-                model: parsed.model,
-                created_at: parsed.created_at,
-                message: {
-                  role: 'assistant',
-                  content: fullContent,
-                  tool_calls: toolCalls.length > 0 ? toolCalls : undefined,
-                },
-                done: true,
-              }
-            }
-          } catch {
-            // Skip invalid JSON
-          }
+  private processStreamChunk(
+    chunk: string,
+    onStream: (c: string) => void,
+    toolCalls: OllamaToolCall[],
+  ): string {
+    let text = ''
+    const lines = chunk.split('\n').filter(l => l.trim().length > 0)
+    for (const line of lines) {
+      const trimmed = line.trim()
+      if (trimmed === 'data: [DONE]') {continue}
+      const dataStr = trimmed.startsWith('data: ') ? trimmed.slice(6).trim() : trimmed
+      try {
+        const parsed = JSON.parse(dataStr) as Record<string, unknown>
+        const msg = parsed.message as Record<string, unknown> | undefined
+        const delta = (parsed.choices as Array<{ delta?: Record<string, unknown> }> | undefined)?.[0]?.delta
+        const content = typeof msg?.content === 'string' ? msg.content : (typeof delta?.content === 'string' ? delta.content : '')
+        if (content) {
+          text += content
+          onStream(content)
         }
+        const chunkTools = this.normalizeToolCalls(msg?.tool_calls ?? delta?.tool_calls)
+        toolCalls.push(...chunkTools)
+      } catch {
+        // Skip malformed chunk
       }
     }
-
-    if (!lastMessage) {
-      throw new Error('No response from Ollama')
-    }
-
-    return lastMessage
+    return text
   }
 
   /**
@@ -197,7 +243,7 @@ export class OllamaClient {
     systemPrompt: string,
     userMessage: string,
     tools: OllamaTool[],
-    executeTool: (name: string, args: any) => Promise<any>,
+    executeTool: (name: string, args: Record<string, unknown>) => Promise<unknown>,
     onProgress?: (state: string, message: string) => void,
   ): Promise<string> {
     const messages: OllamaMessage[] = [
@@ -211,42 +257,59 @@ export class OllamaClient {
     while (iteration < this.config.maxIterations) {
       onProgress?.('THINKING', `Iteration ${iteration + 1}...`)
 
-      const response = await this.chat(messages, tools)
+      const response = await this.chat(messages, tools.length > 0 ? tools : undefined)
+      if (!response.message) {
+        throw new Error('Received empty message from Ollama')
+      }
+
       messages.push(response.message)
 
       if (!response.message.tool_calls || response.message.tool_calls.length === 0) {
-        finalResponse = response.message.content
+        finalResponse = response.message.content || ''
         break
       }
 
-      for (const toolCall of response.message.tool_calls) {
-        const { name, arguments: argsStr } = toolCall.function
-        const args = JSON.parse(argsStr)
-
-        onProgress?.('TOOL', `Executing ${name}...`)
-
-        try {
-          const result = await executeTool(name, args)
-          messages.push({
-            role: 'tool',
-            tool_call_id: toolCall.id,
-            name,
-            content: typeof result === 'string' ? result : JSON.stringify(result),
-          })
-        } catch (error: any) {
-          messages.push({
-            role: 'tool',
-            tool_call_id: toolCall.id,
-            name,
-            content: `Error executing ${name}: ${error.message}`,
-          })
-        }
-      }
-
+      await this.runToolCalls(response.message.tool_calls, messages, executeTool, onProgress)
       iteration++
     }
 
-    return finalResponse
+    return finalResponse || messages[messages.length - 1]?.content || ''
+  }
+
+  private async runToolCalls(
+    toolCalls: OllamaToolCall[],
+    messages: OllamaMessage[],
+    executeTool: (name: string, args: Record<string, unknown>) => Promise<unknown>,
+    onProgress?: (state: string, message: string) => void,
+  ): Promise<void> {
+    for (const toolCall of toolCalls) {
+      const name = toolCall.function.name
+      let args: Record<string, unknown> = {}
+      try {
+        args = JSON.parse(toolCall.function.arguments || '{}') as Record<string, unknown>
+      } catch {
+        args = {}
+      }
+
+      onProgress?.('TOOL', `Executing ${name}...`)
+      try {
+        const result = await executeTool(name, args)
+        messages.push({
+          role: 'tool',
+          tool_call_id: toolCall.id,
+          name,
+          content: typeof result === 'string' ? result : JSON.stringify(result),
+        })
+      } catch (err: unknown) {
+        const errorMsg = err instanceof Error ? err.message : String(err)
+        messages.push({
+          role: 'tool',
+          tool_call_id: toolCall.id,
+          name,
+          content: `Error executing ${name}: ${errorMsg}`,
+        })
+      }
+    }
   }
 
   updateConfig(config: Partial<OllamaConfig>): void {
