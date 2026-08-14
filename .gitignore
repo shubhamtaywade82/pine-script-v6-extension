@@ -4,3 +4,5 @@
 .github/workflows/prerelease.yml
 .github/workflows/publish.yml
 ```
+node_modules
+dist

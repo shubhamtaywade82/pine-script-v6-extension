@@ -101,7 +101,7 @@ export class PineLint {
   }
 
   static applyLocalDiagnostics(localDiags: import('./PineStaticAnalyzer').AnalyzerDiagnostic[]): void {
-    if (localDiags.length === 0) return
+    if (localDiags.length === 0) {return}
     const vsDiags = localDiags.map(d => {
       const range = new vscode.Range(d.line - 1, d.column - 1, d.line - 1, d.endColumn - 1)
       const severity = d.severity === 'error'
@@ -151,9 +151,9 @@ export class PineLint {
         const range = new vscode.Range(start.line - 1, start.column - 1, end.line - 1, end.column)
 
         let severity: vscode.DiagnosticSeverity
-        if (i == 1 || i == 3) {
+        if (i === 1 || i === 3) {
           severity = vscode.DiagnosticSeverity.Error
-        } else if (i == 2 || i == 4) {
+        } else if (i === 2 || i === 4) {
           severity = vscode.DiagnosticSeverity.Warning
         } else {
           severity = vscode.DiagnosticSeverity.Information
