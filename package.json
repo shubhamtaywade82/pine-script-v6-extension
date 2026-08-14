@@ -62,7 +62,7 @@
   "main": "./dist/extension.js",
   "contributes": {
     "viewsContainers": {
-      "activitybar": [
+      "secondarySidebar": [
         {
           "id": "pineforge-sidebar-view",
           "title": "PineForge AI",
