@@ -33,9 +33,6 @@
     "TradingView",
     "TradingView.com"
   ],
-  "activationEvents": [
-    "onLanguage:pine"
-  ],
   "icon": "media/PineLogo.png",
   "capabilities": {
     "untrustedWorkspaces": {
