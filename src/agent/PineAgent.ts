@@ -11,6 +11,7 @@ import { PineTool, PineToolResult } from '../tools/PineTool'
 export interface PineAgentConfig {
   ollamaHost?: string
   model?: string
+  temperature?: number
   maxIterations?: number
   autoRepair?: boolean
 }
@@ -36,6 +37,7 @@ export class PineAgent {
     this.client = new OllamaClient({
       host: config.ollamaHost ?? 'http://localhost:11434',
       model: config.model ?? 'qwen3',
+      temperature: config.temperature ?? 0,
       maxIterations: config.maxIterations ?? 12,
     })
     this.state = new PineAgentState(config.maxIterations ?? 12)

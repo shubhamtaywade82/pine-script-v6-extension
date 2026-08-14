@@ -62,6 +62,24 @@
   },
   "main": "./dist/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "pineforge-sidebar-view",
+          "title": "PineForge AI",
+          "icon": "media/PineIconMini.png"
+        }
+      ]
+    },
+    "views": {
+      "pineforge-sidebar-view": [
+        {
+          "type": "webview",
+          "id": "pineforge.chatView",
+          "name": "PineForge Assistant"
+        }
+      ]
+    },
     "themes": [
       {
         "label": "Pine-*Preferred",
@@ -197,6 +215,11 @@
           "default": "qwen2.5-coder:7b",
           "description": "Default Ollama model to use for PineForge AI Agent"
         },
+        "pineForge.ollama.temperature": {
+          "type": "number",
+          "default": 0,
+          "description": "Sampling temperature for Ollama generation (0.0 = deterministic)"
+        },
         "pineForge.agent.maxIterations": {
           "type": "number",
           "default": 12,
@@ -263,6 +286,11 @@
       }
     ],
     "commands": [
+      {
+        "command": "pineforge.openChat",
+        "title": "PineForge: Open AI Chat Sidebar",
+        "category": "PineForge"
+      },
       {
         "command": "pineforge.showStatusDetails",
         "title": "PineForge: Show Status Panel",

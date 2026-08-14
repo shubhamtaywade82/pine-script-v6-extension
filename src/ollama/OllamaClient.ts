@@ -72,12 +72,25 @@ export class OllamaClient {
     }
   }
 
+  private async fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs = 1500): Promise<Response> {
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), timeoutMs)
+    try {
+      const response = await fetch(url, { ...options, signal: controller.signal })
+      clearTimeout(timer)
+      return response
+    } catch (err) {
+      clearTimeout(timer)
+      throw err
+    }
+  }
+
   /**
    * Check if Ollama server is running
    */
   async healthCheck(): Promise<boolean> {
     try {
-      const response = await fetch(`${this.config.host}/api/tags`)
+      const response = await this.fetchWithTimeout(`${this.config.host}/api/tags`)
       return response.ok
     } catch {
       return false
@@ -89,7 +102,7 @@ export class OllamaClient {
    */
   async getModels(): Promise<string[]> {
     try {
-      const response = await fetch(`${this.config.host}/api/tags`)
+      const response = await this.fetchWithTimeout(`${this.config.host}/api/tags`)
       const data = (await response.json()) as { models?: Array<{ name: string }> }
       return data.models?.map(m => m.name) ?? []
     } catch {
@@ -107,7 +120,7 @@ export class OllamaClient {
   ): Promise<OllamaResponse> {
     const payload: Record<string, unknown> = {
       model: this.config.model,
-      messages,
+      messages: this.sanitizeMessages(messages),
       stream: Boolean(onStream),
       options: { temperature: this.config.temperature },
     }
@@ -115,11 +128,20 @@ export class OllamaClient {
       payload.tools = tools
     }
 
-    const response = await fetch(`${this.config.host}/api/chat`, {
+    let response = await fetch(`${this.config.host}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
+
+    if (!response.ok && response.status === 400 && payload.tools) {
+      delete payload.tools
+      response = await fetch(`${this.config.host}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+    }
 
     if (!response.ok) {
       const errText = await response.text().catch(() => '')
@@ -131,6 +153,28 @@ export class OllamaClient {
     }
 
     return this.parseJsonResponse(await response.json())
+  }
+
+  private sanitizeMessages(messages: OllamaMessage[]): unknown[] {
+    return messages.map(msg => {
+      const item: Record<string, unknown> = { role: msg.role, content: msg.content ?? '' }
+      if (msg.tool_calls && Array.isArray(msg.tool_calls)) {
+        item.tool_calls = msg.tool_calls.map(tc => {
+          let argsObj: unknown = tc.function.arguments
+          if (typeof argsObj === 'string') {
+            try { argsObj = JSON.parse(argsObj) } catch { argsObj = {} }
+          }
+          return {
+            id: tc.id,
+            type: 'function',
+            function: { name: tc.function.name, arguments: argsObj },
+          }
+        })
+      }
+      if (msg.tool_call_id) { item.tool_call_id = msg.tool_call_id }
+      if (msg.name) { item.name = msg.name }
+      return item
+    })
   }
 
   private parseJsonResponse(raw: unknown): OllamaResponse {
@@ -245,6 +289,7 @@ export class OllamaClient {
     tools: OllamaTool[],
     executeTool: (name: string, args: Record<string, unknown>) => Promise<unknown>,
     onProgress?: (state: string, message: string) => void,
+    onStream?: (chunk: string) => void,
   ): Promise<string> {
     const messages: OllamaMessage[] = [
       { role: 'system', content: systemPrompt },
@@ -257,7 +302,7 @@ export class OllamaClient {
     while (iteration < this.config.maxIterations) {
       onProgress?.('THINKING', `Iteration ${iteration + 1}...`)
 
-      const response = await this.chat(messages, tools.length > 0 ? tools : undefined)
+      const response = await this.chat(messages, tools.length > 0 ? tools : undefined, onStream)
       if (!response.message) {
         throw new Error('Received empty message from Ollama')
       }

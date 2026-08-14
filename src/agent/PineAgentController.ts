@@ -19,6 +19,7 @@ import { Class } from '../PineClass'
 import { PineOptimizerSkill } from '../skills/PineOptimizerSkill'
 import { PineVisualizerSkill } from '../skills/PineVisualizerSkill'
 import { PineChatParticipant } from '../chat/PineChatParticipant'
+import { PineChatViewProvider } from '../chat/PineChatViewProvider'
 
 export class PineAgentController {
   private static instance: PineAgentController | undefined
@@ -50,8 +51,18 @@ export class PineAgentController {
     this.registerCommands(context)
     this.startHealthPolling(context)
     PineChatParticipant.getInstance().register(context, this.knowledgeEngine)
+    const chatProvider = new PineChatViewProvider(context.extensionUri, this.knowledgeEngine)
+    context.subscriptions.push(
+      vscode.window.registerWebviewViewProvider(PineChatViewProvider.viewType, chatProvider, {
+        webviewOptions: { retainContextWhenHidden: true },
+      }),
+    )
     this.statusBar.updateKnowledgeStatus(true, '6')
     this.statusBar.updateAnalyzerStatus(true)
+  }
+
+  reloadAgent(): void {
+    this.initAgent()
   }
 
   private initAgent(): void {
@@ -59,6 +70,7 @@ export class PineAgentController {
     this.agent = new PineAgent(this.knowledgeEngine, {
       ollamaHost: config.get<string>('ollama.host', 'http://localhost:11434'),
       model: config.get<string>('ollama.model', 'qwen2.5-coder:7b'),
+      temperature: config.get<number>('ollama.temperature', 0),
       maxIterations: config.get<number>('agent.maxIterations', 12),
       autoRepair: config.get<boolean>('agent.autoRepair', true),
     })
@@ -98,6 +110,7 @@ export class PineAgentController {
 
   private registerCommands(context: vscode.ExtensionContext): void {
     const commands: Array<[string, () => Promise<void> | void]> = [
+      ['pineforge.openChat', () => vscode.commands.executeCommand('pineforge.chatView.focus')],
       ['pineforge.showStatusDetails', () => this.statusBar.showStatusPanel()],
       ['pineforge.selectModel', () => this.selectModel()],
       ['pineforge.askAgent', () => this.askAgent()],
