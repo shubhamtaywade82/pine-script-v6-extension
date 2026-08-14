@@ -250,8 +250,25 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
 .active-stream-header{font-size:10px;color:#dcdcaa;margin-bottom:4px;font-style:italic;display:flex;align-items:center;gap:4px;}
 .pulse-dot{width:6px;height:6px;border-radius:50%;background:#dcdcaa;animation:pulse 1s infinite alternate;}@keyframes pulse{0%{opacity:0.3;}100%{opacity:1;}}
 .log-stream{font-family:monospace;font-size:11px;line-height:1.5;white-space:pre-wrap;color:#ccc;}
-pre{background:#181818;padding:6px;border-radius:4px;overflow-x:auto;margin:4px 0;border:1px solid #2d2d2d;}code{font-family:var(--vscode-editor-font-family,monospace);font-size:11px;}
-.code-actions{display:flex;gap:4px;justify-content:flex-end;margin-top:4px;}.btn-sm{font-size:10px;padding:2px 6px;border-radius:3px;border:1px solid var(--border);background:#333;color:#fff;cursor:pointer;}.btn-sm:hover{background:var(--accent);}
+.md-h1{font-size:13px;font-weight:700;margin:8px 0 4px 0;padding-bottom:2px;border-bottom:1px solid var(--border);color:#fff;}
+.md-h2{font-size:12px;font-weight:600;margin:6px 0 3px 0;color:#85c2ff;}
+.md-h3{font-size:11px;font-weight:600;margin:5px 0 2px 0;color:#4ec9b0;}
+.md-hr{border:none;border-top:1px solid var(--border);margin:8px 0;}
+.md-quote{border-left:3px solid var(--accent);padding:3px 8px;margin:4px 0;background:rgba(14,99,156,0.1);border-radius:2px;}
+.md-ul,.md-ol{margin:3px 0 3px 14px;padding:0;}
+.md-li,.md-oli{margin:2px 0;line-height:1.4;}
+.inline-code{background:#181818;padding:1px 4px;border-radius:3px;font-family:var(--vscode-editor-font-family,monospace);border:1px solid #333;font-size:10px;color:#ce9178;}
+.table-wrapper{overflow-x:auto;margin:6px 0;border:1px solid var(--border);border-radius:4px;}
+.md-table{width:100%;border-collapse:collapse;font-size:11px;}
+.md-table th{background:#2d2d2d;padding:4px 8px;text-align:left;border:1px solid var(--border);font-weight:600;color:#ddd;}
+.md-table td{padding:4px 8px;border:1px solid var(--border);}
+.code-container{margin:6px 0;border:1px solid var(--border);border-radius:4px;background:#181818;overflow:hidden;}
+.code-lang-tag{display:inline-block;font-size:9px;font-family:monospace;padding:1px 6px;background:#264f78;color:#fff;border-radius:0 0 3px 0;text-transform:uppercase;font-weight:bold;}
+.code-container pre{margin:0;padding:6px 8px;background:transparent;border:none;overflow-x:auto;}
+.code-container code{font-family:var(--vscode-editor-font-family,monospace);font-size:11px;line-height:1.4;}
+.code-container .code-actions{display:flex;gap:4px;justify-content:flex-end;padding:3px 6px;background:#202020;border-top:1px solid #2a2a2a;}
+.md-p-gap{height:6px;}
+.btn-sm{font-size:10px;padding:2px 6px;border-radius:3px;border:1px solid var(--border);background:#333;color:#fff;cursor:pointer;}.btn-sm:hover{background:var(--accent);}
 .btn-primary{background:var(--accent);color:#fff;border:none;border-radius:3px;padding:4px 8px;cursor:pointer;font-weight:600;font-size:11px;}.btn-primary:hover{background:var(--accent-hover);}
 .input-area{padding:8px 10px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:5px;}
 .context-row{display:flex;align-items:center;justify-content:space-between;font-size:11px;opacity:0.85;}.input-row{display:flex;gap:6px;}
@@ -352,15 +369,60 @@ chatFlow.appendChild(d);
 chatFlow.scrollTop = chatFlow.scrollHeight;
 return d;
 }
-function renderMarkdown(t){
-if (!t) return '';
-var esc = t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-esc = esc.replace(/\`\`\`(?:pine|pinescript)?([\\s\\S]*?)\`\`\`/g, function(_, c){
-return '<pre><code>' + c.trim() + '</code><div class="code-actions"><button class="btn-sm btn-apply">Apply</button><button class="btn-sm btn-insert">Insert</button><button class="btn-sm btn-copy">Copy</button></div></pre>';
+function renderMarkdown(src){
+if (!src) return '';
+var codeBlocks = [];
+function escapeHtml(s) {
+return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+var text = src.replace(/\`\`\`([a-zA-Z0-9_-]*)\n?([\\s\\S]*?)\`\`\`/g, function(_, lang, code) {
+var cleanCode = code.trim();
+var isPine = !lang || lang === 'pine' || lang === 'pinescript' || cleanCode.indexOf('//@version') !== -1 || cleanCode.indexOf('indicator(') !== -1 || cleanCode.indexOf('strategy(') !== -1;
+var actions = isPine 
+? '<div class="code-actions"><button class="btn-sm btn-apply">Apply</button><button class="btn-sm btn-insert">Insert</button><button class="btn-sm btn-copy">Copy</button></div>'
+: '<div class="code-actions"><button class="btn-sm btn-copy">Copy</button></div>';
+var tag = lang ? '<span class="code-lang-tag">' + lang + '</span>' : '';
+var html = '<div class="code-container">' + tag + '<pre><code>' + escapeHtml(cleanCode) + '</code></pre>' + actions + '</div>';
+codeBlocks.push(html);
+return '___CODE_BLOCK_' + (codeBlocks.length - 1) + '___';
 });
-esc = esc.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');
-esc = esc.replace(/\`([^\`]+)\`/g, '<code>$1</code>');
-return esc.replace(/\\n/g, '<br>');
+
+text = escapeHtml(text);
+
+text = text.replace(/((?:^|\\n)\\|[^\\n]+\\|\\n\\|[-: |]+\\|\\n(?:\\|[^\\n]+\\|\\n?)+)/g, function(match) {
+var lines = match.trim().split('\\n').map(function(l){ return l.trim().replace(/^\\|/, '').replace(/\\|$/, ''); });
+if (lines.length < 2) return match;
+var headers = lines[0].split('|').map(function(h){ return '<th>' + h.trim() + '</th>'; }).join('');
+var rows = lines.slice(2).map(function(row){
+var cells = row.split('|').map(function(c){ return '<td>' + c.trim() + '</td>'; }).join('');
+return '<tr>' + cells + '</tr>';
+}).join('');
+return '\\n<div class="table-wrapper"><table class="md-table"><thead><tr>' + headers + '</tr></thead><tbody>' + rows + '</tbody></table></div>\\n';
+});
+
+text = text.replace(/^### (.*$)/gim, '<h3 class="md-h3">$1</h3>');
+text = text.replace(/^## (.*$)/gim, '<h2 class="md-h2">$1</h2>');
+text = text.replace(/^# (.*$)/gim, '<h1 class="md-h1">$1</h1>');
+text = text.replace(/^(?:---|\\*\\*\\*|___)\\s*$/gim, '<hr class="md-hr">');
+text = text.replace(/^>\\s*(.*$)/gim, '<blockquote class="md-quote">$1</blockquote>');
+text = text.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');
+text = text.replace(/\\*([^\\*\\n]+)\\*/g, '<em>$1</em>');
+text = text.replace(/\`([^\`\\n]+)\`/g, '<code class="inline-code">$1</code>');
+
+text = text.replace(/(?:^|\\n)[*-]\\s+(.*)/g, '\\n<li class="md-li">$1</li>');
+text = text.replace(/((?:\\n<li class="md-li">.*<\\/li>)+)/g, '<ul class="md-ul">$1\\n</ul>');
+text = text.replace(/(?:^|\\n)\\d+\\.\\s+(.*)/g, '\\n<li class="md-oli">$1</li>');
+text = text.replace(/((?:\\n<li class="md-oli">.*<\\/li>)+)/g, '<ol class="md-ol">$1\\n</ol>');
+
+text = text.replace(/\\n\\n+/g, '<div class="md-p-gap"></div>');
+text = text.replace(/\\n/g, '<br>');
+
+text = text.replace(/___CODE_BLOCK_(\\d+)___/g, function(_, i) {
+return codeBlocks[parseInt(i, 10)];
+});
+
+return text;
 }
 
 document.getElementById('modelTag').addEventListener('click', toggleSettings);

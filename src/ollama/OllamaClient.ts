@@ -339,7 +339,9 @@ export class OllamaClient {
   }
 
   private extractTextToolCall(content: string | undefined): OllamaToolCall | null {
-    if (!content) return null
+    if (!content) {
+      return null
+    }
     const trimmed = content.trim()
     let jsonStr = ''
     if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
