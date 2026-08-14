@@ -162,8 +162,8 @@ export class PineForgeStatusBar {
       this.status.currentStep ? `Step: ${this.status.currentStep}` : '',
       '',
       '### External',
-      `TradingView: ${this.status.tradingViewReachable === true ? '✓ Reachable' : this.status.tradingViewReachable === false ? '✗ Unreachable' : '? Unknown'}`,
-      `Chart: ${this.status.chartConnected === true ? '✓ Connected' : this.status.chartConnected === false ? '✗ Disconnected' : '? Unknown'}`,
+      `TradingView: ${this.status.tradingViewReachable === true ? '✓ Reachable' : this.status.tradingViewReachable === false ? '✗ Unreachable' : '? Checking...'}`,
+      `Chart: ${this.status.chartConnected === true ? '✓ Connected' : this.status.chartConnected === false ? '○ Stand-alone (No browser sync)' : '? Checking...'}`,
     ]
     
     return lines.filter(l => l !== '').join('\n')

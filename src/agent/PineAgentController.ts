@@ -103,6 +103,14 @@ export class PineAgentController {
       const connected = await this.agent.healthCheck()
       const model = vscode.workspace.getConfiguration('pineForge').get<string>('ollama.model', 'qwen2.5-coder:7b')
       this.statusBar.updateOllamaStatus(connected, model)
+
+      try {
+        const tvRes = await fetch('https://www.tradingview.com/', { method: 'HEAD' })
+        this.statusBar.updateTradingViewStatus(tvRes.status < 500)
+      } catch {
+        this.statusBar.updateTradingViewStatus(false)
+      }
+      this.statusBar.updateChartStatus(false)
     }
 
     void check()

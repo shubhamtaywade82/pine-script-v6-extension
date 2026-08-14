@@ -34,9 +34,7 @@
     "TradingView.com"
   ],
   "activationEvents": [
-    "onLanguage:pine",
-    "onView:pineforge.chatView",
-    "onCommand:pineforge.openChat"
+    "onLanguage:pine"
   ],
   "icon": "media/PineLogo.png",
   "capabilities": {
@@ -61,8 +59,8 @@
     "type-check": "tsc --noEmit -p tsconfig.json",
     "pine:conformance": "vitest run test/conformance/",
     "pine:sync": "vitest run test/conformance/PineConformanceEngine.test.ts",
-    "vsce-package": "vsce package --no-dependencies -o pinescriptv6.vsix",
-    "package": "vsce package --no-dependencies -o pinescriptv6.vsix"
+    "vsce-package": "vsce package --no-dependencies -o pine-script-v6.vsix",
+    "package": "vsce package --no-dependencies -o pine-script-v6.vsix"
   },
   "main": "./dist/extension.js",
   "contributes": {
