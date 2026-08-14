@@ -16246,6 +16246,17 @@
               ]
             },
             {
+              "name": "calc_bars_count",
+              "desc": "Optional. Determines how many of the most recent historical bars are available to the script. If specified, the script automatically adds a \"Calculated bars\" input to the \"Settings/Inputs\" tab. If the value is positive and less than the number of historical bars in the dataset, the script starts its calculations that number of bars before the most recent bar. If the value is 0, the script's calculations start on the dataset's first bar. The default is 0.",
+              "default": null,
+              "required": false,
+              "displayType": "const int",
+              "allowedTypeIDs": [
+                "const int"
+              ],
+              "possibleValues": null
+            },
+            {
               "name": "max_polylines_count",
               "desc": "The number of last [polyline](#op_polyline) drawings displayed.  \nPossible values: 1-100. The count is approximate; more drawings than the specified count may be displayed. Optional. The default is 50.",
               "default": 50,
@@ -16262,6 +16273,17 @@
               ]
             },
             {
+              "name": "dynamic_requests",
+              "desc": "Optional. Specifies whether the script can use dynamic `request.*()` function calls. Dynamic `request.*()` calls are allowed within the local scopes of conditional structures (e.g., if), loops (e.g., for), and exported functions. Additionally, such calls allow \"series\" arguments for several parameters that otherwise require values with \"simple\" or weaker qualifiers. See the Dynamic requests section of our User Manual for more information. The default is `true`.",
+              "default": null,
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": null
+            },
+            {
               "name": "behind_chart",
               "desc": "Specifies whether a script\\`s visuals appear behind or in front of the main chart series.  \nWhen `true`, visuals overlaid in the main pane render behind the chart bars. When `false`, visuals appear in front of the bars, which can obscure bar details depending on the visual type and color transparency.  \nOptional. The default is `true`.",
               "default": "true",
@@ -16276,7 +16298,7 @@
               ]
             }
           ],
-          "syntax": "indicator(title, shorttitle, overlay, format, precision, scale, max_bars_back, timeframe, timeframe_gaps, explicit_plot_zorder, max_lines_count, max_labels_count, max_boxes_count, max_polylines_count, behind_chart) → void",
+          "syntax": "indicator(title, shorttitle, overlay, format, precision, scale, max_bars_back, timeframe, timeframe_gaps, explicit_plot_zorder, max_lines_count, max_labels_count, max_boxes_count, calc_bars_count, max_polylines_count, dynamic_requests, behind_chart) → void",
           "remarks": "Every indicator script must have one [indicator](#fun_indicator) call.",
           "seeAlso": [
             "[strategy](#fun_strategy)",
@@ -16732,9 +16754,44 @@
                 "display.status_line",
                 "display.all"
               ]
+            },
+            {
+              "name": "format",
+              "desc": "Determines whether the script formats the plot's values as prices, percentages, or volume values. The argument passed to this parameter supersedes the `format` parameter of the indicator(), and strategy() functions. Optional. The default is the `format` value used by the indicator()/strategy() function. Possible values: format.price, format.percent, format.volume.",
+              "default": null,
+              "required": false,
+              "displayType": "input string",
+              "allowedTypeIDs": [
+                "input string",
+                "const string"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "precision",
+              "desc": "The number of digits after the decimal point the plot's values show on the chart pane's y-axis, the script's status line, and the Data Window. Accepts a non-negative integer less than or equal to 16. The argument passed to this parameter supersedes the `precision` parameter of the indicator() and strategy() functions. When the function's `format` parameter uses format.volume, the `precision` parameter will not affect the result, as the decimal precision rules defined by format.volume supersede other precision settings. Optional. The default is the `precision` value used by the indicator()/strategy() function.",
+              "default": null,
+              "required": false,
+              "displayType": "input int",
+              "allowedTypeIDs": [
+                "input int",
+                "const int"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "force_overlay",
+              "desc": "If true, the plotted results will display on the main chart pane, even when the script occupies a separate pane. Optional. The default is false.",
+              "default": null,
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "plotshape(series, title, style, location, color, offset, text, textcolor, editable, size, show_last, display) → void",
+          "syntax": "plotshape(series, title, style, location, color, offset, text, textcolor, editable, show_last, size, display, format, precision, force_overlay) → void",
           "remarks": "Use [plotshape](#fun_plotshape) function in conjunction with 'overlay=true' [indicator](#fun_indicator) parameter!",
           "seeAlso": [
             "[plot](#fun_plot)",
@@ -16945,9 +17002,44 @@
                 "display.status_line",
                 "display.all"
               ]
+            },
+            {
+              "name": "format",
+              "desc": "Determines whether the script formats the plot's values as prices, percentages, or volume values. The argument passed to this parameter supersedes the `format` parameter of the indicator(), and strategy() functions. Optional. The default is the `format` value used by the indicator()/strategy() function. Possible values: format.price, format.percent, format.volume.",
+              "default": null,
+              "required": false,
+              "displayType": "input string",
+              "allowedTypeIDs": [
+                "input string",
+                "const string"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "precision",
+              "desc": "The number of digits after the decimal point the plot's values show on the chart pane's y-axis, the script's status line, and the Data Window. Accepts a non-negative integer less than or equal to 16. The argument passed to this parameter supersedes the `precision` parameter of the indicator() and strategy() functions. When the function's `format` parameter uses format.volume, the `precision` parameter will not affect the result, as the decimal precision rules defined by format.volume supersede other precision settings. Optional. The default is the `precision` value used by the indicator()/strategy() function.",
+              "default": null,
+              "required": false,
+              "displayType": "input int",
+              "allowedTypeIDs": [
+                "input int",
+                "const int"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "force_overlay",
+              "desc": "If true, the plotted results will display on the main chart pane, even when the script occupies a separate pane. Optional. The default is false.",
+              "default": null,
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "plotchar(series, title, char, location, color, offset, text, textcolor, editable, size, show_last, display) → void",
+          "syntax": "plotchar(series, title, char, location, color, offset, text, textcolor, editable, show_last, size, display, format, precision, force_overlay) → void",
           "remarks": "Use [plotchar](#fun_plotchar) function in conjunction with 'overlay=true' [indicator](#fun_indicator) parameter!",
           "seeAlso": [
             "[plot](#fun_plot)",
@@ -17121,9 +17213,44 @@
                 "display.status_line",
                 "display.all"
               ]
+            },
+            {
+              "name": "format",
+              "desc": "Determines whether the script formats the plot's values as prices, percentages, or volume values. The argument passed to this parameter supersedes the `format` parameter of the indicator(), and strategy() functions. Optional. The default is the `format` value used by the indicator()/strategy() function. Possible values: format.price, format.percent, format.volume.",
+              "default": null,
+              "required": false,
+              "displayType": "input string",
+              "allowedTypeIDs": [
+                "input string",
+                "const string"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "precision",
+              "desc": "The number of digits after the decimal point the plot's values show on the chart pane's y-axis, the script's status line, and the Data Window. Accepts a non-negative integer less than or equal to 16. The argument passed to this parameter supersedes the `precision` parameter of the indicator() and strategy() functions. When the function's `format` parameter uses format.volume, the `precision` parameter will not affect the result, as the decimal precision rules defined by format.volume supersede other precision settings. Optional. The default is the `precision` value used by the indicator()/strategy() function.",
+              "default": null,
+              "required": false,
+              "displayType": "input int",
+              "allowedTypeIDs": [
+                "input int",
+                "const int"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "force_overlay",
+              "desc": "If true, the plotted results will display on the main chart pane, even when the script occupies a separate pane. Optional. The default is false.",
+              "default": null,
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "plotarrow(series, title, colorup, colordown, offset, minheight, maxheight, editable, show_last, display) → void",
+          "syntax": "plotarrow(series, title, colorup, colordown, offset, minheight, maxheight, editable, show_last, display, format, precision, force_overlay) → void",
           "remarks": "Use [plotarrow](#fun_plotarrow) function in conjunction with 'overlay=true' [indicator](#fun_indicator) parameter!",
           "seeAlso": [
             "[plot](#fun_plot)",
@@ -17295,6 +17422,30 @@
               ]
             },
             {
+              "name": "format",
+              "desc": "Determines whether the script formats the plot's values as prices, percentages, or volume values. The argument passed to this parameter supersedes the `format` parameter of the indicator(), and strategy() functions. Optional. The default is the `format` value used by the indicator()/strategy() function. Possible values: format.price, format.percent, format.volume.",
+              "default": null,
+              "required": false,
+              "displayType": "input string",
+              "allowedTypeIDs": [
+                "input string",
+                "const string"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "precision",
+              "desc": "The number of digits after the decimal point the plot's values show on the chart pane's y-axis, the script's status line, and the Data Window. Accepts a non-negative integer less than or equal to 16. The argument passed to this parameter supersedes the `precision` parameter of the indicator() and strategy() functions. When the function's `format` parameter uses format.volume, the `precision` parameter will not affect the result, as the decimal precision rules defined by format.volume supersede other precision settings. Optional. The default is the `precision` value used by the indicator()/strategy() function.",
+              "default": null,
+              "required": false,
+              "displayType": "input int",
+              "allowedTypeIDs": [
+                "input int",
+                "const int"
+              ],
+              "possibleValues": null
+            },
+            {
               "name": "force_overlay",
               "desc": "If `true`, the drawing displays on the main chart pane, even when the script occupies a separate pane.  \nOptional. The default is `false`.",
               "default": "false",
@@ -17309,7 +17460,7 @@
               ]
             }
           ],
-          "syntax": "plotbar(open, high, low, close, title, color, editable, show_last, display, force_overlay) → void",
+          "syntax": "plotbar(open, high, low, close, title, color, editable, show_last, display, format, precision, force_overlay) → void",
           "remarks": "Even if one value of open, high, low or close equal NaN then bar no draw.\nThe maximal value of open, high, low or close will be set as 'high', and the minimal value will be set as 'low'.",
           "seeAlso": [
             "[plotcandle](#fun_plotcandle)"
@@ -17507,9 +17658,44 @@
                 "display.status_line",
                 "display.all"
               ]
+            },
+            {
+              "name": "format",
+              "desc": "Determines whether the script formats the plot's values as prices, percentages, or volume values. The argument passed to this parameter supersedes the `format` parameter of the indicator(), and strategy() functions. Optional. The default is the `format` value used by the indicator()/strategy() function. Possible values: format.price, format.percent, format.volume.",
+              "default": null,
+              "required": false,
+              "displayType": "input string",
+              "allowedTypeIDs": [
+                "input string",
+                "const string"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "precision",
+              "desc": "The number of digits after the decimal point the plot's values show on the chart pane's y-axis, the script's status line, and the Data Window. Accepts a non-negative integer less than or equal to 16. The argument passed to this parameter supersedes the `precision` parameter of the indicator() and strategy() functions. When the function's `format` parameter uses format.volume, the `precision` parameter will not affect the result, as the decimal precision rules defined by format.volume supersede other precision settings. Optional. The default is the `precision` value used by the indicator()/strategy() function.",
+              "default": null,
+              "required": false,
+              "displayType": "input int",
+              "allowedTypeIDs": [
+                "input int",
+                "const int"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "force_overlay",
+              "desc": "If true, the plotted results will display on the main chart pane, even when the script occupies a separate pane. Optional. The default is false.",
+              "default": null,
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "plotcandle(open, high, low, close, title, color, wickcolor, editable, show_last, bordercolor, display) → void",
+          "syntax": "plotcandle(open, high, low, close, title, color, wickcolor, editable, show_last, bordercolor, display, format, precision, force_overlay) → void",
           "remarks": "Even if one value of open, high, low or close equal NaN then bar no draw.\nThe maximal value of open, high, low or close will be set as 'high', and the minimal value will be set as 'low'.",
           "seeAlso": [
             "[plotbar](#fun_plotbar)"
@@ -18408,9 +18594,21 @@
                 "display.status_line",
                 "display.all"
               ]
+            },
+            {
+              "name": "active",
+              "desc": "Optional. Specifies whether users can change the value of the input in the script's \"Settings/Inputs\" tab. The script can use this parameter to set the state of the input based on the values of other inputs. If true, users can change the value of the input. If false, the input is grayed out, and users cannot change the value. The default is true.",
+              "default": null,
+              "required": false,
+              "displayType": "input bool",
+              "allowedTypeIDs": [
+                "input bool",
+                "const bool"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "input.bool(defval, title, tooltip, inline, group, confirm, display) → input bool",
+          "syntax": "input.bool(defval, title, tooltip, inline, group, confirm, display, active) → input bool",
           "remarks": "Result of [input.bool](#fun_input.bool) function always should be assigned to a variable, see examples above.",
           "returns": "Value of input variable.",
           "seeAlso": [
@@ -18861,9 +19059,21 @@
                 "display.status_line",
                 "display.all"
               ]
+            },
+            {
+              "name": "active",
+              "desc": "Optional. Specifies whether users can change the value of the input in the script's \"Settings/Inputs\" tab. The script can use this parameter to set the state of the input based on the values of other inputs. If true, users can change the value of the input. If false, the input is grayed out, and users cannot change the value. The default is true.",
+              "default": null,
+              "required": false,
+              "displayType": "input bool",
+              "allowedTypeIDs": [
+                "input bool",
+                "const bool"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "input.string(defval, title, options, tooltip, inline, group, confirm, display) → input string",
+          "syntax": "input.string(defval, title, options, tooltip, inline, group, confirm, display, active) → input string",
           "remarks": "Result of [input.string](#fun_input.string) function always should be assigned to a variable, see examples above.",
           "returns": "Value of input variable.",
           "seeAlso": [
@@ -18966,9 +19176,21 @@
                 "display.status_line",
                 "display.all"
               ]
+            },
+            {
+              "name": "active",
+              "desc": "Optional. Specifies whether users can change the value of the input in the script's \"Settings/Inputs\" tab. The script can use this parameter to set the state of the input based on the values of other inputs. If true, users can change the value of the input. If false, the input is grayed out, and users cannot change the value. The default is true.",
+              "default": null,
+              "required": false,
+              "displayType": "input bool",
+              "allowedTypeIDs": [
+                "input bool",
+                "const bool"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "input.text_area(defval, title, tooltip, group, confirm, display) → input string",
+          "syntax": "input.text_area(defval, title, tooltip, group, confirm, display, active) → input string",
           "remarks": "Result of [input.text_area](#fun_input.text_area) function always should be assigned to a variable, see examples above.",
           "returns": "Value of input variable.",
           "seeAlso": [
@@ -19082,9 +19304,21 @@
                 "display.status_line",
                 "display.all"
               ]
+            },
+            {
+              "name": "active",
+              "desc": "Optional. Specifies whether users can change the value of the input in the script's \"Settings/Inputs\" tab. The script can use this parameter to set the state of the input based on the values of other inputs. If true, users can change the value of the input. If false, the input is grayed out, and users cannot change the value. The default is true.",
+              "default": null,
+              "required": false,
+              "displayType": "input bool",
+              "allowedTypeIDs": [
+                "input bool",
+                "const bool"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "input.symbol(defval, title, tooltip, inline, group, confirm, display) → input string",
+          "syntax": "input.symbol(defval, title, tooltip, inline, group, confirm, display, active) → input string",
           "remarks": "Result of [input.symbol](#fun_input.symbol) function always should be assigned to a variable, see examples above.",
           "returns": "Value of input variable.",
           "seeAlso": [
@@ -19216,9 +19450,21 @@
                 "display.status_line",
                 "display.all"
               ]
+            },
+            {
+              "name": "active",
+              "desc": "Optional. Specifies whether users can change the value of the input in the script's \"Settings/Inputs\" tab. The script can use this parameter to set the state of the input based on the values of other inputs. If true, users can change the value of the input. If false, the input is grayed out, and users cannot change the value. The default is true.",
+              "default": null,
+              "required": false,
+              "displayType": "input bool",
+              "allowedTypeIDs": [
+                "input bool",
+                "const bool"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "input.timeframe(defval, title, options, tooltip, inline, group, confirm, display) → input string",
+          "syntax": "input.timeframe(defval, title, options, tooltip, inline, group, confirm, display, active) → input string",
           "remarks": "Result of [input.timeframe](#fun_input.timeframe) function always should be assigned to a variable, see examples above.",
           "returns": "Value of input variable.",
           "seeAlso": [
@@ -19343,9 +19589,21 @@
                 "display.status_line",
                 "display.all"
               ]
+            },
+            {
+              "name": "active",
+              "desc": "Optional. Specifies whether users can change the value of the input in the script's \"Settings/Inputs\" tab. The script can use this parameter to set the state of the input based on the values of other inputs. If true, users can change the value of the input. If false, the input is grayed out, and users cannot change the value. The default is true.",
+              "default": null,
+              "required": false,
+              "displayType": "input bool",
+              "allowedTypeIDs": [
+                "input bool",
+                "const bool"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "input.session(defval, title, options, tooltip, inline, group, confirm, display) → input string",
+          "syntax": "input.session(defval, title, options, tooltip, inline, group, confirm, display, active) → input string",
           "remarks": "Result of [input.session](#fun_input.session) function always should be assigned to a variable, see examples above.",
           "returns": "Value of input variable.",
           "seeAlso": [
@@ -19458,9 +19716,32 @@
                 "display.status_line",
                 "display.all"
               ]
+            },
+            {
+              "name": "active",
+              "desc": "Optional. Specifies whether users can change the value of the input in the script's \"Settings/Inputs\" tab. The script can use this parameter to set the state of the input based on the values of other inputs. If true, users can change the value of the input. If false, the input is grayed out, and users cannot change the value. The default is true.",
+              "default": null,
+              "required": false,
+              "displayType": "input bool",
+              "allowedTypeIDs": [
+                "input bool",
+                "const bool"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "confirm",
+              "desc": "If true, then user will be asked to confirm input value before indicator is added to chart. Default value is false.",
+              "default": null,
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "input.source(defval, title, tooltip, inline, group, display) → series float",
+          "syntax": "input.source(defval, title, tooltip, inline, group, display, active, confirm) → series float",
           "remarks": "Result of [input.source](#fun_input.source) function always should be assigned to a variable, see examples above.",
           "returns": "Value of input variable.",
           "seeAlso": [
@@ -19578,9 +19859,21 @@
                 "display.status_line",
                 "display.all"
               ]
+            },
+            {
+              "name": "active",
+              "desc": "Optional. Specifies whether users can change the value of the input in the script's \"Settings/Inputs\" tab. The script can use this parameter to set the state of the input based on the values of other inputs. If true, users can change the value of the input. If false, the input is grayed out, and users cannot change the value. The default is true.",
+              "default": null,
+              "required": false,
+              "displayType": "input bool",
+              "allowedTypeIDs": [
+                "input bool",
+                "const bool"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "input.color(defval, title, tooltip, inline, group, confirm, display) → input color",
+          "syntax": "input.color(defval, title, tooltip, inline, group, confirm, display, active) → input color",
           "remarks": "Result of [input.color](#fun_input.color) function always should be assigned to a variable, see examples above.",
           "returns": "Value of input variable.",
           "seeAlso": [
@@ -19694,9 +19987,21 @@
                 "display.status_line",
                 "display.all"
               ]
+            },
+            {
+              "name": "active",
+              "desc": "Optional. Specifies whether users can change the value of the input in the script's \"Settings/Inputs\" tab. The script can use this parameter to set the state of the input based on the values of other inputs. If true, users can change the value of the input. If false, the input is grayed out, and users cannot change the value. The default is true.",
+              "default": null,
+              "required": false,
+              "displayType": "input bool",
+              "allowedTypeIDs": [
+                "input bool",
+                "const bool"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "input.time(defval, title, tooltip, inline, group, confirm, display) → input int",
+          "syntax": "input.time(defval, title, tooltip, inline, group, confirm, display, active) → input int",
           "remarks": "When using interactive mode, a price input can be combined with a time input if both function calls use the same argument for their `inline` parameter.",
           "returns": "Value of input variable.",
           "seeAlso": [
@@ -19811,9 +20116,21 @@
                 "display.status_line",
                 "display.all"
               ]
+            },
+            {
+              "name": "active",
+              "desc": "Optional. Specifies whether users can change the value of the input in the script's \"Settings/Inputs\" tab. The script can use this parameter to set the state of the input based on the values of other inputs. If true, users can change the value of the input. If false, the input is grayed out, and users cannot change the value. The default is true.",
+              "default": null,
+              "required": false,
+              "displayType": "input bool",
+              "allowedTypeIDs": [
+                "input bool",
+                "const bool"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "input.price(defval, title, tooltip, inline, group, confirm, display) → input float",
+          "syntax": "input.price(defval, title, tooltip, inline, group, confirm, display, active) → input float",
           "remarks": "When using interactive mode, a time input can be combined with a price input if both function calls use the same argument for their `inline` parameter.",
           "returns": "Value of input variable.",
           "seeAlso": [
@@ -23906,7 +24223,7 @@
           "desc": "Calculates the pivot point levels using the specified `type` and `anchor`.",
           "args": [
             {
-              "name": "displayType",
+              "name": "type",
               "desc": "The type of pivot point levels.  \nPossible values: \"Traditional\", \"Fibonacci\", \"Woodie\", \"Classic\", \"DM\", \"Camarilla\".",
               "default": null,
               "required": true,
@@ -24352,9 +24669,22 @@
                 "currency.GBP",
                 "currency.AUD"
               ]
+            },
+            {
+              "name": "calc_bars_count",
+              "desc": "Optional. Determines the maximum number of recent historical bars that the function can request. If specified, the function evaluates the `expression` argument starting from that number of bars behind the last historical bar in the requested dataset, treating those bars as the only available data. Limiting the number of historical bars in a request can help improve calculation efficiency in some cases. The default is the same as the number of chart bars available for the symbol and timeframe. The maximum number of bars that the function can attempt to retrieve depends on the intrabar limit of the user's plan. However, the request cannot retrieve more bars than are available in the dataset.",
+              "default": null,
+              "required": false,
+              "displayType": "simple int",
+              "allowedTypeIDs": [
+                "simple int",
+                "input int",
+                "const int"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "request.security(symbol, timeframe, expression, gaps, lookahead, ignore_invalid_symbol, currency) → series type",
+          "syntax": "request.security(symbol, timeframe, expression, gaps, lookahead, ignore_invalid_symbol, currency, calc_bars_count) → series type",
           "remarks": "In Pine Script v6, dynamic requests are enabled by default, allowing request.security() to be called inside loops and conditional structures with dynamic series strings. The script is still subject to the limit of unique request contexts (up to 40).\nPine Script™ code using this function may calculate differently on historical and realtime bars, leading to repainting.",
           "returns": "A result determined by `expression`.",
           "seeAlso": [
@@ -24492,9 +24822,36 @@
                 "currency.GBP",
                 "currency.AUD"
               ]
+            },
+            {
+              "name": "ignore_invalid_timeframe",
+              "desc": "Determines the behavior of the function when the chart's timeframe is smaller than the `timeframe` used in the function call. If false, the script will halt and throw a runtime error. If true, the function will return na and execution will continue. Optional. The default is false.",
+              "default": null,
+              "required": false,
+              "displayType": "series bool",
+              "allowedTypeIDs": [
+                "series bool",
+                "simple bool",
+                "input bool",
+                "const bool"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "calc_bars_count",
+              "desc": "Optional. Determines the maximum number of recent historical bars that the function can request. If specified, the function evaluates the `expression` argument starting from that number of bars behind the last historical bar in the requested dataset, treating those bars as the only available data. Limiting the number of historical bars in a request can help improve calculation efficiency in some cases. The default is the same as the number of chart bars available for the symbol and timeframe. The maximum number of bars that the function can attempt to retrieve depends on the intrabar limit of the user's plan. However, the request cannot retrieve more bars than are available in the dataset.",
+              "default": null,
+              "required": false,
+              "displayType": "simple int",
+              "allowedTypeIDs": [
+                "simple int",
+                "input int",
+                "const int"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "request.security_lower_tf(symbol, timeframe, expression, ignore_invalid_symbol, currency) → type[]",
+          "syntax": "request.security_lower_tf(symbol, timeframe, expression, ignore_invalid_symbol, currency, ignore_invalid_timeframe, calc_bars_count) → type[]",
           "remarks": "Pine Script™ code using this function may calculate differently on historical and real-time bars, leading to [repainting](https://www.tradingview.com/pine-script-docs/en/v6/concepts/Repainting.html).\nPlease note that spreads (e.g., “AAPL+MSFT*TSLA”) will not always return reliable data with this function.\nA single script can have no more than 40 calls to `request.*()` functions.\nA maximum of 100, 000 lower timeframe bars can be accessed by this function.  \nThe number of chart bars for which lower timeframe data is available will thus vary with the requested lower timeframe.",
           "returns": "An array of a type determined by `expression`, or a tuple of these.",
           "seeAlso": [
@@ -27744,6 +28101,17 @@
               ]
             },
             {
+              "name": "calc_bars_count",
+              "desc": "Limits the initial calculation of a script to the last number of bars specified. When specified, a \"Calculated bars\" field will be included in the \"Calculation\" section of the script's \"Settings/Inputs\" tab. Optional. The default is 0, in which case the script executes on all available bars.",
+              "default": null,
+              "required": false,
+              "displayType": "const int",
+              "allowedTypeIDs": [
+                "const int"
+              ],
+              "possibleValues": null
+            },
+            {
               "name": "risk_free_rate",
               "desc": "The risk-free rate of return is the annual percentage change in the value of an investment with minimal or zero risk.  \nIt is used to calculate the [Sharpe and Sortino ratios](https://www.tradingview.com/chart/?solution=43000561856).  \nOptional. The default is 2.",
               "default": 2,
@@ -27797,6 +28165,17 @@
               ]
             },
             {
+              "name": "dynamic_requests",
+              "desc": "Specifies whether the script can dynamically call functions from the `request.*()` namespace. Dynamic `request.*()` calls are allowed within the local scopes of conditional structures (e.g., if), loops (e.g., for), and exported functions. Additionally, such calls allow \"series\" arguments for many of their parameters. Optional. The default is true. See the User Manual's Dynamic requests section for more information.",
+              "default": null,
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": null
+            },
+            {
               "name": "behind_chart",
               "desc": "Specifies whether a script\\`s visuals appear behind or in front of the main chart series.  \nWhen `true`, visuals overlaid in the main pane render behind the chart bars. When `false`, visuals appear in front of the bars, which can obscure bar details depending on the visual type and color transparency.  \nOptional. The default is `true`.",
               "default": "true",
@@ -27811,7 +28190,7 @@
               ]
             }
           ],
-          "syntax": "strategy(title, shorttitle, overlay, format, precision, scale, pyramiding, calc_on_order_fills, calc_on_every_tick, max_bars_back, backtest_fill_limits_assumption, default_qty_type, default_qty_value, initial_capital, currency, slippage, commission_type, commission_value, process_orders_on_close, close_entries_rule, margin_long, margin_short, explicit_plot_zorder, max_lines_count, max_labels_count, max_boxes_count, risk_free_rate, use_bar_magnifier, fill_orders_on_standard_ohlc, max_polylines_count, behind_chart) → void",
+          "syntax": "strategy(title, shorttitle, overlay, format, precision, scale, pyramiding, calc_on_order_fills, calc_on_every_tick, max_bars_back, backtest_fill_limits_assumption, default_qty_type, default_qty_value, initial_capital, currency, slippage, commission_type, commission_value, process_orders_on_close, close_entries_rule, margin_long, margin_short, explicit_plot_zorder, max_lines_count, max_labels_count, max_boxes_count, calc_bars_count, risk_free_rate, use_bar_magnifier, fill_orders_on_standard_ohlc, max_polylines_count, dynamic_requests, behind_chart) → void",
           "remarks": "You can learn more about strategies in our [User Manual](https://www.tradingview.com/pine-script-docs/en/v6/concepts/Strategies.html).\nEvery strategy script must have one [strategy](#fun_strategy) call.\nStrategies using `calc_on_every_tick = true` parameter may calculate differently on historical and realtime bars, which causes [repainting](https://www.tradingview.com/pine-script-docs/en/v6/concepts/Repainting.html).\nStrategies always use the chart\\`s prices to enter and exit positions.  \nUsing them on non-standard chart types (Heikin Ashi, Renko, etc.) will produce misleading results, as their prices are synthetic.  \nBacktesting on non-standard charts is thus not recommended.",
           "seeAlso": [
             "[indicator](#fun_indicator)",
@@ -29008,20 +29387,17 @@
               "possibleValues": null
             },
             {
-              "name": "displayType",
-              "desc": "A required parameter. The type of the value. Please specify one of the following values: [strategy.percent_of_equity](#var_strategy.percent_of_equity) or [strategy.cash](#var_strategy.cash).  \nNote: if equity drops down to zero or to a negative and the [strategy.percent_of_equity](#var_strategy.percent_of_equity) is specified, all pending orders are cancelled, all open positions are closed and no new orders can be placed for good.",
+              "name": "type",
+              "desc": "A required parameter. The type of the value. Please specify one of the following values: strategy.percent_of_equity or strategy.cash. Note: if equity drops down to zero or to a negative and the strategy.percent_of_equity is specified, all pending orders are cancelled, all open positions are closed and no new orders can be placed for good.",
               "default": null,
-              "required": true,
+              "required": false,
               "displayType": "simple string",
               "allowedTypeIDs": [
                 "simple string",
                 "input string",
                 "const string"
               ],
-              "possibleValues": [
-                "strategy.percent_of_equity",
-                "strategy.cash"
-              ]
+              "possibleValues": null
             },
             {
               "name": "alert_message",
@@ -29209,20 +29585,17 @@
               ]
             },
             {
-              "name": "displayType",
-              "desc": "A required parameter. The type of the value. Please specify one of the following values: [strategy.percent_of_equity](#var_strategy.percent_of_equity) or [strategy.cash](#var_strategy.cash).  \nNote: if equity drops down to zero or to a negative and the 'strategy.percent_of_equity' is specified, all pending orders are cancelled, all open positions are closed and no new orders can be placed for good.",
+              "name": "type",
+              "desc": "A required parameter. The type of the value. Please specify one of the following values: strategy.percent_of_equity or strategy.cash. Note: if equity drops down to zero or to a negative and the 'strategy.percent_of_equity' is specified, all pending orders are cancelled, all open positions are closed and no new orders can be placed for good.",
               "default": null,
-              "required": true,
+              "required": false,
               "displayType": "simple string",
               "allowedTypeIDs": [
                 "simple string",
                 "input string",
                 "const string"
               ],
-              "possibleValues": [
-                "strategy.percent_of_equity",
-                "strategy.cash"
-              ]
+              "possibleValues": null
             },
             {
               "name": "alert_message",
@@ -36744,6 +37117,31 @@
               "displayType": "<type>",
               "allowedTypeIDs": [],
               "possibleValues": null
+            },
+            {
+              "name": "ignore_invalid_symbol",
+              "desc": "Determines the behavior of the function if the specified symbol is not found: if false, the script will halt and throw a runtime error; if true, the function will return na and execution will continue. Optional. The default is false.",
+              "default": null,
+              "required": false,
+              "displayType": "input bool",
+              "allowedTypeIDs": [
+                "input bool",
+                "const bool"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "calc_bars_count",
+              "desc": "Optional. If specified, the function requests only this number of values from the end of the symbol's history and calculates `expression` as if these values are the only available data, which might improve calculation speed in some cases. The default is the same as the number of chart bars available for the symbol and timeframe. The maximum number of bars that the function can attempt to retrieve depends on the intrabar limit of the user's plan. However, the request cannot retrieve more bars than are available in the dataset.",
+              "default": null,
+              "required": false,
+              "displayType": "simple int",
+              "allowedTypeIDs": [
+                "simple int",
+                "input int",
+                "const int"
+              ],
+              "possibleValues": null
             }
           ],
           "syntax": "request.seed(source, symbol, expression)",
@@ -36894,9 +37292,20 @@
                 "4",
                 "5"
               ]
+            },
+            {
+              "name": "force_overlay",
+              "desc": "If true, the drawing will display on the main chart pane, even when the script occupies a separate pane. Optional. The default is false.",
+              "default": null,
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "table.new(position, columns, rows, bgcolor, frame_color, frame_width, border_color, border_width) → series table",
+          "syntax": "table.new(position, columns, rows, bgcolor, frame_color, frame_width, border_color, border_width, force_overlay) → series table",
           "remarks": "This function creates the table object itself, but the table will not be displayed until its cells are populated.  \nTo define a cell and change its contents or attributes, use [table.cell](#fun_table.cell) and other table.cell_*() functions.\nOne [table.new](#fun_table.new) call can only display one table (the last one drawn), but the function itself will be recalculated on each bar it is used on.  \nFor performance reasons, it is wise to use [table.new](#fun_table.new) in conjunction with either the [var](#op_var) keyword (so the table object is only created on the first bar) or in an [if](#op_if) [barstate.islast](#var_barstate.islast) block (so the table object is only created on the last bar).",
           "returns": "The ID of a table object that can be passed to other table.*() functions.",
           "seeAlso": [
@@ -43132,9 +43541,20 @@
                 "true",
                 "false"
               ]
+            },
+            {
+              "name": "dynamic_requests",
+              "desc": "Specifies whether the script can dynamically call functions from the `request.*()` namespace. Dynamic `request.*()` calls are allowed within the local scopes of conditional structures (e.g., if), loops (e.g., for), and exported functions. Additionally, such calls allow \"series\" arguments for many of their parameters. Optional. The default is true. See the User Manual's Dynamic requests section for more information.",
+              "default": null,
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "library(title, overlay) → void",
+          "syntax": "library(title, overlay, dynamic_requests) → void",
           "seeAlso": [
             "[indicator](#fun_indicator)",
             "[strategy](#fun_strategy)"
@@ -43985,9 +44405,54 @@
               "default": null,
               "required": false,
               "displayType": "int"
+            },
+            {
+              "name": "imbalance_percent",
+              "desc": "Optional. The percentage difference in volume for detecting row imbalances. Scripts can use volume_row IDs retrieved from the returned footprint object in calls to volume_row.has_buy_imbalance() and volume_row.has_sell_imbalance() to identify imbalanced rows. A row is imbalanced if its \"buy\" volume exceeds the \"sell\" volume of the row below it by the specified percentage, or if its \"sell\" volume exceeds the \"buy\" volume of the row above it by the percentage. The default is 300.",
+              "default": null,
+              "required": false,
+              "displayType": "simple int/float",
+              "allowedTypeIDs": [
+                "simple int",
+                "input int",
+                "const int",
+                "simple float",
+                "input float",
+                "const float"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "ticks_per_row",
+              "desc": "The price range of each footprint row, expressed in ticks.",
+              "default": null,
+              "required": false,
+              "displayType": "simple int",
+              "allowedTypeIDs": [
+                "simple int",
+                "input int",
+                "const int"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "va_percent",
+              "desc": "Optional. The percentage of each footprint's total volume to use for calculating the value area (VA). The default is 70.",
+              "default": null,
+              "required": false,
+              "displayType": "simple int/float",
+              "allowedTypeIDs": [
+                "simple int",
+                "input int",
+                "const int",
+                "simple float",
+                "input float",
+                "const float"
+              ],
+              "possibleValues": null
             }
           ],
-          "syntax": "request.footprint(type, rows) → footprint",
+          "syntax": "request.footprint(type, rows, imbalance_percent, ticks_per_row, va_percent) → footprint",
           "returns": "footprint"
         },
         {
@@ -44104,7 +44569,21 @@
             },
             {
               "name": "column",
-              "desc": "The index of the cells row. Numbering starts at 0.",
+              "desc": "The index of the cell\\`s column. Numbering starts at 0.",
+              "default": null,
+              "required": true,
+              "displayType": "series int",
+              "allowedTypeIDs": [
+                "series int",
+                "simple int",
+                "input int",
+                "const int"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "row",
+              "desc": "The index of the cell\\`s row. Numbering starts at 0.",
               "default": null,
               "required": true,
               "displayType": "series int",
