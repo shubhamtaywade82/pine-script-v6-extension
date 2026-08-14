@@ -219,7 +219,7 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
   }
 
   private getHtml(): string {
-    return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta http-equiv="Content-Security-Policy" content="default-src 'unsafe-inline' 'unsafe-eval' vscode-resource: data: https:;"><style>
+    return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><style>
 :root{--bg:var(--vscode-sideBar-background,#1e1e1e);--fg:var(--vscode-foreground,#ccc);--card:var(--vscode-editor-background,#252526);--border:var(--vscode-widget-border,#333);--accent:var(--vscode-button-background,#0e639c);--accent-hover:var(--vscode-button-hoverBackground,#1177bb);font-family:var(--vscode-font-family,sans-serif);}
 *{box-sizing:border-box;margin:0;padding:0;}body{background:var(--bg);color:var(--fg);font-size:12px;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
 .header{padding:6px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:6px;}
@@ -227,7 +227,8 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
 .dot{width:7px;height:7px;border-radius:50%;background:#e51400;}.dot.online{background:#89d185;}.header-actions{display:flex;gap:4px;}
 .settings-drawer{display:none;padding:10px;border-bottom:1px solid var(--border);background:var(--card);flex-direction:column;gap:6px;font-size:11px;}
 .settings-drawer.open{display:flex;}.cfg-row{display:flex;flex-direction:column;gap:2px;}.cfg-row label{opacity:0.85;font-size:10px;}
-.cfg-input{background:var(--bg);color:var(--fg);border:1px solid var(--border);border-radius:3px;padding:4px 6px;font-size:11px;}.cfg-actions{display:flex;gap:6px;margin-top:4px;}
+.cfg-input{background:var(--bg);color:var(--fg);border:1px solid var(--border);border-radius:3px;padding:4px 6px;font-size:11px;}
+.cfg-actions{display:flex;gap:6px;margin-top:4px;}
 .tab-bar{display:flex;border-bottom:1px solid var(--border);background:var(--card);}
 .tab-btn{flex:1;padding:5px;background:transparent;border:none;color:var(--fg);cursor:pointer;font-size:11px;opacity:0.7;border-bottom:2px solid transparent;}
 .tab-btn.active{opacity:1;font-weight:bold;border-bottom:2px solid var(--accent);}
@@ -285,95 +286,166 @@ textarea:focus{outline:1px solid var(--accent);}.send-btn{background:var(--accen
 <div class="input-row"><textarea id="promptInput" placeholder="Ask PineForge AI... (Enter to send, Shift+Enter for newline)"></textarea><button class="send-btn" id="sendBtn">Send</button></div>
 </div>
 <script>
-const vscode=acquireVsCodeApi(),chatFlow=document.getElementById('chatFlow'),logFlow=document.getElementById('logFlow'),fullLogStream=document.getElementById('fullLogStream'),promptInput=document.getElementById('promptInput'),ctxCheck=document.getElementById('ctxCheck');
-let currentTranscript=[],streamBuffer='',activeBotMsg=null,activeStreamBody=null,activeStreamHeader=null;
+(function(){
+try {
+var vscode = acquireVsCodeApi();
+var chatFlow = document.getElementById('chatFlow');
+var logFlow = document.getElementById('logFlow');
+var fullLogStream = document.getElementById('fullLogStream');
+var promptInput = document.getElementById('promptInput');
+var ctxCheck = document.getElementById('ctxCheck');
+var currentTranscript = [], streamBuffer = '', activeBotMsg = null, activeStreamBody = null, activeStreamHeader = null;
 
 function switchTab(t){
-document.getElementById('tabChatBtn').className='tab-btn '+(t==='chat'?'active':'');
-document.getElementById('tabLogBtn').className='tab-btn '+(t==='logs'?'active':'');
-chatFlow.style.display=t==='chat'?'flex':'none';logFlow.style.display=t==='logs'?'flex':'none';
-document.getElementById('quickBar').style.display=t==='chat'?'flex':'none';
+document.getElementById('tabChatBtn').className = 'tab-btn ' + (t==='chat'?'active':'');
+document.getElementById('tabLogBtn').className = 'tab-btn ' + (t==='logs'?'active':'');
+chatFlow.style.display = t==='chat' ? 'flex' : 'none';
+logFlow.style.display = t==='logs' ? 'flex' : 'none';
+document.getElementById('quickBar').style.display = t==='chat' ? 'flex' : 'none';
 }
-function submitPrompt(){const t=promptInput.value.trim();if(!t)return;appendMessage(t,'user');promptInput.value='';appendLog('USER: '+t);vscode.postMessage({type:'sendPrompt',prompt:t,includeContext:ctxCheck.checked});}
-function toggleSettings(){document.getElementById('settingsDrawer').classList.toggle('open');}
+function submitPrompt(){
+var t = promptInput.value.trim();
+if (!t) return;
+appendMessage(t, 'user');
+promptInput.value = '';
+appendLog('USER: ' + t);
+vscode.postMessage({ type: 'sendPrompt', prompt: t, includeContext: Boolean(ctxCheck.checked) });
+}
+function toggleSettings(){
+document.getElementById('settingsDrawer').classList.toggle('open');
+}
 function saveSettings(){
-const m=document.getElementById('cfgModelCustom').value.trim()||document.getElementById('cfgModelSelect').value;
-const h=document.getElementById('cfgHost').value.trim(),temp=parseFloat(document.getElementById('cfgTemp').value)||0,iter=parseInt(document.getElementById('cfgMaxIter').value,10)||12,rep=document.getElementById('cfgAutoRepair').checked;
-vscode.postMessage({type:'updateConfig',config:{model:m,host:h,temperature:temp,maxIterations:iter,autoRepair:rep}});
+var m = document.getElementById('cfgModelCustom').value.trim() || document.getElementById('cfgModelSelect').value;
+var h = document.getElementById('cfgHost').value.trim(), temp = parseFloat(document.getElementById('cfgTemp').value) || 0;
+var iter = parseInt(document.getElementById('cfgMaxIter').value, 10) || 12, rep = document.getElementById('cfgAutoRepair').checked;
+vscode.postMessage({ type: 'updateConfig', config: { model: m, host: h, temperature: temp, maxIterations: iter, autoRepair: rep } });
 toggleSettings();
 }
-function clearChat(){chatFlow.innerHTML='<div class="msg bot">Chat cleared. Ready for your Pine Script v6 requests.</div>';fullLogStream.innerText='Log cleared.\n';}
-function appendLog(text){fullLogStream.innerText+=text+'\n';logFlow.scrollTop=logFlow.scrollHeight;}
-function appendMessage(c,t,trans){
-const d=document.createElement('div');d.className='msg '+t;let html='';
-if(trans&&trans.length>0){
-html+='<details class="transcript-box"><summary>⚡ <strong>Execution Transcript ('+trans.length+' steps)</strong></summary><div class="transcript-steps">';
-trans.forEach(s=>{html+='<div class="transcript-step"><span class="t-time">['+s.time+']</span><span class="t-state">['+s.state+']</span> <span>'+s.message+'</span></div>';});
-html+='</div></details>';
+function clearChat(){
+chatFlow.innerHTML = '<div class="msg bot">Chat cleared. Ready for your Pine Script v6 requests.</div>';
+fullLogStream.innerText = 'Log cleared.\\n';
 }
-html+=renderMarkdown(c);d.innerHTML=html;chatFlow.appendChild(d);chatFlow.scrollTop=chatFlow.scrollHeight;return d;
+function appendLog(text){
+fullLogStream.innerText += text + '\\n';
+logFlow.scrollTop = logFlow.scrollHeight;
 }
-function renderMarkdown(t){if(!t)return '';const b=String.fromCharCode(96);let esc=t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-esc=esc.replace(new RegExp(b+b+b+'(?:pine|pinescript)?([\\\\s\\\\S]*?)'+b+b+b,'g'),function(_,c){return '<pre><code>'+c.trim()+'</code><div class="code-actions"><button class="btn-sm btn-apply">Apply</button><button class="btn-sm btn-insert">Insert</button><button class="btn-sm btn-copy">Copy</button></div></pre>';});
-esc=esc.replace(/\\*\\*(.*?)\\*\\*/g,'<strong>$1</strong>').replace(new RegExp(b+'([^'+b+']+)'+b,'g'),'<code>$1</code>');
-return esc.replace(/\\n/g,'<br>');}
+function appendMessage(c, t, trans){
+var d = document.createElement('div');
+d.className = 'msg ' + t;
+var html = '';
+if (trans && trans.length > 0) {
+html += '<details class="transcript-box"><summary>⚡ <strong>Execution Transcript (' + trans.length + ' steps)</strong></summary><div class="transcript-steps">';
+trans.forEach(function(s){ html += '<div class="transcript-step"><span class="t-time">[' + s.time + ']</span><span class="t-state">[' + s.state + ']</span> <span>' + s.message + '</span></div>'; });
+html += '</div></details>';
+}
+html += renderMarkdown(c);
+d.innerHTML = html;
+chatFlow.appendChild(d);
+chatFlow.scrollTop = chatFlow.scrollHeight;
+return d;
+}
+function renderMarkdown(t){
+if (!t) return '';
+var esc = t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+esc = esc.replace(/\`\`\`(?:pine|pinescript)?([\\s\\S]*?)\`\`\`/g, function(_, c){
+return '<pre><code>' + c.trim() + '</code><div class="code-actions"><button class="btn-sm btn-apply">Apply</button><button class="btn-sm btn-insert">Insert</button><button class="btn-sm btn-copy">Copy</button></div></pre>';
+});
+esc = esc.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');
+esc = esc.replace(/\`([^\`]+)\`/g, '<code>$1</code>');
+return esc.replace(/\\n/g, '<br>');
+}
 
-document.getElementById('modelTag').addEventListener('click',toggleSettings);
-document.getElementById('btnSettingsToggle').addEventListener('click',toggleSettings);
-document.getElementById('btnClearChat').addEventListener('click',clearChat);
-document.getElementById('btnSaveSettings').addEventListener('click',saveSettings);
-document.getElementById('btnVSCodeSettings').addEventListener('click',()=>vscode.postMessage({type:'openVSCodeSettings'}));
-document.getElementById('tabChatBtn').addEventListener('click',()=>switchTab('chat'));
-document.getElementById('tabLogBtn').addEventListener('click',()=>switchTab('logs'));
-document.getElementById('btnCopyLog').addEventListener('click',()=>{navigator.clipboard.writeText(fullLogStream.innerText);});
-document.getElementById('sendBtn').addEventListener('click',submitPrompt);
-document.getElementById('cfgModelSelect').addEventListener('change',e=>{if(e.target.value)document.getElementById('cfgModelCustom').value=e.target.value;});
-promptInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();submitPrompt();}});
-document.querySelectorAll('.chip').forEach(btn=>{btn.addEventListener('click',()=>vscode.postMessage({type:'quickAction',action:btn.dataset.action}));});
+document.getElementById('modelTag').addEventListener('click', toggleSettings);
+document.getElementById('btnSettingsToggle').addEventListener('click', toggleSettings);
+document.getElementById('btnClearChat').addEventListener('click', clearChat);
+document.getElementById('btnSaveSettings').addEventListener('click', saveSettings);
+document.getElementById('btnVSCodeSettings').addEventListener('click', function(){ vscode.postMessage({ type: 'openVSCodeSettings' }); });
+document.getElementById('tabChatBtn').addEventListener('click', function(){ switchTab('chat'); });
+document.getElementById('tabLogBtn').addEventListener('click', function(){ switchTab('logs'); });
+document.getElementById('btnCopyLog').addEventListener('click', function(){ navigator.clipboard.writeText(fullLogStream.innerText); });
+document.getElementById('sendBtn').addEventListener('click', submitPrompt);
+document.getElementById('cfgModelSelect').addEventListener('change', function(e){ if (e.target.value) document.getElementById('cfgModelCustom').value = e.target.value; });
+promptInput.addEventListener('keydown', function(e){ if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitPrompt(); } });
 
-chatFlow.addEventListener('click',e=>{
-const applyBtn=e.target.closest('.btn-apply'),insertBtn=e.target.closest('.btn-insert'),copyBtn=e.target.closest('.btn-copy');
-if(applyBtn){const code=applyBtn.closest('pre').querySelector('code').innerText;vscode.postMessage({type:'applyCode',code,mode:'replace'});}
-else if(insertBtn){const code=insertBtn.closest('pre').querySelector('code').innerText;vscode.postMessage({type:'applyCode',code,mode:'insert'});}
-else if(copyBtn){navigator.clipboard.writeText(copyBtn.closest('pre').querySelector('code').innerText);copyBtn.innerText='Copied!';setTimeout(()=>{copyBtn.innerText='Copy';},1500);}
+var chips = document.querySelectorAll('.chip');
+for (var i = 0; i < chips.length; i++) {
+(function(btn){
+btn.addEventListener('click', function(){ vscode.postMessage({ type: 'quickAction', action: btn.getAttribute('data-action') }); });
+})(chips[i]);
+}
+
+chatFlow.addEventListener('click', function(e){
+var applyBtn = e.target.closest('.btn-apply'), insertBtn = e.target.closest('.btn-insert'), copyBtn = e.target.closest('.btn-copy');
+if (applyBtn) {
+var code = applyBtn.closest('pre').querySelector('code').innerText;
+vscode.postMessage({ type: 'applyCode', code: code, mode: 'replace' });
+} else if (insertBtn) {
+var code = insertBtn.closest('pre').querySelector('code').innerText;
+vscode.postMessage({ type: 'applyCode', code: code, mode: 'insert' });
+} else if (copyBtn) {
+navigator.clipboard.writeText(copyBtn.closest('pre').querySelector('code').innerText);
+copyBtn.innerText = 'Copied!';
+setTimeout(function(){ copyBtn.innerText = 'Copy'; }, 1500);
+}
 });
 
-window.addEventListener('message',e=>{const m=e.data;
-if(m.type==='statusUpdate'){
-document.getElementById('modelName').innerText=m.connected?(m.model||'Connected'):'Disconnected';
-document.getElementById('statusDot').className='dot '+(m.connected?'online':'');
-document.getElementById('activeFileLabel').innerText=m.activeFile||'No active file';
-document.getElementById('cfgHost').value=m.host||'http://localhost:11434';
-document.getElementById('cfgModelCustom').value=m.model||'';
-document.getElementById('cfgTemp').value=m.temperature!==undefined?m.temperature:0;
-document.getElementById('cfgMaxIter').value=m.maxIterations||12;
-document.getElementById('cfgAutoRepair').checked=Boolean(m.autoRepair);
-const sel=document.getElementById('cfgModelSelect');sel.innerHTML='';
-const list=m.models&&m.models.length>0?m.models:[m.model].filter(Boolean);
-list.forEach(item=>{const opt=document.createElement('option');opt.value=item;opt.innerText=item;if(item===m.model)opt.selected=true;sel.appendChild(opt);});
-}else if(m.type==='startStreaming'){
-streamBuffer='';currentTranscript=[];activeBotMsg=document.createElement('div');activeBotMsg.className='msg bot';
-activeStreamHeader=document.createElement('div');activeStreamHeader.className='active-stream-header';
-activeStreamHeader.innerHTML='<span class="pulse-dot"></span><span>Thinking...</span>';
-activeStreamBody=document.createElement('div');activeStreamBody.className='stream-body';
-activeBotMsg.appendChild(activeStreamHeader);activeBotMsg.appendChild(activeStreamBody);
-chatFlow.appendChild(activeBotMsg);chatFlow.scrollTop=chatFlow.scrollHeight;
-}else if(m.type==='progress'){
-currentTranscript=m.transcript||[];appendLog('['+m.step.time+'] ['+m.step.state+'] '+m.step.message);
-if(activeStreamHeader){activeStreamHeader.innerHTML='<span class="pulse-dot"></span><span>['+m.step.state+'] '+m.step.message+'</span>';}
-}else if(m.type==='streamChunk'){
-streamBuffer+=m.chunk;if(activeStreamBody){activeStreamBody.innerHTML=renderMarkdown(streamBuffer);chatFlow.scrollTop=chatFlow.scrollHeight;}
-}else if(m.type==='streamEnd'||m.type==='botResponse'){
-const trans=m.transcript||currentTranscript,content=m.content||streamBuffer;
-if(activeBotMsg){activeBotMsg.remove();activeBotMsg=null;activeStreamBody=null;activeStreamHeader=null;}
-appendMessage(content,'bot',trans);appendLog('AGENT:\n'+content+'\n---');currentTranscript=[];streamBuffer='';
-}else if(m.type==='streamError'){
-const trans=m.transcript||currentTranscript;
-if(activeBotMsg){activeBotMsg.remove();activeBotMsg=null;activeStreamBody=null;activeStreamHeader=null;}
-appendMessage('Error: '+m.error,'bot',trans);appendLog('ERROR: '+m.error);currentTranscript=[];streamBuffer='';
-}});
-vscode.postMessage({type:'webviewReady'});
-setInterval(()=>vscode.postMessage({type:'refreshStatus'}),6000);
+window.addEventListener('message', function(e){
+var m = e.data;
+if (!m) return;
+if (m.type === 'statusUpdate') {
+document.getElementById('modelName').innerText = m.connected ? (m.model || 'Connected') : 'Disconnected';
+document.getElementById('statusDot').className = 'dot ' + (m.connected ? 'online' : '');
+document.getElementById('activeFileLabel').innerText = m.activeFile || 'No active file';
+document.getElementById('cfgHost').value = m.host || 'http://localhost:11434';
+document.getElementById('cfgModelCustom').value = m.model || '';
+document.getElementById('cfgTemp').value = m.temperature !== undefined ? m.temperature : 0;
+document.getElementById('cfgMaxIter').value = m.maxIterations || 12;
+document.getElementById('cfgAutoRepair').checked = Boolean(m.autoRepair);
+var sel = document.getElementById('cfgModelSelect');
+sel.innerHTML = '';
+var list = m.models && m.models.length > 0 ? m.models : [m.model].filter(Boolean);
+list.forEach(function(item){
+var opt = document.createElement('option');
+opt.value = item; opt.innerText = item;
+if (item === m.model) opt.selected = true;
+sel.appendChild(opt);
+});
+} else if (m.type === 'startStreaming') {
+streamBuffer = ''; currentTranscript = [];
+activeBotMsg = document.createElement('div'); activeBotMsg.className = 'msg bot';
+activeStreamHeader = document.createElement('div'); activeStreamHeader.className = 'active-stream-header';
+activeStreamHeader.innerHTML = '<span class="pulse-dot"></span><span>Thinking...</span>';
+activeStreamBody = document.createElement('div'); activeStreamBody.className = 'stream-body';
+activeBotMsg.appendChild(activeStreamHeader); activeBotMsg.appendChild(activeStreamBody);
+chatFlow.appendChild(activeBotMsg); chatFlow.scrollTop = chatFlow.scrollHeight;
+} else if (m.type === 'progress') {
+currentTranscript = m.transcript || [];
+appendLog('[' + m.step.time + '] [' + m.step.state + '] ' + m.step.message);
+if (activeStreamHeader) { activeStreamHeader.innerHTML = '<span class="pulse-dot"></span><span>[' + m.step.state + '] ' + m.step.message + '</span>'; }
+} else if (m.type === 'streamChunk') {
+streamBuffer += m.chunk;
+if (activeStreamBody) { activeStreamBody.innerHTML = renderMarkdown(streamBuffer); chatFlow.scrollTop = chatFlow.scrollHeight; }
+} else if (m.type === 'streamEnd' || m.type === 'botResponse') {
+var trans = m.transcript || currentTranscript, content = m.content || streamBuffer;
+if (activeBotMsg) { activeBotMsg.remove(); activeBotMsg = null; activeStreamBody = null; activeStreamHeader = null; }
+appendMessage(content, 'bot', trans);
+appendLog('AGENT:\\n' + content + '\\n---');
+currentTranscript = []; streamBuffer = '';
+} else if (m.type === 'streamError') {
+var trans = m.transcript || currentTranscript;
+if (activeBotMsg) { activeBotMsg.remove(); activeBotMsg = null; activeStreamBody = null; activeStreamHeader = null; }
+appendMessage('Error: ' + m.error, 'bot', trans);
+appendLog('ERROR: ' + m.error);
+currentTranscript = []; streamBuffer = '';
+}
+});
+
+vscode.postMessage({ type: 'webviewReady' });
+setInterval(function(){ vscode.postMessage({ type: 'refreshStatus' }); }, 5000);
+} catch(err) {
+console.error('PineForge UI error:', err);
+}
+})();
 </script></body></html>`
   }
 }

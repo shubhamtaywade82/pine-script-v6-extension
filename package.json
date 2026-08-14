@@ -33,7 +33,11 @@
     "TradingView",
     "TradingView.com"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:pine",
+    "onView:pineforge.chatView",
+    "onCommand:pineforge.openChat"
+  ],
   "icon": "media/PineLogo.png",
   "capabilities": {
     "untrustedWorkspaces": {
