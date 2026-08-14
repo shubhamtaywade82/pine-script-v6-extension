@@ -24,7 +24,7 @@ If you can't install CLI, do this:
 ```bash
 # In terminal, run:
 npm run vsce-package
-# This creates pinescriptv5.vsix file
+# This creates pinescriptv6.vsix file
 # Then install it manually in VS Code
 ```
 

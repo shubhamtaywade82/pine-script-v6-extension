@@ -483,6 +483,13 @@
           "name": "volume_row",
           "kind": "Type Keyword",
           "desc": "A price-level row in a footprint. Contains volume data at a specific price level."
+        },
+        {
+          "name": "const",
+          "kind": "Type Keyword",
+          "desc": "**const** is a type qualifier for values known at compile time, before the script is executed. A \"const\" value never changes for the life of a script.  \nLiteral values (e.g., `1`, `\"AAPL\"`) and expressions composed entirely of other \"const\" values automatically qualify as \"const\".",
+          "syntax": "[const] <type> <variable_name> = <value>",
+          "examples": "//@version=6\nindicator(\"Const example\")\nconst string GROUP1 = \"Inputs\"\nlengthInput = input.int(14, \"Length\", group = GROUP1)\nplot(ta.sma(close, lengthInput))"
         }
       ],
       "title": "Built-in Type"
@@ -11353,6 +11360,76 @@
           "desc": "The index of the earliest remaining closed trade in memory. In Pine Script v6, when a strategy exceeds 9,000 trades, the oldest trades are automatically trimmed. This variable returns the lowest valid trade_num that can be referenced by strategy.closedtrades.* functions.",
           "type": "series int",
           "returns": "int"
+        },
+        {
+          "name": "timeframe.main_period",
+          "kind": "Built-in Variable",
+          "desc": "Stores a string value representing the chart\\`s timeframe, or the script\\`s main timeframe, even when referenced inside a `request.*()` call.",
+          "type": "string",
+          "seeAlso": [
+            "[timeframe.period](#var_timeframe.period)"
+          ],
+          "displayType": "simple string"
+        },
+        {
+          "name": "timeframe.isticks",
+          "kind": "Built-in Variable",
+          "desc": "Returns `true` if the current timeframe is a tick-based timeframe (e.g. \"10T\"), `false` otherwise.",
+          "type": "bool",
+          "seeAlso": [
+            "[timeframe.isseconds](#var_timeframe.isseconds)"
+          ],
+          "displayType": "simple bool"
+        },
+        {
+          "name": "syminfo.main_tickerid",
+          "kind": "Built-in Variable",
+          "desc": "Stores a string representing the ticker ID of the main dataset on which the script runs. Unlike `syminfo.tickerid`, this variable does not store a different value when used in a `request.*()` call\\`s `expression` argument.",
+          "type": "string",
+          "seeAlso": [
+            "[syminfo.tickerid](#var_syminfo.tickerid)"
+          ],
+          "displayType": "simple string"
+        },
+        {
+          "name": "syminfo.current_contract",
+          "kind": "Built-in Variable",
+          "desc": "Stores the ticker identifier of the underlying contract if the current symbol refers to a continuous futures dataset, and an empty string otherwise.",
+          "type": "string",
+          "seeAlso": [
+            "[syminfo.root](#var_syminfo.root)"
+          ],
+          "displayType": "simple string"
+        },
+        {
+          "name": "syminfo.expiration_date",
+          "kind": "Built-in Variable",
+          "desc": "Stores a UNIX timestamp representing the start of the last day of the current contract if the symbol refers to a non-continuous futures dataset.",
+          "type": "int",
+          "seeAlso": [
+            "[syminfo.current_contract](#var_syminfo.current_contract)"
+          ],
+          "displayType": "simple int"
+        },
+        {
+          "name": "syminfo.isin",
+          "kind": "Built-in Variable",
+          "desc": "Holds a string representing the International Securities Identification Number (ISIN) for the underlying instrument, or an empty string if no ISIN information is available.",
+          "type": "string",
+          "seeAlso": [
+            "[syminfo.ticker](#var_syminfo.ticker)"
+          ],
+          "displayType": "simple string"
+        },
+        {
+          "name": "syminfo.mincontract",
+          "kind": "Built-in Variable",
+          "desc": "Stores a float value representing the minimum number of contracts/lots/shares/units required for a trade, as set by the exchange.",
+          "type": "float",
+          "seeAlso": [
+            "[syminfo.pointvalue](#var_syminfo.pointvalue)"
+          ],
+          "displayType": "simple float"
         }
       ],
       "title": "Built-in Variable"
@@ -15805,9 +15882,23 @@
                 "60",
                 "100"
               ]
+            },
+            {
+              "name": "behind_chart",
+              "desc": "Specifies whether a script\\`s visuals appear behind or in front of the main chart series.  \nWhen `true`, visuals overlaid in the main pane render behind the chart bars. When `false`, visuals appear in front of the bars, which can obscure bar details depending on the visual type and color transparency.  \nOptional. The default is `true`.",
+              "default": "true",
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": [
+                "true",
+                "false"
+              ]
             }
           ],
-          "syntax": "indicator(title, shorttitle, overlay, format, precision, scale, max_bars_back, timeframe, timeframe_gaps, explicit_plot_zorder, max_lines_count, max_labels_count, max_boxes_count, max_polylines_count) → void",
+          "syntax": "indicator(title, shorttitle, overlay, format, precision, scale, max_bars_back, timeframe, timeframe_gaps, explicit_plot_zorder, max_lines_count, max_labels_count, max_boxes_count, max_polylines_count, behind_chart) → void",
           "remarks": "Every indicator script must have one [indicator](#fun_indicator) call.",
           "seeAlso": [
             "[strategy](#fun_strategy)",
@@ -16005,9 +16096,65 @@
                 "display.status_line",
                 "display.all"
               ]
+            },
+            {
+              "name": "format",
+              "desc": "Specifies the numeric format used to represent the plot\\`s displayed values in the status line, Data Window, and price scale.  \nPossible values: [format.inherit](#var_format.inherit), [format.price](#var_format.price), [format.volume](#var_format.volume), [format.percent](#var_format.percent).  \nOptional. The default is [format.inherit](#var_format.inherit).",
+              "default": "format.inherit",
+              "required": false,
+              "displayType": "const string",
+              "allowedTypeIDs": [
+                "const string"
+              ],
+              "possibleValues": [
+                "format.inherit",
+                "format.price",
+                "format.volume",
+                "format.percent"
+              ]
+            },
+            {
+              "name": "precision",
+              "desc": "Specifies the number of digits after the floating point of the plot\\`s displayed values. Must be a non-negative integer no greater than 16.  \nOptional. The default is inherited from the precision of the chart\\`s symbol.",
+              "default": "syminfo.pricescale",
+              "required": false,
+              "displayType": "const int",
+              "allowedTypeIDs": [
+                "const int"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "force_overlay",
+              "desc": "If `true`, the plotted results display on the main chart pane, even when the script occupies a separate pane.  \nOptional. The default is `false`.",
+              "default": "false",
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": [
+                "true",
+                "false"
+              ]
+            },
+            {
+              "name": "linestyle",
+              "desc": "Controls the style of the plotted line.  \nPossible values: [plot.linestyle_solid](#var_plot.linestyle_solid), [plot.linestyle_dashed](#var_plot.linestyle_dashed), [plot.linestyle_dotted](#var_plot.linestyle_dotted).  \nOptional. The default is [plot.linestyle_solid](#var_plot.linestyle_solid).",
+              "default": "plot.linestyle_solid",
+              "required": false,
+              "displayType": "const string",
+              "allowedTypeIDs": [
+                "const string"
+              ],
+              "possibleValues": [
+                "plot.linestyle_solid",
+                "plot.linestyle_dashed",
+                "plot.linestyle_dotted"
+              ]
             }
           ],
-          "syntax": "plot(series, title, color, linewidth, style, trackprice, histbase, offset, join, editable, show_last, display) → plot",
+          "syntax": "plot(series, title, color, linewidth, style, trackprice, histbase, offset, join, editable, show_last, display, format, precision, force_overlay, linestyle) → plot",
           "returns": "A plot object, that can be used in [fill](#fun_fill)",
           "seeAlso": [
             "[plotshape](#fun_plotshape)",
@@ -16768,9 +16915,23 @@
                 "display.status_line",
                 "display.all"
               ]
+            },
+            {
+              "name": "force_overlay",
+              "desc": "If `true`, the drawing displays on the main chart pane, even when the script occupies a separate pane.  \nOptional. The default is `false`.",
+              "default": "false",
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": [
+                "true",
+                "false"
+              ]
             }
           ],
-          "syntax": "plotbar(open, high, low, close, title, color, editable, show_last, display) → void",
+          "syntax": "plotbar(open, high, low, close, title, color, editable, show_last, display, force_overlay) → void",
           "remarks": "Even if one value of open, high, low or close equal NaN then bar no draw.\nThe maximal value of open, high, low or close will be set as 'high', and the minimal value will be set as 'low'.",
           "seeAlso": [
             "[plotcandle](#fun_plotcandle)"
@@ -17157,25 +17318,21 @@
               "possibleValues": null
             },
             {
-              "name": "display",
-              "desc": "Controls where the bgcolor is displayed. Possible values are: [display.none](#var_display.none), [display.all](#var_display.all).  \nDefault is [display.all](#var_display.all).",
-              "default": "display.all",
+              "name": "force_overlay",
+              "desc": "If `true`, the background color displays on the main chart pane, even when the script occupies a separate pane.  \nOptional. The default is `false`.",
+              "default": "false",
               "required": false,
-              "displayType": "input plot_simple_display",
+              "displayType": "const bool",
               "allowedTypeIDs": [
-                "input plot_simple_display"
+                "const bool"
               ],
               "possibleValues": [
-                "display.none",
-                "display.pane",
-                "display.data_window",
-                "display.price_scale",
-                "display.status_line",
-                "display.all"
+                "true",
+                "false"
               ]
             }
           ],
-          "syntax": "bgcolor(color, offset, editable, show_last, title, display) → void",
+          "syntax": "bgcolor(color, offset, editable, show_last, title, force_overlay) → void",
           "seeAlso": [
             "[barcolor](#fun_barcolor)",
             "[plot](#fun_plot)",
@@ -27260,9 +27417,23 @@
                 50,
                 100
               ]
+            },
+            {
+              "name": "behind_chart",
+              "desc": "Specifies whether a script\\`s visuals appear behind or in front of the main chart series.  \nWhen `true`, visuals overlaid in the main pane render behind the chart bars. When `false`, visuals appear in front of the bars, which can obscure bar details depending on the visual type and color transparency.  \nOptional. The default is `true`.",
+              "default": "true",
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": [
+                "true",
+                "false"
+              ]
             }
           ],
-          "syntax": "strategy(title, shorttitle, overlay, format, precision, scale, pyramiding, calc_on_order_fills, calc_on_every_tick, max_bars_back, backtest_fill_limits_assumption, default_qty_type, default_qty_value, initial_capital, currency, slippage, commission_type, commission_value, process_orders_on_close, close_entries_rule, margin_long, margin_short, explicit_plot_zorder, max_lines_count, max_labels_count, max_boxes_count, max_polylines_count, risk_free_rate, use_bar_magnifier) → void",
+          "syntax": "strategy(title, shorttitle, overlay, format, precision, scale, pyramiding, calc_on_order_fills, calc_on_every_tick, max_bars_back, backtest_fill_limits_assumption, default_qty_type, default_qty_value, initial_capital, currency, slippage, commission_type, commission_value, process_orders_on_close, close_entries_rule, margin_long, margin_short, explicit_plot_zorder, max_lines_count, max_labels_count, max_boxes_count, risk_free_rate, use_bar_magnifier, fill_orders_on_standard_ohlc, max_polylines_count, behind_chart) → void",
           "remarks": "You can learn more about strategies in our [User Manual](https://www.tradingview.com/pine-script-docs/en/v6/concepts/Strategies.html).\nEvery strategy script must have one [strategy](#fun_strategy) call.\nStrategies using `calc_on_every_tick = true` parameter may calculate differently on historical and realtime bars, which causes [repainting](https://www.tradingview.com/pine-script-docs/en/v6/concepts/Repainting.html).\nStrategies always use the chart\\`s prices to enter and exit positions.  \nUsing them on non-standard chart types (Heikin Ashi, Renko, etc.) will produce misleading results, as their prices are synthetic.  \nBacktesting on non-standard charts is thus not recommended.",
           "seeAlso": [
             "[indicator](#fun_indicator)",
@@ -29057,6 +29228,20 @@
               ]
             },
             {
+              "name": "force_overlay",
+              "desc": "If `true`, the drawing displays on the main chart pane, even when the script occupies a separate pane.  \nOptional. The default is `false`.",
+              "default": "false",
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": [
+                "true",
+                "false"
+              ]
+            },
+            {
               "name": "text_formatting",
               "desc": "The formatting of the text. An optional parameter, the default value is [text.format_none](#var_text.format_none). \nPossible values: [text.format_none](#var_text.format_none), [text.format_bold](#var_text.format_bold), [text.format_italic](#var_text.format_italic), or combinations like text.format_bold + text.format_italic.",
               "default": "text.format_none",
@@ -29097,7 +29282,7 @@
               "possibleValues": null
             }
           ],
-          "syntax": "box.new(left, top, right, bottom, border_color, border_width, border_style, extend, xloc, bgcolor, text, text_size, text_font_family, text_color, text_halign, text_valign, text_wrap, text_formatting, top_left, bottom_right) → series box",
+          "syntax": "box.new(left, top, right, bottom, border_color, border_width, border_style, extend, xloc, bgcolor, text, text_size, text_font_family, text_color, text_halign, text_valign, text_wrap, force_overlay, text_formatting, top_left, bottom_right) → series box",
           "returns": "The ID of a box object which may be used in box.set_*() and box.get_*() functions.",
           "seeAlso": [
             "[box.delete](#fun_box.delete)",
@@ -30372,9 +30557,23 @@
                 "chart.point"
               ],
               "possibleValues": null
+            },
+            {
+              "name": "force_overlay",
+              "desc": "If `true`, the drawing displays on the main chart pane, even when the script occupies a separate pane.  \nOptional. The default is `false`.",
+              "default": "false",
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": [
+                "true",
+                "false"
+              ]
             }
           ],
-          "syntax": "line.new(x1, y1, x2, y2, xloc, extend, color, style, width) → series line\nline.new(first_point, second_point, xloc, extend, color, style, width) → series line",
+          "syntax": "line.new(x1, y1, x2, y2, xloc, extend, color, width, style, first_point, second_point, force_overlay) → series line",
           "returns": "Line ID object which may be passed to line.setXXX and line.getXXX functions.",
           "seeAlso": [
             "[line.delete](#fun_line.delete)",
@@ -31586,6 +31785,20 @@
               ]
             },
             {
+              "name": "force_overlay",
+              "desc": "If `true`, the drawing displays on the main chart pane, even when the script occupies a separate pane.  \nOptional. The default is `false`.",
+              "default": "false",
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": [
+                "true",
+                "false"
+              ]
+            },
+            {
               "name": "text_formatting",
               "desc": "The formatting of the text. An optional parameter, the default value is [text.format_none](#var_text.format_none). \nPossible values: [text.format_none](#var_text.format_none), [text.format_bold](#var_text.format_bold), [text.format_italic](#var_text.format_italic), or combinations like text.format_bold + text.format_italic.",
               "default": "text.format_none",
@@ -31615,7 +31828,7 @@
               "possibleValues": null
             }
           ],
-          "syntax": "label.new(x, y, text, xloc, yloc, color, style, textcolor, size, textalign, tooltip, text_font_family, text_formatting, point) → series label",
+          "syntax": "label.new(x, y, text, xloc, yloc, color, style, textcolor, size, textalign, tooltip, text_font_family, force_overlay, text_formatting, point) → series label",
           "returns": "Label ID object which may be passed to label.setXXX and label.getXXX functions.",
           "seeAlso": [
             "[label.delete](#fun_label.delete)",
@@ -43326,9 +43539,23 @@
                 "4",
                 "5"
               ]
+            },
+            {
+              "name": "force_overlay",
+              "desc": "If `true`, the drawing displays on the main chart pane, even when the script occupies a separate pane.  \nOptional. The default is `false`.",
+              "default": "false",
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": [
+                "true",
+                "false"
+              ]
             }
           ],
-          "syntax": "polyline.new(points, curved, closed, xloc, line_color, fill_color, line_style, line_width) → series polyline",
+          "syntax": "polyline.new(points, curved, closed, xloc, line_color, fill_color, line_style, line_width, force_overlay) → series polyline",
           "returns": "The ID of a new polyline object that a script can use in other `polyline.*()` functions.",
           "seeAlso": [
             "[chart.point.new](#fun_chart.point.new)"
@@ -43542,6 +43769,215 @@
           "returnedType": "void",
           "returnedTypes": [
             "void"
+          ]
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "str.trim",
+          "desc": "Copies a source string and removes leading and trailing whitespace characters, including the standard space, newline, and tab characters.",
+          "args": [
+            {
+              "name": "source",
+              "desc": "Source string.",
+              "default": null,
+              "required": true,
+              "displayType": "series string",
+              "allowedTypeIDs": [
+                "series string",
+                "simple string",
+                "input string",
+                "const string"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "str.trim(source) → series string",
+          "returns": "Processed string.",
+          "returnedType": "string",
+          "returnedTypes": [
+            "simple string",
+            "input string",
+            "const string",
+            "series string"
+          ]
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "str.repeat",
+          "desc": "Creates a string value that repeats a source string\\`s character sequence a specified number of times, optionally inserting a separator between repetitions.",
+          "args": [
+            {
+              "name": "source",
+              "desc": "The character sequence to repeat.",
+              "default": null,
+              "required": true,
+              "displayType": "series string",
+              "allowedTypeIDs": [
+                "series string",
+                "simple string",
+                "input string",
+                "const string"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "repeat",
+              "desc": "Number of times to repeat the source sequence.",
+              "default": null,
+              "required": true,
+              "displayType": "series int",
+              "allowedTypeIDs": [
+                "series int",
+                "simple int",
+                "input int",
+                "const int"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "separator",
+              "desc": "Characters to insert between repetitions.  \nOptional. The default is an empty string.",
+              "default": "''",
+              "required": false,
+              "displayType": "series string",
+              "allowedTypeIDs": [
+                "series string",
+                "simple string",
+                "input string",
+                "const string"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "str.repeat(source, repeat, separator) → series string",
+          "returns": "Processed string.",
+          "returnedType": "string",
+          "returnedTypes": [
+            "simple string",
+            "input string",
+            "const string",
+            "series string"
+          ]
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "input.enum",
+          "desc": "Adds an input to the Inputs tab of your script\\`s Settings, which allows you to provide configuration options to script users. This function creates a dropdown input that displays the field titles corresponding to the distinct members of an enum type.",
+          "args": [
+            {
+              "name": "defval",
+              "desc": "Determines the default value of the input variable proposed in the script\\`s \"Settings/Inputs\" tab, from where the user can change it. Must be a member of an enum type.",
+              "default": null,
+              "required": true,
+              "displayType": "input enum",
+              "allowedTypeIDs": [
+                "const enum"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "title",
+              "desc": "Title of the input. If not specified, the variable name is used as the input\\`s title.",
+              "default": "'variable_name'",
+              "required": false,
+              "displayType": "const string",
+              "allowedTypeIDs": [
+                "const string"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "tooltip",
+              "desc": "The string that will be shown when hovering over the tooltip icon next to the input.",
+              "default": null,
+              "required": false,
+              "displayType": "const string",
+              "allowedTypeIDs": [
+                "const string"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "inline",
+              "desc": "Combines all input calls using the same value into one line. The parameter is used as a unique identifier for a given line.",
+              "default": null,
+              "required": false,
+              "displayType": "const string",
+              "allowedTypeIDs": [
+                "const string"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "group",
+              "desc": "Creates a header above the input, groups it with other inputs that use the same group name, and displays the header text in place of the group name.",
+              "default": null,
+              "required": false,
+              "displayType": "const string",
+              "allowedTypeIDs": [
+                "const string"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "confirm",
+              "desc": "If `true`, then user will be asked to confirm input value before the script is added to the chart.  \nOptional. The default is `false`.",
+              "default": "false",
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": [
+                "true",
+                "false"
+              ]
+            },
+            {
+              "name": "options",
+              "desc": "A list of enum members users can select from, allowing you to restrict the dropdown\\`s selection to a subset of the enum\\`s fields.",
+              "default": null,
+              "required": false,
+              "displayType": "const enum [val1, val2, ...]",
+              "allowedTypeIDs": [
+                "[const enum...]"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "display",
+              "desc": "Controls where the input\\`s information is displayed.  \nOptional. The default is [display.all](#var_display.all).",
+              "default": "display.all",
+              "required": false,
+              "displayType": "input plot_display",
+              "allowedTypeIDs": [
+                "input plot_display"
+              ],
+              "possibleValues": [
+                "display.none",
+                "display.all"
+              ]
+            },
+            {
+              "name": "active",
+              "desc": "Controls whether the input is active or not. When set to `false`, the input is hidden from the Settings/Inputs tab.  \nOptional. The default is `true`.",
+              "default": "true",
+              "required": false,
+              "displayType": "const bool",
+              "allowedTypeIDs": [
+                "const bool"
+              ],
+              "possibleValues": [
+                "true",
+                "false"
+              ]
+            }
+          ],
+          "syntax": "input.enum(defval, title, tooltip, inline, group, confirm, options, display, active) → input enum",
+          "returns": "Enum member value fetched from the study\\`s \"Settings/Inputs\" tab.",
+          "returnedType": "enum",
+          "returnedTypes": [
+            "input enum"
           ]
         }
       ],
@@ -43848,6 +44284,18 @@
           "kind": "Built-in @Annotation",
           "desc": "Documents an enum type in a library. Used to provide descriptions for exported enum types.",
           "syntax": "//@enum EnumName"
+        },
+        {
+          "name": "//#region",
+          "kind": "Built-in @Annotation",
+          "desc": "Marks the beginning of a collapsible code region in the Pine Editor. Must be paired with a matching `//#endregion` annotation. An optional label can follow the annotation to name the region.",
+          "syntax": "//#region [regionName]"
+        },
+        {
+          "name": "//#endregion",
+          "kind": "Built-in @Annotation",
+          "desc": "Marks the end of a collapsible code region in the Pine Editor that was opened with a `//#region` annotation.",
+          "syntax": "//#endregion"
         }
       ],
       "title": "Built-in @Annotation"
