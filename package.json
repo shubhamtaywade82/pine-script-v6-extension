@@ -212,7 +212,7 @@
         },
         "pineForge.ollama.model": {
           "type": "string",
-          "default": "qwen2.5-coder:7b",
+          "default": "minimax-m3:cloud",
           "description": "Default Ollama model to use for PineForge AI Agent"
         },
         "pineForge.ollama.temperature": {

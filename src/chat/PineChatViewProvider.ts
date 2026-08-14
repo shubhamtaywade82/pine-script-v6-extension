@@ -170,22 +170,48 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
   }
 
   private async postStatus(): Promise<void> {
-    const agent = PineAgentController.getInstance().getAgent()
-    const connected = await agent?.healthCheck() ?? false
-    const models = await agent?.getClient().getModels() ?? []
-    const config = vscode.workspace.getConfiguration('pineForge')
+    try {
+      const config = vscode.workspace.getConfiguration('pineForge')
+      let configuredModel = config.get<string>('ollama.model', 'minimax-m3:cloud')
+      const host = config.get<string>('ollama.host', 'http://localhost:11434')
+      const temperature = config.get<number>('ollama.temperature', 0)
+      const autoRepair = config.get<boolean>('agent.autoRepair', true)
+      const maxIterations = config.get<number>('agent.maxIterations', 12)
+      const activeFile = vscode.window.activeTextEditor?.document.fileName.split(/[/\\]/).pop()
 
-    this.postMessage({
-      type: 'statusUpdate',
-      connected,
-      host: config.get<string>('ollama.host', 'http://localhost:11434'),
-      model: config.get<string>('ollama.model', 'qwen2.5-coder:7b'),
-      temperature: config.get<number>('ollama.temperature', 0),
-      autoRepair: config.get<boolean>('agent.autoRepair', true),
-      maxIterations: config.get<number>('agent.maxIterations', 12),
-      models,
-      activeFile: vscode.window.activeTextEditor?.document.fileName.split(/[/\\]/).pop(),
-    })
+      let connected = false
+      let models: string[] = []
+
+      try {
+        const agent = PineAgentController.getInstance().getAgent()
+        if (agent) {
+          connected = await agent.healthCheck()
+          if (connected) {
+            models = (await agent.getClient().getModels()).filter(m => !m.includes('embed'))
+            if (models.length > 0 && (!configuredModel || configuredModel === 'qwen2.5-coder:7b')) {
+              configuredModel = models.includes('minimax-m3:cloud') ? 'minimax-m3:cloud' : models[0]
+            }
+          }
+        }
+      } catch {
+        connected = false
+        models = []
+      }
+
+      this.postMessage({
+        type: 'statusUpdate',
+        connected,
+        host,
+        model: configuredModel,
+        temperature,
+        autoRepair,
+        maxIterations,
+        models,
+        activeFile,
+      })
+    } catch {
+      // Safe fallback
+    }
   }
 
   private postMessage(msg: Record<string, unknown>): void {
@@ -347,6 +373,7 @@ if(activeBotMsg){activeBotMsg.remove();activeBotMsg=null;activeStreamBody=null;a
 appendMessage('Error: '+m.error,'bot',trans);appendLog('ERROR: '+m.error);currentTranscript=[];streamBuffer='';
 }});
 vscode.postMessage({type:'webviewReady'});
+setInterval(()=>vscode.postMessage({type:'refreshStatus'}),6000);
 </script></body></html>`
   }
 }
