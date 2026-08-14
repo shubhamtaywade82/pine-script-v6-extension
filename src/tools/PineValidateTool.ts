@@ -4,7 +4,7 @@
  */
 
 import { PineTool, PineToolDefinition, PineToolResult } from './PineTool'
-import { PineStaticAnalyzer, AnalyzerDiagnostic } from '../PineStaticAnalyzer'
+import { PineStaticAnalyzer, AnalyzerDiagnostic } from '../index'
 import { PineKnowledgeEngine } from '../knowledge/PineKnowledgeEngine'
 
 export interface ValidationResult {
