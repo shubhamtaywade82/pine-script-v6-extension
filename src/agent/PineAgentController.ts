@@ -30,6 +30,7 @@ export class PineAgentController {
   private statusBar!: PineForgeStatusBar
   private outputChannel = vscode.window.createOutputChannel('PineForge AI Agent')
   private healthTimer?: NodeJS.Timeout
+  private chatProvider?: PineChatViewProvider
 
   private constructor() {
     // Private constructor for singleton
@@ -47,6 +48,10 @@ export class PineAgentController {
     return this.outputChannel
   }
 
+  getChatProvider(): PineChatViewProvider | undefined {
+    return this.chatProvider
+  }
+
   initialize(context: vscode.ExtensionContext): void {
     this.knowledgeEngine = new PineKnowledgeEngine(Class.PineDocsManager)
     this.statusBar = getGlobalStatusBar()
@@ -55,9 +60,9 @@ export class PineAgentController {
     this.registerCommands(context)
     this.startHealthPolling(context)
     PineChatParticipant.getInstance().register(context, this.knowledgeEngine)
-    const chatProvider = new PineChatViewProvider(context.extensionUri, this.knowledgeEngine)
+    this.chatProvider = new PineChatViewProvider(context.extensionUri, this.knowledgeEngine)
     context.subscriptions.push(
-      vscode.window.registerWebviewViewProvider(PineChatViewProvider.viewType, chatProvider, {
+      vscode.window.registerWebviewViewProvider(PineChatViewProvider.viewType, this.chatProvider, {
         webviewOptions: { retainContextWhenHidden: true },
       }),
     )
@@ -130,9 +135,25 @@ export class PineAgentController {
       ['pineforge.debugCode', () => this.debugCode()],
       ['pineforge.migrateCode', () => this.migrateCode()],
       ['pineforge.validateCode', () => this.validateActiveScript()],
+      ['pineforge.fixDiagnostic', async (diag?: vscode.Diagnostic, _file?: string, lineText?: string, lineNum?: number) => {
+        const prompt = `Fix the error on line ${lineNum ?? 'active'}: "${diag?.message ?? 'syntax issue'}"\nLine code: \`${lineText?.trim() ?? ''}\`\nPlease provide the corrected Pine Script v6 replacement.`
+        if (this.chatProvider) {
+          await this.chatProvider.sendExternalPrompt(prompt)
+        } else {
+          await vscode.commands.executeCommand('pineforge.openChat')
+        }
+      }],
+      ['pineforge.explainDiagnostic', async (diag?: vscode.Diagnostic, _file?: string, lineText?: string, lineNum?: number) => {
+        const prompt = `Explain why this error occurs on line ${lineNum ?? 'active'}: "${diag?.message ?? 'syntax issue'}"\nLine code: \`${lineText?.trim() ?? ''}\`\nExplain the cause and how to write it correctly in Pine Script v6.`
+        if (this.chatProvider) {
+          await this.chatProvider.sendExternalPrompt(prompt)
+        } else {
+          await vscode.commands.executeCommand('pineforge.openChat')
+        }
+      }],
     ]
     for (const [id, handler] of commands) {
-      context.subscriptions.push(vscode.commands.registerCommand(id, handler))
+      context.subscriptions.push(vscode.commands.registerCommand(id, handler as any))
     }
   }
 

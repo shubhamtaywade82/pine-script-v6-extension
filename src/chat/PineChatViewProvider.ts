@@ -37,6 +37,11 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
     void this.postStatus()
   }
 
+  public async sendExternalPrompt(prompt: string): Promise<void> {
+    await vscode.commands.executeCommand('pineforge.chatView.focus')
+    await this.processPrompt(prompt, true)
+  }
+
   private getActivePineEditor(): vscode.TextEditor | undefined {
     if (vscode.window.activeTextEditor) {
       return vscode.window.activeTextEditor

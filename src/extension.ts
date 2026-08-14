@@ -6,6 +6,7 @@ import { PineTypify } from './index'
 import { PineLint } from './PineLint'
 import { checkForNewVersionAndShowChangelog } from './newVersionPopUp'
 import { PineAgentController } from './agent/PineAgentController'
+import { PineCodeActionProvider } from './PineCodeActionProvider'
 import * as vscode from 'vscode'
 
 export function deactivate() {
@@ -94,6 +95,9 @@ export async function activate(context: vscode.ExtensionContext) {
     VSCode.Lang.registerSignatureHelpProvider('pine', Class.PineSignatureHelpProvider, '(', ',', ' '),
     VSCode.Lang.registerCompletionItemProvider('pine', Class.PineLibCompletionProvider),
     VSCode.Lang.registerCompletionItemProvider('pine', Class.PineCompletionProvider, '.', ',', '('),
+    vscode.languages.registerCodeActionsProvider('pine', new PineCodeActionProvider(), {
+      providedCodeActionKinds: PineCodeActionProvider.providedCodeActionKinds,
+    }),
     // VSCode.RegisterCommand('pine.startProfiler', () => {console.profile('Start of Start Profiler (Command Triggered')}),
     // VSCode.RegisterCommand('pine.stopProfiler', () => {console.profileEnd('End of Start Profiler (Command Triggered')}),
     // VSCode.RegisterCommand('pine.getSavedList', async () => Class.PineScriptList.showMenu('saved')),
