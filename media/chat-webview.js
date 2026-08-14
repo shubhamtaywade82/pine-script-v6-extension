@@ -245,34 +245,7 @@ return;
 }
 });
 
-function wireEvents(){
-var btnSettings = document.getElementById('btnSettingsToggle');
-if (btnSettings) btnSettings.addEventListener('click', toggleSettings);
-var modelTag = document.getElementById('modelTag');
-if (modelTag) modelTag.addEventListener('click', toggleSettings);
-var btnClear = document.getElementById('btnClearChat');
-if (btnClear) btnClear.addEventListener('click', clearChat);
-var sendBtn = document.getElementById('sendBtn');
-if (sendBtn) sendBtn.addEventListener('click', submitPrompt);
-var btnSave = document.getElementById('btnSaveSettings');
-if (btnSave) btnSave.addEventListener('click', saveSettings);
-var btnVSCode = document.getElementById('btnVSCodeSettings');
-if (btnVSCode) btnVSCode.addEventListener('click', openVSCodeSettings);
-var tabChat = document.getElementById('tabChatBtn');
-if (tabChat) tabChat.addEventListener('click', function(){ switchTab('chat'); });
-var tabLog = document.getElementById('tabLogBtn');
-if (tabLog) tabLog.addEventListener('click', function(){ switchTab('logs'); });
-var btnCopy = document.getElementById('btnCopyLog');
-if (btnCopy) btnCopy.addEventListener('click', copyLog);
-var chips = document.querySelectorAll('.chip');
-chips.forEach(function(c){
-c.addEventListener('click', function(){
-var act = c.getAttribute('data-action');
-if (act) quickAction(act);
-});
-});
-}
-wireEvents();
+
 
 document.addEventListener('keydown', function(e){
 if (e.target && e.target.id === 'promptInput') {
