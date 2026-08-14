@@ -490,6 +490,27 @@
           "desc": "**const** is a type qualifier for values known at compile time, before the script is executed. A \"const\" value never changes for the life of a script.  \nLiteral values (e.g., `1`, `\"AAPL\"`) and expressions composed entirely of other \"const\" values automatically qualify as \"const\".",
           "syntax": "[const] <type> <variable_name> = <value>",
           "examples": "//@version=6\nindicator(\"Const example\")\nconst string GROUP1 = \"Inputs\"\nlengthInput = input.int(14, \"Length\", group = GROUP1)\nplot(ta.sma(close, lengthInput))"
+        },
+        {
+          "name": "array",
+          "kind": "Type Keyword",
+          "desc": "Keyword used to explicitly declare the \"array\" type of a variable or a parameter. Array objects (or IDs) can be created with the `array.new<type>()` or `array.from()` function.  \nArray objects are always of \"series\" form.",
+          "syntax": "array<type> <variable_name> = <value>",
+          "examples": "//@version=6\nindicator(\"array\", overlay=true)\narray<float> a = na\na := array.new<float>(1, close)\nplot(array.get(a, 0))"
+        },
+        {
+          "name": "matrix",
+          "kind": "Type Keyword",
+          "desc": "Keyword used to explicitly declare the \"matrix\" type of a variable or a parameter. Matrix objects (or IDs) can be created with the `matrix.new<type>()` function.  \nMatrix objects are always of \"series\" form.",
+          "syntax": "matrix<type> <variable_name> = <value>",
+          "examples": "//@version=6\nindicator(\"matrix example\")\n\n// Create `m1` matrix of `int` type.\nmatrix<int> m1 = matrix.new<int>(2, 3, 0)\n\n// `matrix<int>` is unnecessary because the `matrix.new<int>()` function returns an `int` type matrix object.\nm2 = matrix.new<int>(2, 3, 0)\n\n// Display matrix using a label.\nif barstate.islastconfirmedhistory\n    label.new(bar_index, high, str.tostring(m2))"
+        },
+        {
+          "name": "map",
+          "kind": "Type Keyword",
+          "desc": "Keyword used to explicitly declare the \"map\" type of a variable or a parameter. Map objects (or IDs) can be created with the `map.new<type,type>()` function.  \nMap objects are always of \"series\" form.",
+          "syntax": "map<keyType,valueType> <variable_name> = <value>",
+          "examples": "//@version=6\nindicator(\"map\", overlay=true)\nmap<int, float> a = na\na := map.new<int, float>()\na.put(bar_index, close)\nlabel.new(bar_index, a.get(bar_index), \"Current close\")"
         }
       ],
       "title": "Built-in Type"
@@ -11430,6 +11451,76 @@
             "[syminfo.pointvalue](#var_syminfo.pointvalue)"
           ],
           "displayType": "simple float"
+        },
+        {
+          "name": "dividends.future_amount",
+          "kind": "Built-in Variable",
+          "desc": "Returns the payment amount of the upcoming dividend in the currency of the current instrument, or na if this data isn't available.",
+          "type": "series float",
+          "displayType": "series float"
+        },
+        {
+          "name": "dividends.future_ex_date",
+          "kind": "Built-in Variable",
+          "desc": "Returns the Ex-dividend date (Ex-date) of the current instrument's next dividend payment, or na if this data isn't available. Ex-dividend date signifies when investors are no longer entitled to a payout from the most recent dividend. Only those who purchased shares before this day are entitled to the dividend payment.",
+          "type": "series int",
+          "displayType": "series int"
+        },
+        {
+          "name": "dividends.future_pay_date",
+          "kind": "Built-in Variable",
+          "desc": "Returns the Payment date (Pay date) of the current instrument's next dividend payment, or na if this data isn't available. Payment date signifies the day when eligible investors will receive the dividend payment.",
+          "type": "series int",
+          "displayType": "series int"
+        },
+        {
+          "name": "strategy.avg_losing_trade",
+          "kind": "Built-in Variable",
+          "desc": "Returns the average amount of money lost per losing trade. Calculated as the sum of losses divided by the number of losing trades.",
+          "type": "series float",
+          "displayType": "series float"
+        },
+        {
+          "name": "strategy.avg_losing_trade_percent",
+          "kind": "Built-in Variable",
+          "desc": "Returns the average percentage loss per losing trade. Calculated as the sum of loss percentages divided by the number of losing trades.",
+          "type": "series float",
+          "displayType": "series float"
+        },
+        {
+          "name": "strategy.avg_trade",
+          "kind": "Built-in Variable",
+          "desc": "Returns the average amount of money gained or lost per trade. Calculated as the sum of all profits and losses divided by the number of closed trades.",
+          "type": "series float",
+          "displayType": "series float"
+        },
+        {
+          "name": "strategy.avg_trade_percent",
+          "kind": "Built-in Variable",
+          "desc": "Returns the average percentage gain or loss per trade. Calculated as the sum of all profit and loss percentages divided by the number of closed trades.",
+          "type": "series float",
+          "displayType": "series float"
+        },
+        {
+          "name": "strategy.avg_winning_trade",
+          "kind": "Built-in Variable",
+          "desc": "Returns the average amount of money gained per winning trade. Calculated as the sum of profits divided by the number of winning trades.",
+          "type": "series float",
+          "displayType": "series float"
+        },
+        {
+          "name": "strategy.avg_winning_trade_percent",
+          "kind": "Built-in Variable",
+          "desc": "Returns the average percentage gain per winning trade. Calculated as the sum of profit percentages divided by the number of winning trades.",
+          "type": "series float",
+          "displayType": "series float"
+        },
+        {
+          "name": "strategy.opentrades.capital_held",
+          "kind": "Built-in Variable",
+          "desc": "Returns the capital amount currently held by open trades.",
+          "type": "series float",
+          "displayType": "series float"
         }
       ],
       "title": "Built-in Variable"
@@ -14337,6 +14428,293 @@
             "[box.new](#fun_box.new)",
             "[table.cell](#fun_table.cell)"
           ]
+        },
+        {
+          "name": "backadjustment.inherit",
+          "kind": "Built-in Constant",
+          "desc": "A constant to specify the value of the `backadjustment` parameter in ticker.new() and ticker.modify() functions.",
+          "type": "const backadjustment",
+          "displayType": "const backadjustment"
+        },
+        {
+          "name": "backadjustment.off",
+          "kind": "Built-in Constant",
+          "desc": "A constant to specify the value of the `backadjustment` parameter in ticker.new() and ticker.modify() functions.",
+          "type": "const backadjustment",
+          "displayType": "const backadjustment"
+        },
+        {
+          "name": "backadjustment.on",
+          "kind": "Built-in Constant",
+          "desc": "A constant to specify the value of the `backadjustment` parameter in ticker.new() and ticker.modify() functions.",
+          "type": "const backadjustment",
+          "displayType": "const backadjustment"
+        },
+        {
+          "name": "currency.AED",
+          "kind": "Built-in Constant",
+          "desc": "Arab Emirates Dirham.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.ARS",
+          "kind": "Built-in Constant",
+          "desc": "Argentine Pesos.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.BDT",
+          "kind": "Built-in Constant",
+          "desc": "Bangladeshi Taka.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.BHD",
+          "kind": "Built-in Constant",
+          "desc": "Bahraini Dinar.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.BRL",
+          "kind": "Built-in Constant",
+          "desc": "Brazilian real.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.CLP",
+          "kind": "Built-in Constant",
+          "desc": "Chilean Peso.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.CNY",
+          "kind": "Built-in Constant",
+          "desc": "Chinese Yuan.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.COP",
+          "kind": "Built-in Constant",
+          "desc": "Colombian Peso.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.CZK",
+          "kind": "Built-in Constant",
+          "desc": "Czech Koruna.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.DKK",
+          "kind": "Built-in Constant",
+          "desc": "Danish Krone.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.EGP",
+          "kind": "Built-in Constant",
+          "desc": "Egyptian pound.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.HUF",
+          "kind": "Built-in Constant",
+          "desc": "Hungarian Forint.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.IDR",
+          "kind": "Built-in Constant",
+          "desc": "Indonesian Rupiah.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.ILS",
+          "kind": "Built-in Constant",
+          "desc": "Israeli New Shekel.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.ISK",
+          "kind": "Built-in Constant",
+          "desc": "Icelandic Krona.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.KES",
+          "kind": "Built-in Constant",
+          "desc": "Kenyan Shilling.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.KWD",
+          "kind": "Built-in Constant",
+          "desc": "Kuwaiti Dinar.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.LKR",
+          "kind": "Built-in Constant",
+          "desc": "Sri Lankan Rupee.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.MAD",
+          "kind": "Built-in Constant",
+          "desc": "Moroccan Dirham.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.MXN",
+          "kind": "Built-in Constant",
+          "desc": "Mexican Peso.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.NGN",
+          "kind": "Built-in Constant",
+          "desc": "Nigerian Naira.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.PEN",
+          "kind": "Built-in Constant",
+          "desc": "Peruvian sol.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.PHP",
+          "kind": "Built-in Constant",
+          "desc": "Philippine Peso.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.PKR",
+          "kind": "Built-in Constant",
+          "desc": "Pakistani rupee.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.PLN",
+          "kind": "Built-in Constant",
+          "desc": "Polish zloty.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.QAR",
+          "kind": "Built-in Constant",
+          "desc": "Qatari Riyal.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.RON",
+          "kind": "Built-in Constant",
+          "desc": "Romanian Leu.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.RSD",
+          "kind": "Built-in Constant",
+          "desc": "Serbian Dinar.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.SAR",
+          "kind": "Built-in Constant",
+          "desc": "Saudi Riyal.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.THB",
+          "kind": "Built-in Constant",
+          "desc": "Thai Baht.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.TND",
+          "kind": "Built-in Constant",
+          "desc": "Tunisian Dinar.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.TWD",
+          "kind": "Built-in Constant",
+          "desc": "New Taiwan Dollar.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.VES",
+          "kind": "Built-in Constant",
+          "desc": "Venezuelan Bolivar.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "currency.VND",
+          "kind": "Built-in Constant",
+          "desc": "Vietnamese Dong.",
+          "type": "const string",
+          "displayType": "const string"
+        },
+        {
+          "name": "display.pine_screener",
+          "kind": "Built-in Constant",
+          "desc": "A named constant for use with the `display` parameter of the plot() function. Specifies that, by default, the Pine Screener displays a column for the plot's values when the user applies the indicator to the chosen watchlist.",
+          "type": "const plot_display",
+          "displayType": "const plot_display"
+        },
+        {
+          "name": "settlement_as_close.inherit",
+          "kind": "Built-in Constant",
+          "desc": "A constant to specify the value of the `settlement_as_close` parameter in ticker.new() and ticker.modify() functions.",
+          "type": "const settlement",
+          "displayType": "const settlement"
+        },
+        {
+          "name": "settlement_as_close.off",
+          "kind": "Built-in Constant",
+          "desc": "A constant to specify the value of the `settlement_as_close` parameter in ticker.new() and ticker.modify() functions.",
+          "type": "const settlement",
+          "displayType": "const settlement"
+        },
+        {
+          "name": "settlement_as_close.on",
+          "kind": "Built-in Constant",
+          "desc": "A constant to specify the value of the `settlement_as_close` parameter in ticker.new() and ticker.modify() functions.",
+          "type": "const settlement",
+          "displayType": "const settlement"
         }
       ],
       "title": "Built-in Constant"
@@ -43979,6 +44357,465 @@
           "returnedTypes": [
             "input enum"
           ]
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "box.set_xloc",
+          "desc": "Sets the left and right borders of a box and updates its `xloc` property.",
+          "args": [
+            {
+              "name": "id",
+              "desc": "The ID of the box object to update.",
+              "default": null,
+              "required": true,
+              "displayType": "series box",
+              "allowedTypeIDs": [
+                "series box"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "left",
+              "desc": "The bar index or timestamp for the left border of the box.",
+              "default": null,
+              "required": true,
+              "displayType": "series int",
+              "allowedTypeIDs": [
+                "series int",
+                "simple int",
+                "input int",
+                "const int"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "right",
+              "desc": "The bar index or timestamp for the right border of the box.",
+              "default": null,
+              "required": true,
+              "displayType": "series int",
+              "allowedTypeIDs": [
+                "series int",
+                "simple int",
+                "input int",
+                "const int"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "xloc",
+              "desc": "Determines whether the box treats the `left` and `right` arguments as bar indices or timestamps. Possible values: xloc.bar_index and xloc.bar_time. If the value is xloc.bar_index, the arguments represent bar indices. If xloc.bar_time, the arguments represent UNIX timestamps.",
+              "default": null,
+              "required": true,
+              "displayType": "series string",
+              "allowedTypeIDs": [
+                "series string",
+                "simple string",
+                "input string",
+                "const string"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "box.set_xloc(id, left, right, xloc) → void"
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "footprint.buy_volume",
+          "desc": "Calculates the total \"buy\" volume for the volume footprint represented by a footprint object.",
+          "args": [
+            {
+              "name": "id",
+              "desc": "The reference (ID) of the footprint object to analyze.",
+              "default": null,
+              "required": true,
+              "displayType": "footprint",
+              "allowedTypeIDs": [
+                "footprint"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "footprint.buy_volume(id) → series float",
+          "returns": "The total \"buy\" volume measured by the footprint."
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "footprint.delta",
+          "desc": "Calculates the overall volume delta for the volume footprint represented by a footprint object. The value represents the difference between the footprint's total \"buy\" volume and \"sell\" volume. A positive value indicates that the total \"buy\" volume in the footprint exceeds the total \"sell\" volume, and a negative value indicates the opposite.",
+          "args": [
+            {
+              "name": "id",
+              "desc": "The reference (ID) of the footprint object to analyze.",
+              "default": null,
+              "required": true,
+              "displayType": "footprint",
+              "allowedTypeIDs": [
+                "footprint"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "footprint.delta(id) → series float",
+          "returns": "The overall volume delta for the footprint."
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "footprint.get_row_by_price",
+          "desc": "Analyzes the volume footprint represented by a footprint object to find the row whose price range includes the specified price level. If the price belongs to one of the rows, the function returns the ID of the volume_row object that contains the data for that row. Otherwise, it returns na.",
+          "args": [
+            {
+              "name": "id",
+              "desc": "The reference (ID) of the footprint object to analyze.",
+              "default": null,
+              "required": true,
+              "displayType": "footprint",
+              "allowedTypeIDs": [
+                "footprint"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "price",
+              "desc": "The price value for which to find the corresponding footprint row.",
+              "default": null,
+              "required": true,
+              "displayType": "series int/float",
+              "allowedTypeIDs": [
+                "series int",
+                "simple int",
+                "input int",
+                "const int",
+                "series float",
+                "simple float",
+                "input float",
+                "const float"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "footprint.get_row_by_price(id, price) → volume_row",
+          "returns": "The ID of a volume_row object representing the footprint row that contains the specified price, or na if the price is outside the footprint's price range."
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "footprint.poc",
+          "desc": "Finds the Point of Control (POC) row for the volume footprint represented by a footprint object, then returns the ID of a volume_row object containing the data for that row.",
+          "args": [
+            {
+              "name": "id",
+              "desc": "The reference (ID) of the footprint object to analyze.",
+              "default": null,
+              "required": true,
+              "displayType": "footprint",
+              "allowedTypeIDs": [
+                "footprint"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "footprint.poc(id) → volume_row",
+          "returns": "The ID of a volume_row object representing the footprint's POC row."
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "footprint.rows",
+          "desc": "Creates an array containing all volume_row IDs from a footprint object. Each volume_row object referenced in the array contains data for one row in the calculated volume footprint, where the first object represents the lowest row and the last one represents the highest row.",
+          "args": [
+            {
+              "name": "id",
+              "desc": "The reference (ID) of the footprint object to analyze.",
+              "default": null,
+              "required": true,
+              "displayType": "footprint",
+              "allowedTypeIDs": [
+                "footprint"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "footprint.rows(id) → array<volume_row>",
+          "returns": "The ID of an array containing a volume_row ID for each row in the footprint."
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "footprint.sell_volume",
+          "desc": "Calculates the total \"sell\" volume for the volume footprint represented by a footprint object.",
+          "args": [
+            {
+              "name": "id",
+              "desc": "The reference (ID) of the footprint object to analyze.",
+              "default": null,
+              "required": true,
+              "displayType": "footprint",
+              "allowedTypeIDs": [
+                "footprint"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "footprint.sell_volume(id) → series float",
+          "returns": "The total \"sell\" volume measured by the footprint."
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "footprint.total_volume",
+          "desc": "Calculates the sum of the total \"buy\" volume and \"sell\" volume for the volume footprint represented by a footprint object.",
+          "args": [
+            {
+              "name": "id",
+              "desc": "The reference (ID) of the footprint object to analyze.",
+              "default": null,
+              "required": true,
+              "displayType": "footprint",
+              "allowedTypeIDs": [
+                "footprint"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "footprint.total_volume(id) → series float",
+          "returns": "The total volume measured by the footprint."
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "footprint.vah",
+          "desc": "Finds the Value Area High (VAH) row for the volume footprint represented by a footprint object, then returns the ID of a volume_row object containing the data for that row.",
+          "args": [
+            {
+              "name": "id",
+              "desc": "The reference (ID) of the footprint object to analyze.",
+              "default": null,
+              "required": true,
+              "displayType": "footprint",
+              "allowedTypeIDs": [
+                "footprint"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "footprint.vah(id) → volume_row",
+          "returns": "The ID of a volume_row object representing the footprint's VAH row."
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "footprint.val",
+          "desc": "Finds the Value Area Low (VAL) row for the volume footprint represented by a footprint object, then returns the ID of a volume_row object containing the data for that row.",
+          "args": [
+            {
+              "name": "id",
+              "desc": "The reference (ID) of the footprint object to analyze.",
+              "default": null,
+              "required": true,
+              "displayType": "footprint",
+              "allowedTypeIDs": [
+                "footprint"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "footprint.val(id) → volume_row",
+          "returns": "The ID of a volume_row object representing the footprint's VAL row."
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "ta.rci",
+          "desc": "Calculates the Rank Correlation Index (RCI), which measures the directional consistency of price movements. It evaluates the monotonic relationship between a `source` series and the bar index over `length` bars using Spearman's rank correlation coefficient. The resulting value is scaled to a range of -100 to 100, where 100 indicates the `source` consistently increased over the period, and -100 indicates it consistently decreased. Values between -100 and 100 reflect varying degrees of upward or downward consistency.",
+          "args": [
+            {
+              "name": "source",
+              "desc": "Series of values to process.",
+              "default": null,
+              "required": true,
+              "displayType": "series int/float",
+              "allowedTypeIDs": [
+                "series int",
+                "simple int",
+                "input int",
+                "const int",
+                "series float",
+                "simple float",
+                "input float",
+                "const float"
+              ],
+              "possibleValues": null
+            },
+            {
+              "name": "length",
+              "desc": "Number of bars (length).",
+              "default": null,
+              "required": true,
+              "displayType": "simple int",
+              "allowedTypeIDs": [
+                "simple int",
+                "input int",
+                "const int"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "ta.rci(source, length) → series float",
+          "returns": "The Rank Correlation Index, a value between -100 to 100."
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "volume_row.buy_volume",
+          "desc": "Calculates the total \"buy\" volume for the volume footprint row represented by a volume_row object.",
+          "args": [
+            {
+              "name": "id",
+              "desc": "The reference (ID) of the volume_row object to analyze.",
+              "default": null,
+              "required": true,
+              "displayType": "volume_row",
+              "allowedTypeIDs": [
+                "volume_row"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "volume_row.buy_volume(id) → series float",
+          "returns": "The total \"buy\" volume for the footprint row."
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "volume_row.delta",
+          "desc": "Calculates the volume delta for the volume footprint row represented by a volume_row object. The value represents the difference between the row's \"buy\" volume and \"sell\" volume. A positive value indicates that the \"buy\" volume for the row exceeds the \"sell\" volume, and a negative value indicates the opposite.",
+          "args": [
+            {
+              "name": "id",
+              "desc": "The reference (ID) of the volume_row object to analyze.",
+              "default": null,
+              "required": true,
+              "displayType": "volume_row",
+              "allowedTypeIDs": [
+                "volume_row"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "volume_row.delta(id) → series float",
+          "returns": "The volume delta for the footprint row."
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "volume_row.down_price",
+          "desc": "Retrieves the lower price level of the volume footprint row represented by a volume_row object.",
+          "args": [
+            {
+              "name": "id",
+              "desc": "The reference (ID) of the volume_row object to analyze.",
+              "default": null,
+              "required": true,
+              "displayType": "volume_row",
+              "allowedTypeIDs": [
+                "volume_row"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "volume_row.down_price(id) → series float",
+          "returns": "The lower boundary of the footprint row's price range."
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "volume_row.has_buy_imbalance",
+          "desc": "Checks whether the volume footprint row represented by a volume_row object has a \"buy\" imbalance, based on the `imbalance_percent` argument of the request.footprint() call that the object depends on. Returns `true` if the row's \"buy\" volume exceeds the \"sell\" volume of the row below it in the footprint by the specified percentage, and `false` otherwise.",
+          "args": [
+            {
+              "name": "id",
+              "desc": "The reference (ID) of the volume_row object to analyze.",
+              "default": null,
+              "required": true,
+              "displayType": "volume_row",
+              "allowedTypeIDs": [
+                "volume_row"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "volume_row.has_buy_imbalance(id) → series bool",
+          "returns": "A value of `true` if the footprint row has a detected buy imbalance, and `false` otherwise."
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "volume_row.has_sell_imbalance",
+          "desc": "Checks whether the volume footprint row represented by a volume_row object has a sell imbalance, based on the `imbalance_percent` argument of the request.footprint() call that the object depends on. Returns `true` if the row's \"sell\" volume exceeds the \"buy\" volume of the row above it in the footprint by the specified percentage, and `false` otherwise.",
+          "args": [
+            {
+              "name": "id",
+              "desc": "The reference (ID) of the volume_row object to analyze.",
+              "default": null,
+              "required": true,
+              "displayType": "volume_row",
+              "allowedTypeIDs": [
+                "volume_row"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "volume_row.has_sell_imbalance(id) → series bool",
+          "returns": "A value of `true` if the footprint row has a detected sell imbalance, and `false` otherwise."
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "volume_row.sell_volume",
+          "desc": "Calculates the total \"sell\" volume for the volume footprint row represented by a volume_row object.",
+          "args": [
+            {
+              "name": "id",
+              "desc": "The reference (ID) of the volume_row object to analyze.",
+              "default": null,
+              "required": true,
+              "displayType": "volume_row",
+              "allowedTypeIDs": [
+                "volume_row"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "volume_row.sell_volume(id) → series float",
+          "returns": "The total \"sell\" volume for the footprint row."
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "volume_row.total_volume",
+          "desc": "Calculates the sum of the \"buy\" and \"sell\" volume for the volume footprint row represented by a volume_row object.",
+          "args": [
+            {
+              "name": "id",
+              "desc": "The reference (ID) of the volume_row object to analyze.",
+              "default": null,
+              "required": true,
+              "displayType": "volume_row",
+              "allowedTypeIDs": [
+                "volume_row"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "volume_row.total_volume(id) → series float",
+          "returns": "The total volume for the footprint row."
+        },
+        {
+          "kind": "Built-in Function",
+          "name": "volume_row.up_price",
+          "desc": "Retrieves the upper price level of the volume footprint row represented by a volume_row object.",
+          "args": [
+            {
+              "name": "id",
+              "desc": "The reference (ID) of the volume_row object to analyze.",
+              "default": null,
+              "required": true,
+              "displayType": "volume_row",
+              "allowedTypeIDs": [
+                "volume_row"
+              ],
+              "possibleValues": null
+            }
+          ],
+          "syntax": "volume_row.up_price(id) → series float",
+          "returns": "The upper boundary of the footprint row's price range."
         }
       ],
       "title": "Built-in Function"
@@ -44190,6 +45027,13 @@
               "examples": "//@version=6\nindicator(\"=>\")\n// single-line function\nf1(x, y) => x + y\n// multi-line function\nf2(x, y) => \n\tsum = x + y\n\tsumChange = ta.change(sum, 10)\n\t// Function automatically returns the last expression used in it\nplot(f1(30, 8) + f2(1, 3))"
             }
           ]
+        },
+        {
+          "name": "=",
+          "desc": "Assignment operator. Assigns an initial value or reference to a newly declared variable.",
+          "kind": "Language Operator",
+          "syntax": "<var_name> = <initial_value>",
+          "examples": "//@version=6\nindicator(\"`=` showcase\")\ni = 1\nMS_IN_ONE_MINUTE = 1000 * 60\nshowPlotInput = input.bool(true, \"Show plots\")\npHi = ta.pivothigh(5, 5)\nplotColor = color.green\n\nplot(pHi, color = plotColor, display = showPlotInput ? display.all : display.none, precision = i)"
         }
       ]
     }
