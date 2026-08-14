@@ -10,6 +10,11 @@ import * as vscode from 'vscode'
 export function deactivate() {
   PineLint.versionClear()
   PineLint.handleDocumentChange()
+  // Clear the interval timer to prevent memory leak
+  if (globalThis.__pineCheckInterval) {
+    clearInterval(globalThis.__pineCheckInterval)
+    globalThis.__pineCheckInterval = undefined
+  }
   return undefined
 }
 
@@ -25,7 +30,8 @@ function checkForChange() {
   }
 }
 
-setInterval(checkForChange, 5000)
+// Store interval ID for cleanup on deactivate
+globalThis.__pineCheckInterval = setInterval(checkForChange, 5000)
 
 // Activate Function =============================================
 export async function activate(context: vscode.ExtensionContext) {
