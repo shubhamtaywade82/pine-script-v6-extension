@@ -40,7 +40,7 @@
     "webpack": "webpack --devtool source-map --mode development",
     "compile": "pnpm run webpack",
     "start": "pnpm run compile && code --extensionDevelopmentPath=.",
-    "build-docs": "pnpm run typedoc --name 'Pine Script v5'",
+    "build-docs": "pnpm run typedoc --name 'Pine Script v6'",
     "vscode:prepublish": "pnpm run compile",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -48,7 +48,7 @@
     "compile-tests": "pnpm run tsc -p . --outDir out",
     "watch-tests": "pnpm run tsc -p . -w --outDir out",
     "lint": "pnpm run eslint src --ext ts",
-    "vsce-package": "vsce package -o pinescriptv5.vsix"
+    "vsce-package": "vsce package -o pinescriptv6.vsix"
   },
   "main": "./dist/extension.js",
   "contributes": {
