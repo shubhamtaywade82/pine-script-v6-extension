@@ -1,12 +1,17 @@
 {
   "name": "pinescript-v6-vscode",
-  "publisher": "TradesDontLie",
+  "publisher": "shubhamtaywade82",
   "displayName": "Pine Script v6",
-  "description": "Pine Script v6 Language Server with Dynamic Requests, Enhanced Text Features, and Boolean Optimizations",
+  "description": "Pine Script v6 Language Server with Dynamic Requests, Enhanced Text Features, Boolean Optimizations, and PineForge AI Assistant",
+  "author": "Shubham Taywade <shubhamtaywade82@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tradesdontlie/pine-script-v6-extension"
+    "url": "https://github.com/shubhamtaywade82/pine-script-v6-extension"
   },
+  "bugs": {
+    "url": "https://github.com/shubhamtaywade82/pine-script-v6-extension/issues"
+  },
+  "homepage": "https://github.com/shubhamtaywade82/pine-script-v6-extension#readme",
   "version": "0.1.0",
   "type": "commonjs",
   "engines": {
