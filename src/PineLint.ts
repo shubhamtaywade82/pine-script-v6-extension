@@ -176,14 +176,17 @@ export class PineLint {
    * @param response - The response from the linting process.
    */
   static async handleResponse(response: any): Promise<void> {
-    if (VSCode.ActivePineEditor) {
-      PineLint.updateDiagnostics(
-        response.result?.errors2 || response.reason2?.errors || [],
-        response.result?.warnings2 || response.reason2?.warnings || [],
-        response.result?.errors || [],
-        response.result?.warnings || [],
-      )
+    if (!VSCode.ActivePineEditor || !response) {
+      return
     }
+    
+    // Safely extract diagnostic arrays with proper null checking
+    const errors2 = response.result?.errors2 ?? []
+    const warnings2 = response.result?.warnings2 ?? response.reason2?.warnings ?? []
+    const errors = response.result?.errors ?? []
+    const warnings = response.result?.warnings ?? []
+    
+    PineLint.updateDiagnostics(errors2, warnings2, errors, warnings)
   }
 
   /**

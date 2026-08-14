@@ -50,6 +50,8 @@
     "lint": "eslint src --ext ts",
     "lint:fix": "eslint src --ext ts --fix",
     "type-check": "tsc --noEmit -p tsconfig.json",
+    "pine:conformance": "vitest run test/conformance/",
+    "pine:sync": "vitest run test/conformance/PineConformanceEngine.test.ts",
     "vsce-package": "vsce package --no-dependencies -o pinescriptv6.vsix",
     "package": "vsce package --no-dependencies -o pinescriptv6.vsix"
   },
@@ -177,7 +179,74 @@
         "path": "themes/Pine-Light#02.json"
       }
     ],
-    "configuration": {},
+    "configuration": {
+      "title": "PineForge AI Agent",
+      "properties": {
+        "pineForge.ollama.host": {
+          "type": "string",
+          "default": "http://localhost:11434",
+          "description": "URL of the local Ollama instance"
+        },
+        "pineForge.ollama.model": {
+          "type": "string",
+          "default": "qwen2.5-coder:7b",
+          "description": "Default Ollama model to use for PineForge AI Agent"
+        },
+        "pineForge.agent.maxIterations": {
+          "type": "number",
+          "default": 12,
+          "description": "Maximum iterations per agent loop"
+        },
+        "pineForge.agent.autoRepair": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically attempt to repair validation failures"
+        }
+      }
+    },
+    "chatParticipants": [
+      {
+        "id": "pine-script-v6.agent",
+        "name": "pine",
+        "fullName": "PineForge AI (Pine Script v6)",
+        "description": "Pine Script v6 engineering agent grounded in official reference documentation and conformance engine.",
+        "isSticky": true,
+        "commands": [
+          {
+            "name": "explain",
+            "description": "Explain the selected Pine Script v6 code or concept"
+          },
+          {
+            "name": "fix",
+            "description": "Diagnose and fix syntax or runtime issues in active script"
+          },
+          {
+            "name": "build",
+            "description": "Build a new indicator or strategy with PineForge"
+          },
+          {
+            "name": "refactor",
+            "description": "Optimize calculations, memory, and code structure"
+          },
+          {
+            "name": "optimize",
+            "description": "Apply calculation caching and HTF tuple consolidation"
+          },
+          {
+            "name": "migrate",
+            "description": "Migrate Pine Script v5 to v6"
+          },
+          {
+            "name": "validate",
+            "description": "Run full Pine v6 conformance validation"
+          },
+          {
+            "name": "docs",
+            "description": "Lookup Pine Script v6 reference documentation"
+          }
+        ]
+      }
+    ],
     "submenus": [
       {
         "id": "pine.mysubmenuNonPineFile",
@@ -189,6 +258,41 @@
       }
     ],
     "commands": [
+      {
+        "command": "pineforge.showStatusDetails",
+        "title": "PineForge: Show Status Panel",
+        "category": "PineForge"
+      },
+      {
+        "command": "pineforge.selectModel",
+        "title": "PineForge: Select Ollama Model",
+        "category": "PineForge"
+      },
+      {
+        "command": "pineforge.askAgent",
+        "title": "PineForge: Ask AI Agent",
+        "category": "PineForge"
+      },
+      {
+        "command": "pineforge.generateCode",
+        "title": "PineForge: Generate Indicator/Strategy (AI)",
+        "category": "PineForge"
+      },
+      {
+        "command": "pineforge.debugCode",
+        "title": "PineForge: Diagnose & Fix Script (AI)",
+        "category": "PineForge"
+      },
+      {
+        "command": "pineforge.migrateCode",
+        "title": "PineForge: Migrate v5 to v6 (AI)",
+        "category": "PineForge"
+      },
+      {
+        "command": "pineforge.validateCode",
+        "title": "PineForge: Validate Active Pine Script",
+        "category": "PineForge"
+      },
       {
         "command": "pine.mysubmenuNonPineFile",
         "title": "Pine Script Options",
