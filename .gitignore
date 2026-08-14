@@ -6,6 +6,10 @@ node_modules/
 dist/
 out/
 *.vsix
+docs/*.html
+docs/assets/
+docs/classes/
+docs/modules.html
 
 # Tests & Coverage
 coverage/

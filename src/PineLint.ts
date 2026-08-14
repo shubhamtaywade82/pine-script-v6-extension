@@ -1,8 +1,22 @@
-import { debounce } from 'lodash'
 import * as vscode from 'vscode'
 import { VSCode } from './VSCode'
 import { Class } from './PineClass'
 import { PineStaticAnalyzer } from './PineStaticAnalyzer'
+
+function debounce<T extends (...args: unknown[]) => void | Promise<void>>(
+  fn: T,
+  delayMs: number,
+): (...args: Parameters<T>) => void {
+  let timer: NodeJS.Timeout | undefined
+  return (...args: Parameters<T>) => {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(() => {
+      void fn(...args)
+    }, delayMs)
+  }
+}
 
 /**
  * PineLint class is responsible for linting Pine Script code.
@@ -123,13 +137,9 @@ export class PineLint {
   /**
    * Debounced version of the lintDocument method.
    */
-  static lint = debounce(
-    async () => {
-      PineLint.lintDocument()
-    },
-    500,
-    { leading: false, trailing: true },
-  )
+  static lint = debounce(() => {
+    PineLint.lintDocument()
+  }, 500)
 
   /**
    * Updates the diagnostics for the active document.
