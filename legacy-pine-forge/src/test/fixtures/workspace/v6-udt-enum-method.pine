@@ -1,0 +1,60 @@
+//@version=6
+indicator("v6 UDT + Enum + Method E2E", overlay = true)
+
+// ── User-Defined Types ────────────────────────────────────────────────────────
+type Candle
+    float open   = 0.0
+    float high   = 0.0
+    float low    = 0.0
+    float close  = 0.0
+    int   volume = 0
+
+type Signal
+    bool  active   = false
+    color sigColor = color.gray
+    string name    = "none"
+
+// ── Enum ──────────────────────────────────────────────────────────────────────
+enum Trend
+    Bullish
+    Bearish
+    Neutral
+
+// ── Methods ───────────────────────────────────────────────────────────────────
+method isGreen(Candle self) =>
+    self.close > self.open
+
+method bodySize(Candle self) =>
+    math.abs(self.close - self.open)
+
+method candleRange(Candle self) =>
+    self.high - self.low
+
+// ── Instantiate and use ───────────────────────────────────────────────────────
+var Candle currentBar = Candle.new()
+
+currentBar.open   := open
+currentBar.high   := high
+currentBar.low    := low
+currentBar.close  := close
+currentBar.volume := int(volume)
+
+bool  isGreenBar = currentBar.isGreen()
+float body       = currentBar.bodySize()
+float rng        = currentBar.candleRange()
+
+// ── Trend detection ───────────────────────────────────────────────────────────
+float fastMa = ta.sma(close, 20)
+float slowMa = ta.sma(close, 50)
+
+Trend trend = Trend.Neutral
+
+color trendColor = color.gray
+
+var Signal sig = Signal.new()
+sig.active   := isGreenBar
+sig.sigColor := trendColor
+
+plot(body, title="Body Size")
+plot(rng,  title="Range")
+bgcolor(sig.active ? color.new(sig.sigColor, 90) : na)

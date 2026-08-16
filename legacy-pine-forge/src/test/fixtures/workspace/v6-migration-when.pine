@@ -1,0 +1,5 @@
+//@version=6
+strategy("v6 Migration - when param E2E", overlay = true)
+// ── DEPRECATED: when= parameter in strategy.entry ────────────────────────────
+// This should trigger pine-forge/deprecated-when
+strategy.entry("Long", strategy.long, when = close > open)

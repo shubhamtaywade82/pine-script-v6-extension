@@ -1,0 +1,4 @@
+//@version=6
+indicator("refs e2e", overlay = true)
+myVarE2eRefs = 1
+plot(myVarE2eRefs)

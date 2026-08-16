@@ -1,0 +1,4 @@
+//@version=6
+indicator("PineForge demo", overlay = true)
+
+plot(close, "Close", color = chart.fg_color)

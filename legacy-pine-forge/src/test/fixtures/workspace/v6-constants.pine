@@ -1,0 +1,64 @@
+//@version=6
+indicator("v6 Constants E2E", overlay = true)
+
+// ── color.* constants ─────────────────────────────────────────────────────────
+color cRed    = color.red
+color cGreen  = color.green
+color cBlue   = color.blue
+color cWhite  = color.white
+color cBlack  = color.black
+color cYellow = color.yellow
+color cPurple = color.purple
+color cOrange = color.orange
+color cAqua   = color.aqua
+color cGray   = color.gray
+color cNavy   = color.navy
+color cFuchsia= color.fuchsia
+color cLime   = color.lime
+color cMaroon = color.maroon
+color cOlive  = color.olive
+color cSilver = color.silver
+color cTeal   = color.teal
+
+// ── currency constants ────────────────────────────────────────────────────────
+string usd = currency.USD
+string eur = currency.EUR
+string gbp = currency.GBP
+string jpy = currency.JPY
+
+// ── format constants ──────────────────────────────────────────────────────────
+string fmtInherit = format.inherit
+string fmtPrice   = format.price
+string fmtVol     = format.volume
+string fmtPct     = format.percent
+
+// ── hline.style constants ─────────────────────────────────────────────────────
+int styleSolid = hline.style_solid
+int styleDot   = hline.style_dotted
+int styleDash  = hline.style_dashed
+
+// ── line.style / extend constants ────────────────────────────────────────────
+int ls = line.style_solid
+int ex = extend.none
+
+// ── location / size constants ─────────────────────────────────────────────────
+string loc  = location.top
+string sz   = size.small
+
+// ── order / strategy constants ────────────────────────────────────────────────
+string dir_long  = strategy.direction.long
+string dir_short = strategy.direction.short
+
+// ── dayofweek constants ───────────────────────────────────────────────────────
+int sun = dayofweek.sunday
+int mon = dayofweek.monday
+
+// ── scale constants ───────────────────────────────────────────────────────────
+int scLeft  = scale.left
+int scRight = scale.right
+
+// ── display constants ─────────────────────────────────────────────────────────
+int dispAll  = display.all
+int dispNone = display.none
+
+plot(close, color=cRed)

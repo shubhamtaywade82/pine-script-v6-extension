@@ -1,0 +1,64 @@
+//@version=6
+indicator("v6 Variables E2E", overlay = true)
+
+// ── Built-in OHLCV series ─────────────────────────────────────────────────────
+float o = open
+float h = high
+float l = low
+float c = close
+float v = volume
+
+// ── Combined OHLC built-ins ───────────────────────────────────────────────────
+float mid      = hl2
+float typical  = hlc3
+float avg4     = ohlc4
+float avg4b    = hlcc4
+
+// ── Time built-ins ────────────────────────────────────────────────────────────
+int   t  = time
+int   tc = time_close
+int   tt = time_tradingday
+int   bi = bar_index
+int   lb = last_bar_index
+
+// ── Calendar variables ────────────────────────────────────────────────────────
+int dow = dayofweek
+int dom = dayofmonth
+int woy = weekofyear
+int mon = month
+int yr  = year
+int hr  = hour
+int mi  = minute
+int sec = second
+
+// ── barstate.* ────────────────────────────────────────────────────────────────
+bool isFirst   = barstate.isfirst
+bool isLast    = barstate.islast
+bool isHistory = barstate.ishistory
+bool isRealtime= barstate.isrealtime
+bool isNew     = barstate.isnew
+bool isConfirm = barstate.isconfirmed
+
+// ── syminfo.* ─────────────────────────────────────────────────────────────────
+string sym       = syminfo.ticker
+string exc       = syminfo.prefix
+string desc      = syminfo.description
+string cur       = syminfo.currency
+string type_     = syminfo.type
+float  mp        = syminfo.mintick
+float  pv        = syminfo.pointvalue
+int    vol_      = syminfo.volumetype
+bool   isSession = session.ismarket
+
+// ── timeframe.* ───────────────────────────────────────────────────────────────
+string tfp = timeframe.period
+bool   istf = timeframe.isdwm
+
+// ── var and varip ─────────────────────────────────────────────────────────────
+var int   counter = 0
+varip int realtime_counter = 0
+
+counter += 1
+realtime_counter += 1
+
+plot(c)

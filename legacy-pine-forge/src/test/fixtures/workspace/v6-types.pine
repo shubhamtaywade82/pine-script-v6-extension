@@ -1,0 +1,42 @@
+//@version=6
+indicator("v6 Types E2E", overlay = true)
+
+// ── Primitive types ───────────────────────────────────────────────────────────
+int   myInt    = 42
+float myFloat  = 3.14
+bool  myBool   = true
+color myColor  = color.red
+string myStr   = "hello pine v6"
+
+// ── Qualified types ───────────────────────────────────────────────────────────
+series float  sfloat  = close
+simple int    sint    = 1
+const  int    cint    = 100
+input  string strIn   = input.string("default", title="Label")
+
+// ── Object types (line, label, box, table, polyline) ─────────────────────────
+var line   myLine   = na
+var label  myLabel  = na
+var box    myBox    = na
+var table  myTable  = na
+
+// ── Collections ───────────────────────────────────────────────────────────────
+var array<float>  arrF  = array.new_float(0)
+var matrix<int>   matI  = matrix.new_int(3, 3, 0)
+
+// ── User-defined type ─────────────────────────────────────────────────────────
+type Point
+    float x = 0.0
+    float y = 0.0
+
+var Point p = Point.new(x=1.0, y=2.0)
+
+// ── Enum ──────────────────────────────────────────────────────────────────────
+enum Direction
+    Up
+    Down
+    Sideways
+
+var Direction dir = Direction.Up
+
+plot(myFloat, title="type test")

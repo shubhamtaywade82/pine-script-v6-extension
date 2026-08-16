@@ -1,0 +1,3 @@
+//@version=6
+indicator("completions e2e", overlay = true)
+ta.

@@ -1,0 +1,59 @@
+{
+  "indicator": { "signature": "indicator(title, shorttitle?, overlay?, …) → void" },
+  "strategy": { "signature": "strategy(title, shorttitle?, overlay?, …) → void" },
+  "library": { "signature": "library(title, overlay?, …) → void" },
+  "plot": { "signature": "plot(series, title?, color?, linewidth?, style?, …) → plot" },
+  "plotshape": {
+    "signature": "plotshape(series, title?, style?, location?, color?, offset?, text?, textcolor?, editable?, size?, show_last?, display?, format?, precision?, force_overlay?) → void",
+    "documentation": "Plots visual shapes on the chart.\n\n**Returns**\n\n`void` — drawing is a side effect.\n\n**Remarks**\n\nUse `plotshape()` together with `indicator(..., overlay = true)` when shapes should appear on the main price pane."
+  },
+  "plotchar": { "signature": "plotchar(series, title?, char?, location?, …) → void" },
+  "hline": { "signature": "hline(price, title?, color?, linestyle?, …) → hline" },
+  "bgcolor": { "signature": "bgcolor(color, offset?, …) → void" },
+  "fill": { "signature": "fill(plot1, plot2, color?, title?, …) → void" },
+  "ta.sma": { "signature": "ta.sma(source, length) → series float" },
+  "ta.ema": { "signature": "ta.ema(source, length) → series float" },
+  "ta.rma": { "signature": "ta.rma(source, length) → series float" },
+  "ta.wma": { "signature": "ta.wma(source, length) → series float" },
+  "ta.vwma": { "signature": "ta.vwma(source, length) → series float" },
+  "ta.stdev": { "signature": "ta.stdev(source, length) → series float" },
+  "ta.cross": { "signature": "ta.cross(series1, series2) → series bool" },
+  "ta.crossover": { "signature": "ta.crossover(series1, series2) → series bool" },
+  "ta.crossunder": { "signature": "ta.crossunder(series1, series2) → series bool" },
+  "request.security": { "signature": "request.security(symbol, timeframe, expression, gaps?, lookahead?, …) → series" },
+  "color.new": {
+    "signature": "color.new(color, transp) → color",
+    "overloadHint": "+3 overloads",
+    "documentation": "Applies the specified transparency to the given `color`.\n\n**Returns**\n\nColor with specified transparency (see the manual for how `transp` maps to alpha)."
+  },
+  "color.rgb": { "signature": "color.rgb(r, g, b, transp?) → color" },
+  "na": { "signature": "na(t) → na" },
+  "nz": { "signature": "nz(source, replacement?, …) → series" },
+  "fixnan": { "signature": "fixnan(source) → series" },
+  "input.int": { "signature": "input.int(defval, title?, minval?, maxval?, …) → input int" },
+  "input.float": { "signature": "input.float(defval, title?, minval?, maxval?, …) → input float" },
+  "input.bool": { "signature": "input.bool(defval, title?, …) → input bool" },
+  "input.string": { "signature": "input.string(defval, title?, …) → input string" },
+  "input.source": { "signature": "input.source(defval, title?, …) → input source" },
+  "strategy.entry": { "signature": "strategy.entry(id, direction, qty?, …) → void" },
+  "strategy.close": { "signature": "strategy.close(id?, comment?, …) → void" },
+  "math.max": { "signature": "math.max(a, b) → float" },
+  "math.min": { "signature": "math.min(a, b) → float" },
+  "math.abs": { "signature": "math.abs(x) → float" },
+  "math.round": {
+    "signature": "math.round(x) → int",
+    "documentation": "Returns *x* rounded to the nearest integer.\n\n**Returns**\n\nAn `int`: the nearest integer to *x* (see TradingView for tie-breaking when *x* is exactly between two integers)."
+  },
+  "str.tostring": {
+    "signature": "str.tostring(value, format?) → string",
+    "overloadHint": "+4 overloads",
+    "documentation": "Builds a text representation of *value*; optional *format* controls numeric and some other conversions.\n\n**Returns**\n\nThe string representation of `value`. If `value` is a string, it is returned as-is. When `value` is `na`, the function returns the literal string `\"NaN\"` (other types and overloads are documented on TradingView)."
+  },
+  "array.new": { "signature": "array.new(type, size?, …) → array" },
+  "matrix.new": { "signature": "matrix.new(rows, cols, …) → matrix" },
+  "map.new": { "signature": "map.new(type, type, …) → map" },
+  "alertcondition": {
+    "signature": "alertcondition(condition, title, message, freq?) → void",
+    "documentation": "Registers a **chart alert condition** (the user still creates the alert from the TradingView UI).\n\n| Parameter | Notes |\n|-----------|--------|\n| **condition** | `series bool` — when `true`, the condition is satisfied for that bar (subject to alert frequency). |\n| **title** | **const string** — must be known at compile time (not `series string`). Concatenating only **string literals** is OK; mixing in `str.tostring(...)`, series values, or other expressions is rejected (**CE10123**). |\n| **message** | **const string** — same rules as `title`. |\n| **freq** | Optional frequency / alert options string (see TradingView reference for allowed values). |\n\nOfficial wording: *const string* is required where TradingView expects compile-time string arguments."
+  }
+}

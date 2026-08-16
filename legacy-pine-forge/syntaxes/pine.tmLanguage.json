@@ -1,0 +1,199 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Pine Script",
+  "scopeName": "source.pinescript",
+  "patterns": [
+    { "include": "#annotation" },
+    { "include": "#block-comment" },
+    { "include": "#comment" },
+    { "include": "#string" },
+    { "include": "#color-literal" },
+    { "include": "#number" },
+    { "include": "#keyword-control" },
+    { "include": "#keyword-operator" },
+    { "include": "#keyword-type" },
+    { "include": "#keyword-qualifier" },
+    { "include": "#constant-language" },
+    { "include": "#constant-boolean" },
+    { "include": "#builtin-variable" },
+    { "include": "#namespace-call" },
+    { "include": "#function-call" },
+    { "include": "#operator" },
+    { "include": "#punctuation" }
+  ],
+  "repository": {
+    "annotation": {
+      "patterns": [
+        {
+          "match": "//\\s*@version\\s*=\\s*\\d+",
+          "name": "keyword.control.directive.version.pinescript"
+        },
+        {
+          "match": "//\\s*@[a-zA-Z_][a-zA-Z0-9_]*(?:\\s*=\\s*[^\\n]*)?",
+          "name": "keyword.control.directive.pinescript"
+        }
+      ]
+    },
+    "block-comment": {
+      "begin": "/\\*",
+      "end": "\\*/",
+      "name": "comment.block.pinescript"
+    },
+    "comment": {
+      "match": "//[^@][^\\n]*|//(?=\\n)",
+      "name": "comment.line.double-slash.pinescript"
+    },
+    "string": {
+      "patterns": [
+        {
+          "begin": "\"",
+          "end": "\"",
+          "name": "string.quoted.double.pinescript",
+          "patterns": [
+            { "match": "\\\\.", "name": "constant.character.escape.pinescript" }
+          ]
+        },
+        {
+          "begin": "'",
+          "end": "'",
+          "name": "string.quoted.single.pinescript",
+          "patterns": [
+            { "match": "\\\\.", "name": "constant.character.escape.pinescript" }
+          ]
+        }
+      ]
+    },
+    "color-literal": {
+      "match": "#[0-9A-Fa-f]{6,8}\\b",
+      "name": "constant.other.color.pinescript"
+    },
+    "number": {
+      "patterns": [
+        {
+          "match": "\\b0x[0-9A-Fa-f]+\\b",
+          "name": "constant.numeric.hex.pinescript"
+        },
+        {
+          "match": "\\b\\d+\\.?\\d*(?:[eE][+-]?\\d+)?\\b",
+          "name": "constant.numeric.pinescript"
+        }
+      ]
+    },
+    "keyword-control": {
+      "match": "\\b(if|else|for|to|by|while|switch|break|continue|return|import|export)\\b",
+      "name": "keyword.control.pinescript"
+    },
+    "keyword-operator": {
+      "match": "\\b(and|or|not)\\b",
+      "name": "keyword.operator.logical.pinescript"
+    },
+    "keyword-type": {
+      "match": "\\b(var|varip|int|float|bool|color|string|line|label|box|table|array|matrix|map|polyline|type|enum|method)\\b",
+      "name": "storage.type.pinescript"
+    },
+    "keyword-qualifier": {
+      "match": "\\b(series|simple|const|input)\\b",
+      "name": "storage.modifier.pinescript"
+    },
+    "constant-language": {
+      "match": "\\bna\\b",
+      "name": "constant.language.na.pinescript"
+    },
+    "constant-boolean": {
+      "match": "\\b(true|false)\\b",
+      "name": "constant.language.boolean.pinescript"
+    },
+    "builtin-variable": {
+      "patterns": [
+        {
+          "match": "\\b(open|high|low|close|volume|hl2|hlc3|ohlc4|hlcc4|time|time_close|time_tradingday|bar_index|last_bar_index|last_bar_time|dayofweek|dayofmonth|weekofyear|month|year|hour|minute|second)\\b",
+          "name": "variable.language.ohlcv.pinescript"
+        },
+        {
+          "match": "\\b(barstate)\\.([a-z_]+)\\b",
+          "name": "variable.language.barstate.pinescript"
+        },
+        {
+          "match": "\\b(syminfo)\\.([a-z_]+)\\b",
+          "name": "variable.language.syminfo.pinescript"
+        },
+        {
+          "match": "\\b(timeframe)\\.([a-z_]+)\\b",
+          "name": "variable.language.timeframe.pinescript"
+        },
+        {
+          "match": "\\b(session)\\.([a-z_]+)\\b",
+          "name": "variable.language.session.pinescript"
+        }
+      ]
+    },
+    "namespace-call": {
+      "patterns": [
+        {
+          "match": "\\b(ta|math|str|color|array|matrix|map|request|strategy|line|label|box|table|polyline|chart|ticker|input|alert)\\.([a-zA-Z_][a-zA-Z0-9_]*)\\s*(?=\\()",
+          "captures": {
+            "1": { "name": "support.class.namespace.pinescript" },
+            "2": { "name": "support.function.namespaced.pinescript" }
+          }
+        },
+        {
+          "match": "\\b(ta|math|str|color|array|matrix|map|request|strategy|line|label|box|table|polyline|chart|ticker|input|alert|barmerge|order|hline|plot|extend|xloc|yloc|size|location|text|position|font|scale|format|display|currency)\\.([a-zA-Z_][a-zA-Z0-9_]*)\\b",
+          "captures": {
+            "1": { "name": "support.class.namespace.pinescript" },
+            "2": { "name": "support.other.constant.pinescript" }
+          }
+        }
+      ]
+    },
+    "function-call": {
+      "patterns": [
+        {
+          "match": "\\b(indicator|strategy|library|plot|plotshape|plotchar|plotarrow|plotcandle|plotbar|bgcolor|barcolor|fill|hline|alert|alertcondition)\\s*(?=\\()",
+          "name": "keyword.function.declaration.pinescript"
+        },
+        {
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\s*(?=\\()",
+          "name": "entity.name.function.pinescript"
+        }
+      ]
+    },
+    "operator": {
+      "patterns": [
+        {
+          "match": ":=|\\+=|-=|\\*=|/=|%=",
+          "name": "keyword.operator.assignment.compound.pinescript"
+        },
+        {
+          "match": "==|!=|<=|>=|<|>",
+          "name": "keyword.operator.comparison.pinescript"
+        },
+        {
+          "match": "=>",
+          "name": "keyword.operator.arrow.pinescript"
+        },
+        {
+          "match": "=",
+          "name": "keyword.operator.assignment.pinescript"
+        },
+        {
+          "match": "[+\\-*/%]",
+          "name": "keyword.operator.arithmetic.pinescript"
+        },
+        {
+          "match": "\\?|:",
+          "name": "keyword.operator.ternary.pinescript"
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        { "match": "\\(", "name": "punctuation.parenthesis.open.pinescript" },
+        { "match": "\\)", "name": "punctuation.parenthesis.close.pinescript" },
+        { "match": "\\[", "name": "punctuation.bracket.open.pinescript" },
+        { "match": "\\]", "name": "punctuation.bracket.close.pinescript" },
+        { "match": ",", "name": "punctuation.separator.comma.pinescript" },
+        { "match": "\\.", "name": "punctuation.accessor.dot.pinescript" }
+      ]
+    }
+  }
+}

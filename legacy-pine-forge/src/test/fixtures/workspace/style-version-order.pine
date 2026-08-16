@@ -1,0 +1,3 @@
+indicator("order e2e", overlay = true)
+//@version=6
+plot(close)

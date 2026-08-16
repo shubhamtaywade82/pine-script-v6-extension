@@ -1,0 +1,3 @@
+//@version=6
+indicator("transp e2e", overlay = true)
+plot(close, transp = 50)

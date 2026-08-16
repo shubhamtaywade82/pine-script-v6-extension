@@ -1,0 +1,49 @@
+//@version=6
+indicator("v6 Functions - request/alert/ticker E2E", overlay = true)
+
+// ── request.security ─────────────────────────────────────────────────────────
+float btcClose = request.security("BINANCE:BTCUSDT", "D", close)
+float spyClose = request.security("AMEX:SPY", "W", close[1], lookahead=barmerge.lookahead_off)
+
+// ── request.security_lower_tf ─────────────────────────────────────────────────
+array<float> lowerTfCloses = request.security_lower_tf("BINANCE:BTCUSDT", "1", close)
+
+// ── request.currency_rate ─────────────────────────────────────────────────────
+float usdToEur = request.currency_rate(currency.USD, currency.EUR, "D")
+
+// ── request.splits / request.dividends / request.earnings ────────────────────
+float splitFactor = request.splits("AAPL", splits.denominator, "D")
+float divAmount   = request.dividends("AAPL", dividends.gross, "D")
+// float earnings = request.earnings("AAPL", earnings.actual, "D")  // skipped: plan restriction
+
+// ── alert / alertcondition ───────────────────────────────────────────────────
+alertcondition(ta.crossover(close, ta.sma(close, 20)),
+    title="MA Cross Up", message="Price crossed above MA")
+
+if ta.crossover(close, ta.sma(close, 20))
+    alert("Price crossed above MA", alert.freq_once_per_bar)
+
+// ── ticker.new / ticker.modify ────────────────────────────────────────────────
+string customTicker = ticker.new("BINANCE", "BTCUSDT", session.regular,
+    adjustment=adjustment.none)
+float customClose   = request.security(customTicker, "D", close)
+
+// ── ticker.heikinashi / ticker.renko / ticker.pointfigure / ticker.kagi ─────
+string haTicker = ticker.heikinashi(syminfo.tickerid)
+float  haClose  = request.security(haTicker, timeframe.period, close)
+
+string rnTicker = ticker.renko(syminfo.tickerid, "ATR", 14)
+float  rnClose  = request.security(rnTicker, timeframe.period, close)
+
+string pfTicker = ticker.pointfigure(syminfo.tickerid, "hl", "Traditional", 1, 3)
+float  pfClose  = request.security(pfTicker, timeframe.period, close)
+
+string kgTicker = ticker.kagi(syminfo.tickerid, 1.0)
+float  kgClose  = request.security(kgTicker, timeframe.period, close)
+
+// ── ticker.linebreak ─────────────────────────────────────────────────────────
+string lbTicker = ticker.linebreak(syminfo.tickerid, 3)
+float  lbClose  = request.security(lbTicker, timeframe.period, close)
+
+plot(btcClose, title="BTC Daily")
+plot(haClose,  title="HA Close")

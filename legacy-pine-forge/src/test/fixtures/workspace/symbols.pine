@@ -1,0 +1,5 @@
+//@version=6
+indicator("symbols e2e", overlay = true)
+
+myFnE2e(x) =>
+    x + 1

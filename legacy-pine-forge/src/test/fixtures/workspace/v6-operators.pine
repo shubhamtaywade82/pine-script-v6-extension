@@ -1,0 +1,60 @@
+//@version=6
+indicator("v6 Operators E2E", overlay = true)
+
+// ── Arithmetic ────────────────────────────────────────────────────────────────
+float op_add  = close + open
+float op_sub  = close - open
+float op_mul  = close * 2.0
+float op_div  = close / open
+float op_mod  = close % 1.0
+float op_neg  = -close
+float op_pos  = +close
+
+// ── Comparison ────────────────────────────────────────────────────────────────
+bool op_eq  = close == open
+bool op_ne  = close != open
+bool op_lt  = close < open
+bool op_gt  = close > open
+bool op_le  = close <= open
+bool op_ge  = close >= open
+
+// ── Logical ───────────────────────────────────────────────────────────────────
+bool op_and = op_gt and op_ge
+bool op_or  = op_lt or op_le
+bool op_not = not op_eq
+
+// ── Ternary ───────────────────────────────────────────────────────────────────
+float op_tern = close > open ? close : open
+
+// ── Assignment operators ─────────────────────────────────────────────────────
+var float op_walrus = 0.0
+op_walrus := close
+var float op_pluseq = 0.0
+op_pluseq += 1.0
+var float op_mineq  = 10.0
+op_mineq  -= 1.0
+var float op_muleq  = 1.0
+op_muleq  *= 2.0
+var float op_diveq  = 10.0
+op_diveq  /= 2.0
+var float op_modeq  = 10.0
+op_modeq  %= 3.0
+
+// ── History reference operator [] ────────────────────────────────────────────
+float op_hist1 = close[1]
+float op_hist5 = close[5]
+
+// ── Type-cast operators (built-in casts) ──────────────────────────────────────
+int   op_toint   = int(close)
+float op_tofloat = float(bar_index)
+bool  op_tobool  = bool(1)
+color op_tocolor = color(0xFF0000FF)
+
+// ── new operator (UDT) ────────────────────────────────────────────────────────
+type OpPt
+    float x = 0.0
+
+var OpPt pt = OpPt.new(x=1.0)
+
+plot(op_add)
+plot(op_tern)

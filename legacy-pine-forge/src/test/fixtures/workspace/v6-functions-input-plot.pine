@@ -1,0 +1,44 @@
+//@version=6
+indicator("v6 Functions - input/plot/drawing E2E", overlay = true)
+
+// ── input.* ───────────────────────────────────────────────────────────────────
+int    inpInt   = input.int(14, title="Length", minval=1, maxval=200)
+float  inpFloat = input.float(0.5, title="Factor", minval=0.01, maxval=10.0)
+bool   inpBool  = input.bool(true, title="Show MA")
+string inpStr   = input.string("SMA", title="Type")
+color  inpColor = input.color(color.blue, title="Line Color")
+string inpTf    = input.timeframe("D", title="Timeframe")
+string inpSym   = input.symbol("BTCUSDT", title="Symbol")
+float  inpSrc   = input.source(close, title="Source")
+
+// ── plot ──────────────────────────────────────────────────────────────────────
+float ma = ta.sma(close, inpInt)
+plot(ma, title="MA", color=inpColor, linewidth=2)
+plot(close, title="Close", color=color.gray)
+
+// ── plotshape / plotchar / plotarrow ─────────────────────────────────────────
+bool xUp = ta.crossover(close, ma)
+bool xDn = ta.crossunder(close, ma)
+
+plotshape(xUp, title="Cross Up", style=shape.triangleup, color=color.green)
+plotchar(xDn, title="Cross Dn", char="▼", color=color.red)
+plotarrow(close - open, title="Direction", colorup=color.green, colordown=color.red)
+
+// ── fill ──────────────────────────────────────────────────────────────────────
+p1 = plot(high, color=color.green, display=display.none)
+p2 = plot(low, color=color.red, display=display.none)
+fill(p1, p2, color=color.new(color.blue, 90))
+
+// ── bgcolor / barcolor / hline ────────────────────────────────────────────────
+bgcolor(xUp ? color.new(color.green, 90) : na)
+barcolor(close > open ? color.green : color.red)
+hline(0.0, title="Zero", color=color.gray)
+
+// ── label / line / box / table ────────────────────────────────────────────────
+if barstate.islast
+    label.new(bar_index, high, text="Last Bar", color=color.blue)
+    line.new(bar_index - 10, low[10], bar_index, low, color=color.red)
+    box.new(bar_index - 5, high[5], bar_index, low[5], border_color=color.orange)
+    var table tbl = table.new(position.top_right, 2, 2)
+    table.cell(tbl, 0, 0, "Label", bgcolor=color.blue)
+    table.cell(tbl, 0, 1, str.tostring(close, "#.##"))
