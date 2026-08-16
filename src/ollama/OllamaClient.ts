@@ -2,6 +2,8 @@
  * OllamaClient - HTTP client for Ollama API with streaming and tool calling support
  */
 
+import type { LLMProvider } from '../agent/providers/LLMProvider'
+
 export interface OllamaMessage {
   role: 'system' | 'user' | 'assistant' | 'tool'
   content: string
@@ -60,7 +62,8 @@ export interface OllamaConfig {
   maxIterations: number
 }
 
-export class OllamaClient {
+export class OllamaClient implements LLMProvider {
+  readonly id = 'ollama'
   private config: OllamaConfig
 
   constructor(config: Partial<OllamaConfig> = {}) {

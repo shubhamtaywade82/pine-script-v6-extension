@@ -109,7 +109,7 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
       const maxIterations = config.get<number>('agent.maxIterations', 12)
 
       const agent = PineAgentController.getInstance().getAgent()
-      const client = agent.getClient()
+      const client = agent.getProvider()
       client.updateConfig({ host, model, temperature, maxIterations })
 
       const isHealthy = await agent.healthCheck().catch(() => false)
@@ -339,7 +339,7 @@ export class PineChatViewProvider implements vscode.WebviewViewProvider {
         if (agent) {
           connected = await agent.healthCheck()
           if (connected) {
-            models = (await agent.getClient().getModels()).filter(m => !m.includes('embed'))
+            models = (await agent.getProvider().getModels()).filter(m => !m.includes('embed'))
             if (models.length > 0 && !models.includes(configuredModel)) {
               configuredModel = models.includes('minimax-m3:cloud') ? 'minimax-m3:cloud' : models[0]
             }

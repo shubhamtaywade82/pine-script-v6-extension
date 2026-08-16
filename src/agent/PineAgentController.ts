@@ -77,6 +77,7 @@ export class PineAgentController {
   private initAgent(): void {
     const config = vscode.workspace.getConfiguration('pineForge')
     this.agent = new PineAgent(this.knowledgeEngine, {
+      providerId: config.get<'ollama' | 'vscode-lm'>('provider', 'ollama'),
       ollamaHost: config.get<string>('ollama.host', 'http://localhost:11434'),
       model: config.get<string>('ollama.model', 'minimax-m3:cloud'),
       temperature: config.get<number>('ollama.temperature', 0),
@@ -130,6 +131,7 @@ export class PineAgentController {
       ['pineforge.openChat', () => vscode.commands.executeCommand('pineforge.chatView.focus')],
       ['pineforge.showStatusDetails', () => this.statusBar.showStatusPanel()],
       ['pineforge.selectModel', () => this.selectModel()],
+      ['pineforge.selectProvider', () => this.selectProvider()],
       ['pineforge.askAgent', () => this.askAgent()],
       ['pineforge.generateCode', () => this.generateCode()],
       ['pineforge.debugCode', () => this.debugCode()],
@@ -158,7 +160,7 @@ export class PineAgentController {
   }
 
   async selectModel(): Promise<void> {
-    const models = await this.agent.getClient().getModels()
+    const models = await this.agent.getProvider().getModels()
     if (models.length === 0) {
       const manual = await vscode.window.showInputBox({
         prompt: 'No models discovered from Ollama. Enter model tag manually:',
@@ -171,6 +173,19 @@ export class PineAgentController {
       placeHolder: 'Select active Ollama model for PineForge',
     })
     if (selected) {await this.applyModel(selected)}
+  }
+
+  async selectProvider(): Promise<void> {
+    const choice = await vscode.window.showQuickPick([
+      { label: 'Ollama (local)', description: 'Runs against a local Ollama server, no API key required', value: 'ollama' },
+      { label: 'VS Code Language Model', description: 'Uses your existing GitHub Copilot / VS Code model access, no separate setup', value: 'vscode-lm' },
+    ], { placeHolder: 'Select PineForge AI provider' })
+    if (!choice) {return}
+
+    const config = vscode.workspace.getConfiguration('pineForge')
+    await config.update('provider', choice.value, vscode.ConfigurationTarget.Global)
+    this.initAgent()
+    vscode.window.showInformationMessage(`PineForge provider set to: ${choice.label}`)
   }
 
   private async applyModel(modelName: string): Promise<void> {

@@ -2,18 +2,23 @@
  * Pine Agent - Main orchestrator for PineForge
  */
 
-import { OllamaClient, OllamaTool } from '../ollama/OllamaClient'
+import { OllamaTool } from '../ollama/OllamaClient'
 import { PineKnowledgeEngine } from '../knowledge/PineKnowledgeEngine'
 import { PineAgentState, AgentState } from './PineAgentState'
 import { PineAgentPolicy } from './PineAgentPolicy'
 import { PineTool, PineToolResult } from '../tools/PineTool'
+import { createLLMProvider, PineForgeProviderId } from './providers/ProviderRegistry'
+import { LLMProvider } from './providers/LLMProvider'
 
 export interface PineAgentConfig {
+  providerId?: PineForgeProviderId
   ollamaHost?: string
   model?: string
   temperature?: number
   maxIterations?: number
   autoRepair?: boolean
+  /** Pre-built provider to use instead of constructing one from the config above. */
+  provider?: LLMProvider
 }
 
 export interface AgentProgress {
@@ -23,7 +28,7 @@ export interface AgentProgress {
 }
 
 export class PineAgent {
-  private client: OllamaClient
+  private client: LLMProvider
   private state: PineAgentState
   private policy: PineAgentPolicy
   private tools: Map<string, PineTool> = new Map()
@@ -34,11 +39,12 @@ export class PineAgent {
     config: PineAgentConfig = {},
   ) {
     this.knowledgeEngine = knowledgeEngine
-    this.client = new OllamaClient({
-      host: config.ollamaHost ?? 'http://localhost:11434',
-      model: config.model ?? 'qwen3',
-      temperature: config.temperature ?? 0,
-      maxIterations: config.maxIterations ?? 12,
+    this.client = config.provider ?? createLLMProvider({
+      providerId: config.providerId,
+      ollamaHost: config.ollamaHost,
+      model: config.model,
+      temperature: config.temperature,
+      maxIterations: config.maxIterations,
     })
     this.state = new PineAgentState(config.maxIterations ?? 12)
     this.policy = new PineAgentPolicy({
@@ -223,9 +229,9 @@ export class PineAgent {
   }
 
   /**
-   * Get Ollama client instance
+   * Get the active LLM provider instance (Ollama, VS Code LM, etc.)
    */
-  getClient(): OllamaClient {
+  getProvider(): LLMProvider {
     return this.client
   }
 }

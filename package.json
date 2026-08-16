@@ -15,7 +15,7 @@
   "version": "0.1.0",
   "type": "commonjs",
   "engines": {
-    "vscode": "^1.93.0",
+    "vscode": "^1.100.0",
     "node": ">=16.0.0"
   },
   "categories": [
@@ -204,6 +204,16 @@
     "configuration": {
       "title": "PineForge AI Agent",
       "properties": {
+        "pineForge.provider": {
+          "type": "string",
+          "enum": ["ollama", "vscode-lm"],
+          "enumDescriptions": [
+            "Local Ollama server, no API key required",
+            "VS Code's built-in Language Model API (e.g. GitHub Copilot), no separate setup"
+          ],
+          "default": "ollama",
+          "description": "Which LLM backend PineForge AI Agent uses"
+        },
         "pineForge.ollama.host": {
           "type": "string",
           "default": "http://localhost:11434",
@@ -298,6 +308,11 @@
       {
         "command": "pineforge.selectModel",
         "title": "PineForge: Select Ollama Model",
+        "category": "PineForge"
+      },
+      {
+        "command": "pineforge.selectProvider",
+        "title": "PineForge: Select AI Provider",
         "category": "PineForge"
       },
       {
