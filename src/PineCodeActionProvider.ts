@@ -75,6 +75,26 @@ export class PineCodeActionProvider implements vscode.CodeActionProvider {
       }
     }
 
+    // na-in-ternary fix: guard the bare variable with `not na(x) and x`
+    if (msg.includes("may be 'na'") && msg.includes('guard with')) {
+      const varMatch = diagnostic.message.match(/'(\w+)' may be 'na'/)
+      if (varMatch) {
+        const varName = varMatch[1]
+        const varIndex = lineText.search(new RegExp(`\\b${varName}\\b`))
+        if (varIndex >= 0) {
+          const action = new vscode.CodeAction(`⚡ Guard with 'not na(${varName})'`, vscode.CodeActionKind.QuickFix)
+          action.diagnostics = [diagnostic]
+          action.edit = new vscode.WorkspaceEdit()
+          action.edit.replace(
+            document.uri,
+            new vscode.Range(lineIndex, varIndex, lineIndex, varIndex + varName.length),
+            `not na(${varName}) and ${varName}`,
+          )
+          return action
+        }
+      }
+    }
+
     // Off-by-one fix: array.size(x) -> array.size(x) - 1
     if (msg.includes('off-by-one') || msg.includes('uses size as index')) {
       const sizeMatch = /array\.size\([^)]+\)/.exec(lineText)

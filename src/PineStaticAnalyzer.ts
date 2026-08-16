@@ -32,6 +32,10 @@ export class PineStaticAnalyzer {
     diagnostics.push(...this.checkUnguardedFirstLast())
     diagnostics.push(...this.checkLoopBounds())
     diagnostics.push(...this.checkImplicitBoolCast())
+    diagnostics.push(...this.checkRepaintRisk())
+    diagnostics.push(...this.checkDrawingObjectLeaks())
+    diagnostics.push(...this.checkNaInTernary())
+    diagnostics.push(...this.checkPerformanceLoops())
 
     return diagnostics
   }
@@ -419,6 +423,242 @@ export class PineStaticAnalyzer {
           }
         }
       }
+    }
+
+    return diagnostics
+  }
+
+  private hasRecentGuard(lineIdx: number, guards: string[]): boolean {
+    const start = Math.max(0, lineIdx - 5)
+    for (let j = start; j <= lineIdx; j++) {
+      for (const g of guards) {
+        if (this.lines[j].includes(g)) {return true}
+      }
+    }
+    return false
+  }
+
+  /**
+   * Scans forward from an opening paren index for its matching close paren
+   * and returns the full "(...)" span. Returns null if unbalanced on this
+   * line (e.g. a call that spans multiple lines) — an accepted limitation
+   * of this line-based analyzer.
+   */
+  private extractBalancedCall(line: string, openParenIdx: number): string | null {
+    let depth = 0
+    for (let i = openParenIdx; i < line.length; i++) {
+      if (line[i] === '(') {depth++} else if (line[i] === ')') {
+        depth--
+        if (depth === 0) {return line.slice(openParenIdx, i + 1)}
+      }
+    }
+    return null
+  }
+
+  /** Splits a "(...)" call's argument list on top-level commas, respecting nested ()/[]. */
+  private splitTopLevelArgs(callText: string): string[] {
+    const inner = callText.slice(callText.indexOf('(') + 1, callText.length - 1)
+    const args: string[] = []
+    let depth = 0
+    let current = ''
+    for (const ch of inner) {
+      if (ch === '(' || ch === '[') {depth++} else if (ch === ')' || ch === ']') {depth--}
+      if (ch === ',' && depth === 0) {
+        args.push(current)
+        current = ''
+      } else {
+        current += ch
+      }
+    }
+    if (current.trim() !== '') {args.push(current)}
+    return args
+  }
+
+  /**
+   * Flags request.security() calls at risk of repainting:
+   *  - lookahead = barmerge.lookahead_on with no offset ([n]) anywhere in the
+   *    call: classic lookahead bias (future data leaking into history).
+   *  - a bare, unoffset OHLCV expression (e.g. `close`) with no lookahead
+   *    argument at all: the textbook "repaints intrabar" pattern.
+   */
+  private checkRepaintRisk(): AnalyzerDiagnostic[] {
+    const diagnostics: AnalyzerDiagnostic[] = []
+    const bareSeriesNames = ['close', 'open', 'high', 'low', 'volume', 'hl2', 'hlc3', 'ohlc4']
+
+    for (let i = 0; i < this.lines.length; i++) {
+      const line = this.lines[i]
+      const callIdx = line.indexOf('request.security(')
+      if (callIdx === -1) {continue}
+
+      const openParenIdx = callIdx + 'request.security'.length
+      const callText = this.extractBalancedCall(line, openParenIdx)
+      if (callText === null) {continue}
+
+      const fullCallLength = (openParenIdx - callIdx) + callText.length
+      const col = callIdx + 1
+      const endCol = col + fullCallLength
+      const hasOffset = /\[\s*\d+\s*\]/.test(callText)
+
+      if (/lookahead\s*=\s*barmerge\.lookahead_on/.test(callText) && !hasOffset) {
+        diagnostics.push({
+          line: i + 1,
+          column: col,
+          endColumn: endCol,
+          message: 'request.security() uses lookahead = barmerge.lookahead_on without an offset (e.g. [1]) on its expression. This can leak future data into historical bars (lookahead bias).',
+          severity: 'warning',
+        })
+        continue
+      }
+
+      if (!/lookahead/.test(callText) && !hasOffset) {
+        const args = this.splitTopLevelArgs(callText)
+        const expr = args[2]?.trim()
+        if (expr && bareSeriesNames.includes(expr)) {
+          diagnostics.push({
+            line: i + 1,
+            column: col,
+            endColumn: endCol,
+            message: `request.security() fetches a bare '${expr}' value with no offset. This can repaint intrabar on the current timeframe — consider '${expr}[1]' for a non-repainting historical value.`,
+            severity: 'warning',
+          })
+        }
+      }
+    }
+
+    return diagnostics
+  }
+
+  /**
+   * Flags label.new()/line.new()/box.new() calls that create a fresh object
+   * (not held in a `var`/`varip`) with no matching .delete() call and no
+   * max_*_count set on the script's declaration statement anywhere in the
+   * file — the classic unbounded-drawing-object growth pattern. Skips call
+   * sites guarded by a nearby barstate.islast/islastconfirmedhistory check,
+   * since those only ever draw once.
+   */
+  private checkDrawingObjectLeaks(): AnalyzerDiagnostic[] {
+    const diagnostics: AnalyzerDiagnostic[] = []
+    const drawingTypes = [
+      { newPattern: 'label.new(', deletePattern: 'label.delete(', maxParam: 'max_labels_count', displayNew: 'label.new()', displayDelete: 'label.delete()' },
+      { newPattern: 'line.new(', deletePattern: 'line.delete(', maxParam: 'max_lines_count', displayNew: 'line.new()', displayDelete: 'line.delete()' },
+      { newPattern: 'box.new(', deletePattern: 'box.delete(', maxParam: 'max_boxes_count', displayNew: 'box.new()', displayDelete: 'box.delete()' },
+    ]
+
+    for (const dt of drawingTypes) {
+      if (this.code.includes(dt.deletePattern)) {continue}
+      if (new RegExp(`\\b${this.escapeRegex(dt.maxParam)}\\s*=`).test(this.code)) {continue}
+
+      for (let i = 0; i < this.lines.length; i++) {
+        const line = this.lines[i]
+        const idx = line.indexOf(dt.newPattern)
+        if (idx === -1) {continue}
+
+        const beforeAssign = line.slice(0, idx)
+        if (/\bvar(?:ip)?\b/.test(beforeAssign)) {continue}
+        if (this.hasRecentGuard(i, ['barstate.islast', 'barstate.islastconfirmedhistory'])) {continue}
+
+        diagnostics.push({
+          line: i + 1,
+          column: idx + 1,
+          endColumn: idx + 1 + dt.newPattern.length,
+          message: `${dt.displayNew} is created without a matching ${dt.displayDelete} call and no ${dt.maxParam} set on indicator()/strategy(). Without a "var" holder, a delete call, or a max_*_count limit, these objects can accumulate unbounded across bars.`,
+          severity: 'warning',
+        })
+      }
+    }
+
+    return diagnostics
+  }
+
+  /**
+   * Flags variables assigned from a ternary with a literal `na` branch that
+   * are later used directly as an if/while/ternary condition — Pine v6
+   * raises a runtime error if a condition evaluates to `na`.
+   */
+  private checkNaInTernary(): AnalyzerDiagnostic[] {
+    const diagnostics: AnalyzerDiagnostic[] = []
+    const naVars = new Set<string>()
+
+    for (const line of this.lines) {
+      const naFalseBranch = line.match(/^\s*(?:\w+\s+)?(\w+)\s*=\s*.+\?.+:\s*.*\bna\b\s*$/)
+      const naTrueBranch = line.match(/^\s*(?:\w+\s+)?(\w+)\s*=\s*.+\?\s*na\b\s*:/)
+      const match = naFalseBranch || naTrueBranch
+      if (match) {naVars.add(match[1])}
+    }
+
+    if (naVars.size === 0) {return diagnostics}
+
+    for (let i = 0; i < this.lines.length; i++) {
+      const line = this.lines[i]
+      const trimmed = line.trim()
+
+      const condMatch = trimmed.match(/^(?:else\s+)?(?:if|while)\s+(\w+)\s*$/)
+      if (condMatch && naVars.has(condMatch[1])) {
+        const varName = condMatch[1]
+        const col = line.indexOf(varName) + 1
+        diagnostics.push({
+          line: i + 1,
+          column: col,
+          endColumn: col + varName.length,
+          message: `'${varName}' may be 'na' (assigned from a ternary with an 'na' branch) and is used directly as a boolean condition. Pine v6 raises a runtime error if a condition evaluates to 'na' — guard with 'not na(${varName})' first.`,
+          severity: 'warning',
+        })
+      }
+
+      const ternaryCondMatch = trimmed.match(/^.*=\s*(\w+)\s*\?/)
+      if (ternaryCondMatch && naVars.has(ternaryCondMatch[1])) {
+        const varName = ternaryCondMatch[1]
+        const col = line.indexOf(`${varName} ?`) + 1
+        if (col > 0) {
+          diagnostics.push({
+            line: i + 1,
+            column: col,
+            endColumn: col + varName.length,
+            message: `'${varName}' may be 'na' (assigned from a ternary with an 'na' branch) and is used directly as a ternary condition. Pine v6 raises a runtime error if a condition evaluates to 'na' — guard with 'not na(${varName})' first.`,
+            severity: 'warning',
+          })
+        }
+      }
+    }
+
+    return diagnostics
+  }
+
+  /**
+   * Flags for/while loops with a bound derived from `bar_index` or a large
+   * literal range, run on every bar/tick (not guarded by barstate.islast or
+   * barstate.islastconfirmedhistory) — suggests running once or switching to
+   * a `var`-based incremental accumulation pattern.
+   */
+  private checkPerformanceLoops(): AnalyzerDiagnostic[] {
+    const diagnostics: AnalyzerDiagnostic[] = []
+    const LARGE_BOUND_THRESHOLD = 500
+
+    for (let i = 0; i < this.lines.length; i++) {
+      const line = this.lines[i]
+      const forMatch = line.match(/for\s+\w+\s*=\s*(\S+)\s+to\s+(\S+)/)
+      if (!forMatch) {continue}
+
+      const [, fromRaw, toRaw] = forMatch
+      const isBarIndexBound = /bar_index/.test(toRaw) || /bar_index/.test(fromRaw)
+
+      const fromNum = parseInt(fromRaw, 10)
+      const toNum = parseInt(toRaw, 10)
+      const isLargeLiteralBound =
+        !Number.isNaN(fromNum) && !Number.isNaN(toNum) && Math.abs(toNum - fromNum) >= LARGE_BOUND_THRESHOLD
+
+      if (!isBarIndexBound && !isLargeLiteralBound) {continue}
+      if (this.hasRecentGuard(i, ['barstate.islast', 'barstate.islastconfirmedhistory'])) {continue}
+
+      diagnostics.push({
+        line: i + 1,
+        column: 1,
+        endColumn: line.length + 1,
+        message: isBarIndexBound
+          ? "Loop bound derived from 'bar_index' iterates over all historical bars on every execution. Wrap this in 'if barstate.islast' to run once, or use a 'var'-based incremental accumulation pattern instead."
+          : `Loop with a large bound (~${Math.abs(toNum - fromNum)} iterations) runs on every bar/tick. Wrap this in 'if barstate.islast' to run once, or use a 'var'-based incremental accumulation pattern instead.`,
+        severity: 'info',
+      })
     }
 
     return diagnostics

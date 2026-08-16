@@ -224,4 +224,190 @@ if val
       expect(warns).toHaveLength(1)
     })
   })
+
+  describe('repaint risk', () => {
+    it('warns on lookahead_on with no offset', () => {
+      const code = `//@version=6
+indicator("test")
+x = request.security(syminfo.tickerid, "D", close, lookahead = barmerge.lookahead_on)
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.message.includes('lookahead bias'))
+      expect(warns).toHaveLength(1)
+      expect(warns[0].severity).toBe('warning')
+    })
+
+    it('is silent when lookahead_on is offset', () => {
+      const code = `//@version=6
+indicator("test")
+x = request.security(syminfo.tickerid, "D", close[1], lookahead = barmerge.lookahead_on)
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.message.includes('lookahead bias'))
+      expect(warns).toHaveLength(0)
+    })
+
+    it('warns on bare unoffset series with no lookahead', () => {
+      const code = `//@version=6
+indicator("test")
+x = request.security(syminfo.tickerid, "D", close)
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.message.includes('repaint intrabar'))
+      expect(warns).toHaveLength(1)
+    })
+
+    it('is silent when the expression is offset', () => {
+      const code = `//@version=6
+indicator("test")
+x = request.security(syminfo.tickerid, "D", close[1])
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.message.includes('repaint intrabar'))
+      expect(warns).toHaveLength(0)
+    })
+  })
+
+  describe('drawing object leaks', () => {
+    it('warns on label.new() with no delete and no max_labels_count', () => {
+      const code = `//@version=6
+indicator("test")
+if close > open
+    label.new(bar_index, high, "test")
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.message.includes('label.new()'))
+      expect(warns).toHaveLength(1)
+    })
+
+    it('is silent when a matching delete call exists', () => {
+      const code = `//@version=6
+indicator("test")
+if close > open
+    label.new(bar_index, high, "test")
+label.delete(na)
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.message.includes('label.new()'))
+      expect(warns).toHaveLength(0)
+    })
+
+    it('is silent when max_labels_count is set on the declaration', () => {
+      const code = `//@version=6
+indicator("test", max_labels_count = 500)
+if close > open
+    label.new(bar_index, high, "test")
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.message.includes('label.new()'))
+      expect(warns).toHaveLength(0)
+    })
+
+    it('is silent when the object is held in var', () => {
+      const code = `//@version=6
+indicator("test")
+if close > open
+    var lbl = label.new(bar_index, high, "test")
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.message.includes('label.new()'))
+      expect(warns).toHaveLength(0)
+    })
+
+    it('is silent when guarded by barstate.islast', () => {
+      const code = `//@version=6
+indicator("test")
+if barstate.islast
+    label.new(bar_index, high, "test")
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.message.includes('label.new()'))
+      expect(warns).toHaveLength(0)
+    })
+  })
+
+  describe('na in ternary', () => {
+    it('warns when a possibly-na ternary result is used as a bare condition', () => {
+      const code = `//@version=6
+indicator("test")
+x = close > open ? close : na
+if x
+    label.new(bar_index, high)
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.message.includes("may be 'na'"))
+      expect(warns).toHaveLength(1)
+    })
+
+    it('is silent when guarded with not na(x)', () => {
+      const code = `//@version=6
+indicator("test")
+x = close > open ? close : na
+if not na(x) and x
+    label.new(bar_index, high)
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.message.includes("may be 'na'"))
+      expect(warns).toHaveLength(0)
+    })
+
+    it('is silent when neither ternary branch is na', () => {
+      const code = `//@version=6
+indicator("test")
+x = close > open ? close : open
+if x
+    label.new(bar_index, high)
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.message.includes("may be 'na'"))
+      expect(warns).toHaveLength(0)
+    })
+  })
+
+  describe('performance loops', () => {
+    it('warns on a loop bounded by bar_index', () => {
+      const code = `//@version=6
+indicator("test")
+for i = 0 to bar_index
+    x = close[i]
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.severity === 'info' && d.message.includes("'bar_index'"))
+      expect(warns).toHaveLength(1)
+    })
+
+    it('warns on a loop with a large literal bound', () => {
+      const code = `//@version=6
+indicator("test")
+for i = 0 to 1000
+    x = close[i]
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.severity === 'info' && d.message.includes('large bound'))
+      expect(warns).toHaveLength(1)
+    })
+
+    it('is silent on a small bounded loop', () => {
+      const code = `//@version=6
+indicator("test")
+for i = 0 to 10
+    x = close[i]
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.severity === 'info')
+      expect(warns).toHaveLength(0)
+    })
+
+    it('is silent when guarded by barstate.islast', () => {
+      const code = `//@version=6
+indicator("test")
+if barstate.islast
+    for i = 0 to 1000
+        x = close[i]
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.severity === 'info')
+      expect(warns).toHaveLength(0)
+    })
+  })
 })
