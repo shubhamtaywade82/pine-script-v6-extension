@@ -469,4 +469,72 @@ x = myFunc(ta.sma(close, 5))
       expect(diags.filter(d => d.message.includes('requires'))).toHaveLength(0)
     })
   })
+
+  describe('complexity profiler', () => {
+    it('warns on nested request.security() calls', () => {
+      const code = `//@version=6
+indicator("test")
+x = request.security(syminfo.tickerid, "D", request.security(syminfo.tickerid, "W", close))
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.message.includes('Nested request.security()'))
+      expect(warns).toHaveLength(1)
+      expect(warns[0].severity).toBe('info')
+    })
+
+    it('is silent for a single non-nested request.security() call', () => {
+      const code = `//@version=6
+indicator("test")
+x = request.security(syminfo.tickerid, "D", close)
+`
+      const diags = analyze(code)
+      expect(diags.filter(d => d.message.includes('Nested request.security()'))).toHaveLength(0)
+    })
+
+    it('warns on a matrix operation inside a loop', () => {
+      const code = `//@version=6
+indicator("test")
+m = matrix.new<float>(3, 3, 0.0)
+for i = 0 to 2
+    x = matrix.get(m, i, 0)
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.message.includes('Matrix operation'))
+      expect(warns).toHaveLength(1)
+      expect(warns[0].severity).toBe('info')
+    })
+
+    it('is silent for a matrix operation outside a loop', () => {
+      const code = `//@version=6
+indicator("test")
+m = matrix.new<float>(3, 3, 0.0)
+x = matrix.get(m, 0, 0)
+`
+      const diags = analyze(code)
+      expect(diags.filter(d => d.message.includes('Matrix operation'))).toHaveLength(0)
+    })
+
+    it('warns on a nested loop', () => {
+      const code = `//@version=6
+indicator("test")
+for i = 0 to 10
+    for j = 0 to 5
+        x = i + j
+`
+      const diags = analyze(code)
+      const warns = diags.filter(d => d.message.includes('Nested loop'))
+      expect(warns).toHaveLength(1)
+      expect(warns[0].message).toContain('depth 2')
+    })
+
+    it('is silent for a single non-nested loop', () => {
+      const code = `//@version=6
+indicator("test")
+for i = 0 to 10
+    x = i * 2
+`
+      const diags = analyze(code)
+      expect(diags.filter(d => d.message.includes('Nested loop'))).toHaveLength(0)
+    })
+  })
 })

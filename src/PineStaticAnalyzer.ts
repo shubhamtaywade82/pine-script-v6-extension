@@ -46,6 +46,7 @@ export class PineStaticAnalyzer {
     diagnostics.push(...this.checkDrawingObjectLeaks())
     diagnostics.push(...this.checkNaInTernary())
     diagnostics.push(...this.checkPerformanceLoops())
+    diagnostics.push(...this.checkComplexity())
     if (this.docsMap) {
       diagnostics.push(...this.checkQualifierMismatch())
     }
@@ -726,6 +727,130 @@ export class PineStaticAnalyzer {
             severity: 'warning',
           })
         }
+      }
+    }
+
+    return diagnostics
+  }
+
+  /** Generic version of findLoopBodyArrayAccesses: finds every match of `pattern` within a for/while loop's indented body. */
+  private findLoopBodyMatches(forLineIdx: number, pattern: RegExp): { lineIdx: number; matchText: string }[] {
+    const results: { lineIdx: number; matchText: string }[] = []
+    const forLineIndent = this.getIndent(this.lines[forLineIdx])
+    const flags = pattern.flags.includes('g') ? pattern.flags : `${pattern.flags}g`
+
+    for (let j = forLineIdx + 1; j < this.lines.length; j++) {
+      const bodyLine = this.lines[j]
+      const trimmed = bodyLine.trim()
+      if (trimmed === '') {continue}
+
+      const indent = this.getIndent(bodyLine)
+      if (indent <= forLineIndent) {break}
+
+      const localPattern = new RegExp(pattern.source, flags)
+      let match: RegExpExecArray | null
+      while ((match = localPattern.exec(bodyLine)) !== null) {
+        results.push({ lineIdx: j, matchText: match[0] })
+      }
+    }
+
+    return results
+  }
+
+  /**
+   * Static complexity profiler — three self-contained heuristics that don't
+   * need any TradingView API (a true per-bar variable/execution inspector
+   * isn't achievable against the public pine-facade translate_light
+   * endpoint: its response only ever carries compile-time errors/warnings,
+   * never runtime values or log output, confirmed via PineLint.handleResponse).
+   */
+  private checkComplexity(): AnalyzerDiagnostic[] {
+    return [
+      ...this.checkNestedRequestSecurity(),
+      ...this.checkMatrixOpsInLoop(),
+      ...this.checkNestedLoops(),
+    ]
+  }
+
+  /** Flags request.security() calls whose own expression argument contains another request.security() call. */
+  private checkNestedRequestSecurity(): AnalyzerDiagnostic[] {
+    const diagnostics: AnalyzerDiagnostic[] = []
+
+    for (let i = 0; i < this.lines.length; i++) {
+      const line = this.lines[i]
+      const outerIdx = line.indexOf('request.security(')
+      if (outerIdx === -1) {continue}
+
+      const openParenIdx = outerIdx + 'request.security'.length
+      const callText = this.extractBalancedCall(line, openParenIdx)
+      if (callText === null) {continue}
+
+      // callText is just the "(...)" argument list, so it never includes the
+      // outer call's own "request.security" prefix — any occurrence inside
+      // it is necessarily a nested call.
+      const hasNestedCall = /request\.security\(/.test(callText)
+      if (hasNestedCall) {
+        diagnostics.push({
+          line: i + 1,
+          column: outerIdx + 1,
+          endColumn: outerIdx + 1 + (openParenIdx - outerIdx) + callText.length,
+          message: 'Nested request.security() calls detected. Each call has its own performance cost; nesting compounds it. Consider fetching each timeframe/symbol separately and combining the results.',
+          severity: 'info',
+        })
+      }
+    }
+
+    return diagnostics
+  }
+
+  /** Flags matrix.* operations running inside a for/while loop body. */
+  private checkMatrixOpsInLoop(): AnalyzerDiagnostic[] {
+    const diagnostics: AnalyzerDiagnostic[] = []
+
+    for (let i = 0; i < this.lines.length; i++) {
+      const trimmed = this.lines[i].trim()
+      if (!/^(?:for|while)\b/.test(trimmed)) {continue}
+
+      for (const { lineIdx, matchText } of this.findLoopBodyMatches(i, /matrix\.\w+\(/)) {
+        diagnostics.push({
+          line: lineIdx + 1,
+          column: 1,
+          endColumn: this.lines[lineIdx].length + 1,
+          message: `Matrix operation '${matchText}' runs inside a loop on every qualifying bar. Matrix operations are relatively expensive — consider precomputing or caching the result outside the loop where possible.`,
+          severity: 'info',
+        })
+      }
+    }
+
+    return diagnostics
+  }
+
+  /** Flags for/while loops nested inside another for/while loop, via indentation-based scope tracking. */
+  private checkNestedLoops(): AnalyzerDiagnostic[] {
+    const diagnostics: AnalyzerDiagnostic[] = []
+    const openLoops: { indent: number }[] = []
+
+    for (let i = 0; i < this.lines.length; i++) {
+      const line = this.lines[i]
+      const trimmed = line.trim()
+      if (trimmed === '') {continue}
+
+      const indent = this.getIndent(line)
+      while (openLoops.length > 0 && indent <= openLoops[openLoops.length - 1].indent) {
+        openLoops.pop()
+      }
+
+      if (/^(?:for|while)\b/.test(trimmed)) {
+        if (openLoops.length >= 1) {
+          diagnostics.push({
+            line: i + 1,
+            column: 1,
+            endColumn: line.length + 1,
+            message: `Nested loop (nesting depth ${openLoops.length + 1}). Nested loops multiply their iteration counts, which can get expensive on every bar. Consider restructuring or caching intermediate results.`,
+            severity: 'info',
+          })
+        }
+        openLoops.push({ indent })
       }
     }
 
