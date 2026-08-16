@@ -410,4 +410,63 @@ if barstate.islast
       expect(warns).toHaveLength(0)
     })
   })
+
+  describe('qualifier mismatch', () => {
+    function docsMapWithNonSeriesArg(): Map<string, any> {
+      return new Map([
+        ['myFunc', { name: 'myFunc', args: [{ name: 'len', allowedTypeIDs: ['simple int', 'input int', 'const int'] }] }],
+      ])
+    }
+
+    it('is a no-op when no docsMap is provided', () => {
+      const code = `//@version=6
+indicator("test")
+x = myFunc(ta.sma(close, 5))
+`
+      const diags = new PineStaticAnalyzer(code).analyze()
+      expect(diags.filter(d => d.message.includes('requires'))).toHaveLength(0)
+    })
+
+    it('warns when a series expression is passed to a non-series parameter', () => {
+      const code = `//@version=6
+indicator("test")
+x = myFunc(ta.sma(close, 5))
+`
+      const diags = new PineStaticAnalyzer(code, docsMapWithNonSeriesArg()).analyze()
+      const warns = diags.filter(d => d.message.includes('requires'))
+      expect(warns).toHaveLength(1)
+      expect(warns[0].message).toContain("parameter 'len'")
+      expect(warns[0].message).toContain('simple int')
+    })
+
+    it('is silent for a literal argument', () => {
+      const code = `//@version=6
+indicator("test")
+x = myFunc(14)
+`
+      const diags = new PineStaticAnalyzer(code, docsMapWithNonSeriesArg()).analyze()
+      expect(diags.filter(d => d.message.includes('requires'))).toHaveLength(0)
+    })
+
+    it('is silent when the call uses named arguments', () => {
+      const code = `//@version=6
+indicator("test")
+x = myFunc(len = ta.sma(close, 5))
+`
+      const diags = new PineStaticAnalyzer(code, docsMapWithNonSeriesArg()).analyze()
+      expect(diags.filter(d => d.message.includes('requires'))).toHaveLength(0)
+    })
+
+    it('is silent when series is among the allowed qualifiers', () => {
+      const docsMap = new Map([
+        ['myFunc', { name: 'myFunc', args: [{ name: 'len', allowedTypeIDs: ['series int', 'simple int'] }] }],
+      ])
+      const code = `//@version=6
+indicator("test")
+x = myFunc(ta.sma(close, 5))
+`
+      const diags = new PineStaticAnalyzer(code, docsMap).analyze()
+      expect(diags.filter(d => d.message.includes('requires'))).toHaveLength(0)
+    })
+  })
 })

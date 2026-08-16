@@ -1,3 +1,5 @@
+import { looksLikeSeriesExpression } from './PineQualifierInference'
+
 export interface AnalyzerDiagnostic {
   line: number       // 1-indexed
   column: number     // 1-indexed
@@ -16,10 +18,18 @@ export class PineStaticAnalyzer {
   private code: string
   private lines: string[]
   private arrays: Map<string, ArrayInfo> = new Map()
+  /**
+   * Optional name -> doc map (e.g. Class.PineDocsManager.getMap('functions',
+   * 'completionFunctions')) used only by checkQualifierMismatch(). Passed in
+   * explicitly rather than imported so this class stays dependency-free and
+   * trivially testable — the qualifier check simply no-ops when omitted.
+   */
+  private docsMap?: Map<string, any>
 
-  constructor(code: string) {
+  constructor(code: string, docsMap?: Map<string, any>) {
     this.code = code
     this.lines = code.split('\n')
+    this.docsMap = docsMap
   }
 
   analyze(): AnalyzerDiagnostic[] {
@@ -36,6 +46,9 @@ export class PineStaticAnalyzer {
     diagnostics.push(...this.checkDrawingObjectLeaks())
     diagnostics.push(...this.checkNaInTernary())
     diagnostics.push(...this.checkPerformanceLoops())
+    if (this.docsMap) {
+      diagnostics.push(...this.checkQualifierMismatch())
+    }
 
     return diagnostics
   }
@@ -659,6 +672,61 @@ export class PineStaticAnalyzer {
           : `Loop with a large bound (~${Math.abs(toNum - fromNum)} iterations) runs on every bar/tick. Wrap this in 'if barstate.islast' to run once, or use a 'var'-based incremental accumulation pattern instead.`,
         severity: 'info',
       })
+    }
+
+    return diagnostics
+  }
+
+  /**
+   * Flags call-site arguments that are obviously series (bar-dependent)
+   * expressions passed to a built-in parameter whose documented
+   * allowedTypeIDs never include a "series ..." variant (i.e. it requires
+   * const/input/simple). Conservative by design — only flags the clear-cut
+   * cases from looksLikeSeriesExpression(); skips calls using named
+   * arguments (`name = value`), since positional index no longer matches
+   * declared argument order once named args are used out of order.
+   */
+  private checkQualifierMismatch(): AnalyzerDiagnostic[] {
+    const diagnostics: AnalyzerDiagnostic[] = []
+    if (!this.docsMap) {return diagnostics}
+
+    const callPattern = /\b([a-zA-Z_][\w.]*)\(/g
+
+    for (let i = 0; i < this.lines.length; i++) {
+      const line = this.lines[i]
+      callPattern.lastIndex = 0
+      let match
+      while ((match = callPattern.exec(line)) !== null) {
+        const funcName = match[1]
+        const doc = this.docsMap.get(funcName)
+        if (!doc || !Array.isArray(doc.args)) {continue}
+
+        const openParenIdx = match.index + match[0].length - 1
+        const callText = this.extractBalancedCall(line, openParenIdx)
+        if (callText === null) {continue}
+
+        const argExprs = this.splitTopLevelArgs(callText)
+        const usesNamedArgs = argExprs.some(a => /^\s*\w+\s*=(?!=)/.test(a))
+        if (usesNamedArgs) {continue}
+
+        for (let argIdx = 0; argIdx < doc.args.length && argIdx < argExprs.length; argIdx++) {
+          const argDoc = doc.args[argIdx]
+          const allowedTypeIDs: string[] = Array.isArray(argDoc?.allowedTypeIDs) ? argDoc.allowedTypeIDs : []
+          if (allowedTypeIDs.length === 0) {continue}
+          if (allowedTypeIDs.some((t: string) => typeof t === 'string' && t.startsWith('series'))) {continue}
+
+          const exprText = argExprs[argIdx].trim()
+          if (!exprText || !looksLikeSeriesExpression(exprText)) {continue}
+
+          diagnostics.push({
+            line: i + 1,
+            column: match.index + 1,
+            endColumn: match.index + 1 + funcName.length,
+            message: `'${funcName}' parameter '${argDoc.name}' requires ${allowedTypeIDs.join('/')}, but the argument '${exprText}' looks like a series (bar-dependent) value. Pass a literal, an input.*() result, or another non-series expression.`,
+            severity: 'warning',
+          })
+        }
+      }
     }
 
     return diagnostics

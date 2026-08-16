@@ -86,7 +86,8 @@ export class PineLint {
       // Run local static analysis (instant, no API call)
       const docText = VSCode.Text ?? ''
       if (docText) {
-        const analyzer = new PineStaticAnalyzer(docText)
+        const docsMap = Class.PineDocsManager.getMap('functions', 'completionFunctions')
+        const analyzer = new PineStaticAnalyzer(docText, docsMap)
         const localDiags = analyzer.analyze()
         PineLint.applyLocalDiagnostics(localDiags)
       }
