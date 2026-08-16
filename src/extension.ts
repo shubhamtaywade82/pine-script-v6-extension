@@ -91,6 +91,7 @@ export async function activate(context: vscode.ExtensionContext) {
     VSCode.Lang.registerHoverProvider({ language: 'pine', scheme: 'file' }, Class.PineHoverProvider),
     VSCode.Lang.registerHoverProvider({ language: 'pine', scheme: 'file' }, Class.PineLibHoverProvider),
     VSCode.Lang.registerRenameProvider('pine', Class.PineRenameProvider),
+    VSCode.Lang.registerDefinitionProvider('pine', Class.PineDefinitionProvider),
     VSCode.Lang.registerInlineCompletionItemProvider('pine', Class.PineInlineCompletionContext),
     VSCode.Lang.registerSignatureHelpProvider('pine', Class.PineSignatureHelpProvider, '(', ',', ' '),
     VSCode.Lang.registerCompletionItemProvider('pine', Class.PineLibCompletionProvider),
